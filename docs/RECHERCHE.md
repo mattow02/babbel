@@ -82,7 +82,7 @@ Le coût dépend entièrement de la granularité choisie :
 | Granularité | Taille du nombre | Coût d'un mod-mul BigInt |
 |---|---|---|
 | Livre entier (1 312 000 car.) | ~6,1 Mbits en base 25 | lourd (~100 ms+) |
-| **Page (3 200 car.)** | **~14,9 kbits** | **négligeable (<1 ms)** |
+| **Page (3 200 car.)** | **14 861 bits** | **négligeable (<1 ms)** |
 
 => **Décision : la bijection opère à l'échelle de la page.** C'est aussi ce que
 fait libraryofbabel.info, et ça colle exactement à la demande (« générer à la
@@ -97,7 +97,7 @@ sert que des fichiers statiques (HTML/JS/assets). Coût serveur = ~0.
 C'est un déploiement statique (Vercel/Netlify/Cloudflare Pages) sans backend.
 
 ### 3.2 Calcul du texte — non bloquant
-- 1 page = 3 200 caractères = ~14,9 kbits en BigInt. Un `mod-mul` sur cette
+- 1 page = 3 200 caractères = 14 861 bits en BigInt. Un `mod-mul` sur cette
   taille est sous la milliseconde en V8.
 - Malgré tout : **génération dans un Web Worker**, jamais sur le thread principal.
   Règle d'or 3D : le thread qui dessine ne calcule pas.

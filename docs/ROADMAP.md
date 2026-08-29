@@ -1,6 +1,6 @@
 # Roadmap — Babbel
 
-État : **Phase 0 close. Prêt à démarrer la Phase 1.**
+État : **Phase 1 terminée. Prochaine étape : Phase 2 (génération asynchrone).**
 Mise à jour : 2026-08-29
 
 Règle : une phase n'est close que si ses critères de sortie sont vérifiés.
@@ -19,16 +19,34 @@ On ne passe pas à la suivante « à peu près ».
 - [x] Direction artistique établie à partir de `design/` (D16, DIRECTION-ARTISTIQUE.md)
 - [x] **Phase 0 close. Plus aucune question ouverte.**
 
-## Phase 1 — Le cœur mathématique
+## Phase 1 — Le cœur mathématique ✅ (2026-08-29)
 Pur TypeScript, aucun rendu. C'est la fondation.
-- [ ] `core/alphabet.ts` — jeu de caractères, encode/decode base-N
-- [ ] `core/layout.ts` — constantes Borges
-- [ ] `core/address.ts` — Address <-> URL
-- [ ] `core/bijection.ts` — LCG BigInt inversible + couche XOR/shift
-- [ ] `core/page.ts` — address -> 3 200 caractères, et l'inverse
-- [ ] Tests Vitest
-**Sortie :** `inverse(forward(x)) === x` sur 10 000 tirages aléatoires, vert.
-Une adresse donne toujours la même page. Une page retrouve son adresse.
+- [x] `core/layout.ts` — constantes Borges
+- [x] `core/alphabet.ts` — 25 symboles, encode/decode
+- [x] `core/address.ts` — Address <-> emplacement <-> URL
+- [x] `core/bijection.ts` — permutation inversible par **cycle walking**
+- [x] `core/page.ts` — address -> 3 200 caractères, et `locate` en sens inverse
+- [x] `core/index.ts` — API publique
+- [x] 48 tests Vitest, verts
+- [x] Socle Vite + TypeScript strict, `npm run check` vert
+
+**Sortie atteinte.** `inverse(forward(x)) === x` sur 2 000 tirages, plus les
+bornes du domaine et l'injectivité sur 1 000 valeurs. Une adresse donne toujours
+la même page ; `locate(texte)` retrouve son adresse, vérifié bout en bout.
+
+**Mesures :**
+| | |
+|---|---|
+| Domaine | 25^3200, soit 4 474 chiffres décimaux |
+| Largeur de travail | 14 861 bits (~1,8 ko par entier) |
+| Cycle walking | 1,58 tour en moyenne |
+| Génération d'une page | ~0,6 ms |
+| Galeries | un nombre à 4 468 chiffres |
+| Bundle du cœur | **4,3 ko, 2,0 ko gzip** |
+
+**Écart au plan :** la Phase 1 devait utiliser un LCG inversible façon
+libraryofbabel.info. Le cycle walking (Black & Rogaway) s'est révélé plus propre
+— voir la décision D17.
 
 ## Phase 2 — Génération asynchrone
 - [ ] `workers/page.worker.ts`

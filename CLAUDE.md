@@ -55,7 +55,7 @@ livre est généré à la volée dans le navigateur du visiteur.
 
 1. **25^1 312 000 livres.** Rien n'est stockable. Tout est une fonction pure
    de l'adresse. Il n'y a pas de base de données, il n'y en aura jamais.
-2. **La bijection opère à l'échelle de la page** (3 200 caractères ≈ 14,9 kbits
+2. **La bijection opère à l'échelle de la page** (3 200 caractères = 14 861 bits
    en BigInt), pas du livre (6,1 Mbits, trop lourd).
 3. **Le facteur limitant en 3D est le nombre de draw calls**, pas les polygones.
    InstancedMesh partout, streaming par chunks, une seule page de texte réel
@@ -67,7 +67,8 @@ livre est généré à la volée dans le navigateur du visiteur.
 - Tout calcul dans un Web Worker. Le thread de rendu ne calcule jamais.
 - Zéro allocation et zéro `setState` React dans `useFrame`.
 - Le test `inverse(forward(x)) === x` est le test le plus important du projet.
-  S'il casse, tout est faux.
+  S'il casse, tout est faux. Il vit dans `src/core/__tests__/bijection.test.ts`.
+- `npm run check` (typecheck + lint + tests) doit être vert avant tout commit.
 - Mesurer avant d'optimiser : `<Perf>` de drei actif en dev.
 
 ## Décisions actées (2026-08-29)
@@ -118,4 +119,10 @@ film. La contrainte technique et l'intention esthétique coïncident.
   Aucun code applicatif écrit à ce stade, volontairement.
   Arbitrages rendus dans la foulée : D9 à D15 (voir DECISIONS.md).
   Captures de référence reçues dans `design/` et direction artistique établie
-  (D16). **Plus aucune question ouverte : la Phase 1 peut démarrer.**
+  (D16). Plus aucune question ouverte.
+- **2026-08-29 (suite)** — **Phase 1 terminée.** Socle Vite + TS strict monté,
+  `src/core/` écrit et testé : 48 tests verts, `npm run check` vert.
+  La bijection utilise le **cycle walking** et non un LCG masqué (D17) : plus
+  simple à prouver correct, aucun cas particulier. Une page se génère en 0,6 ms,
+  le cœur pèse 2 ko gzip. `locate(texte)` fonctionne déjà de bout en bout.
+  Prochaine étape : Phase 2, la génération dans un Web Worker.

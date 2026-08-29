@@ -11,7 +11,7 @@ de l'adresse. Conséquence : pas de backend, déploiement statique, coût ~0.
 
 ### D2 — Bijection à l'échelle de la page, pas du livre
 Un livre = 1 312 000 caractères ≈ 6,1 Mbits en BigInt : les opérations
-modulaires deviennent lourdes. Une page = 3 200 caractères ≈ 14,9 kbits :
+modulaires deviennent lourdes. Une page = 3 200 caractères = 14 861 bits :
 sous la milliseconde. C'est aussi ce que fait libraryofbabel.info, et ça
 correspond exactement à la demande (génération au tournage de page).
 
@@ -114,6 +114,29 @@ référence. La Bibliothèque, procédurale, ne peut pas être bakée : elle ser
 sombre, avec très peu de sources dynamiques — ce qui est précisément le parti
 pris artistique du film. La contrainte technique et l'intention esthétique
 coïncident. Décidé le 2026-08-29.
+
+
+### D17 — Cycle walking plutot qu'un LCG masque
+Le plan initial reprenait l'approche de libraryofbabel.info : un LCG en
+precision arbitraire, plus une couche de XOR et de decalages recalee a coups de
+masques ad hoc. Probleme : le domaine est 25^3200, qui n'est pas une puissance
+de deux, alors que toutes les operations qui melangent bien les bits vivent
+modulo 2^b. Les masques de Basile existent precisement pour rattraper ce
+decalage, et ils sont difficiles a prouver corrects.
+
+Retenu a la place : **cycle walking** (Black & Rogaway, 2002). On construit une
+permutation de [0, 2^BITS), la plus petite puissance de deux contenant le
+domaine, puis on l'applique en boucle jusqu'a retomber dans [0, 25^3200).
+
+Avantages : correction demontrable en une phrase, aucun cas particulier,
+inversion exacte et symetrique. Cout : 2^14861 / 25^3200 = 1,58 tour en
+moyenne, soit 58 % de calcul en trop — sans consequence, puisqu'un aller-retour
+complet mesure 0,6 ms.
+
+La permutation interne enchaine quatre tours de (decalage-XOR, multiplication
+par une constante impaire dense), avec inversion des multiplications par
+elevation de Hensel plutot qu'Euclide etendu (quatorze tours au lieu d'une
+recursion). Decide et implemente le 2026-08-29.
 
 ## Ouvertes (à trancher avec l'utilisateur)
 
