@@ -1,0 +1,218 @@
+/*
+ * Lecteur de la phase 3.
+ *
+ * La direction artistique s'applique deja (docs/DIRECTION-ARTISTIQUE.md) :
+ * nous sommes DANS la bibliotheque, donc dans les tenebres. Noir chaud,
+ * calcaire creme, or. Aucun gris neutre nulle part : les ombres tirent vers
+ * le brun-violace, les lumieres vers l'ambre.
+ */
+
+:root {
+  /* Tenebres */
+  --nuit: #0d0b0a;
+  --nuit-haute: #15110f;
+  --brun-sourd: #2a2320;
+
+  /* Calcaire */
+  --creme: #e8dcc8;
+  --sable: #d4c3a5;
+  --ombre-chaude: #8a7660;
+
+  /* Lumiere */
+  --or: #c9a227;
+  --soleil: #f2c078;
+
+  --gouttiere: clamp(1rem, 3vw, 3rem);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+  background: var(--nuit);
+  color: var(--sable);
+  font-family: ui-serif, Georgia, 'Times New Roman', serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Le halo unique, comme la lampe spherique de chaque hexagone chez Borges. */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse 70% 55% at 50% 42%, #241c17 0%, transparent 70%);
+  z-index: 0;
+}
+
+/* Vignettage : premier poste de la direction artistique. */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse 85% 75% at 50% 45%, transparent 45%, rgb(5 4 3 / 82%) 100%);
+  z-index: 3;
+}
+
+.shell {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  min-height: 100vh;
+  padding: var(--gouttiere);
+  gap: clamp(1rem, 2.5vh, 2rem);
+}
+
+/* ---------------------------------------------------------------- adresse */
+
+.address {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem 2rem;
+  padding-bottom: 0.9rem;
+  border-bottom: 1px solid var(--brun-sourd);
+}
+
+.address__coords {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 2.2rem;
+  margin: 0;
+}
+
+.address__coords div {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.address__coords dt {
+  font-size: 0.68rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ombre-chaude);
+}
+
+.address__coords dd {
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+  font-size: 1.05rem;
+  color: var(--creme);
+}
+
+.address__coords .address__page dd {
+  color: var(--soleil);
+}
+
+.address__of {
+  color: var(--ombre-chaude);
+  font-size: 0.8em;
+}
+
+.address__copy {
+  padding: 0.45rem 1.1rem;
+  border: 1px solid var(--brun-sourd);
+  border-radius: 2px;
+  background: transparent;
+  color: var(--sable);
+  font: inherit;
+  font-size: 0.85rem;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: border-color 220ms ease, color 220ms ease;
+}
+
+.address__copy:hover,
+.address__copy:focus-visible {
+  border-color: var(--or);
+  color: var(--soleil);
+  outline: none;
+}
+
+/* ------------------------------------------------------------------- page */
+
+.stage {
+  display: grid;
+  place-items: center;
+  min-height: 0;
+}
+
+.page {
+  /*
+   * La page fait exactement 80 caracteres sur 40 lignes. Plutot que d'imposer
+   * une taille de police et d'esperer que ca rentre, on la CALCULE a partir de
+   * la place disponible, dans les deux dimensions, et on garde la plus petite.
+   *
+   * Piege evite : dans un `font-size`, un pourcentage se rapporte a la police
+   * du parent, pas a la largeur. Il faut donc des unites de fenetre.
+   *
+   * 80 caracteres monospace font environ 48em de large ;
+   * 40 lignes a 1,55 d'interligne font 62em de haut.
+   */
+  --dispo-large: min(calc(100vw - 2 * var(--gouttiere)), 66rem);
+  --dispo-haut: calc(100vh - 15rem);
+  --par-largeur: calc(var(--dispo-large) / 48);
+  --par-hauteur: calc(var(--dispo-haut) / 62);
+
+  width: max-content;
+  max-width: 100%;
+  margin: 0;
+  font-family: ui-monospace, 'SF Mono', 'Cascadia Mono', Menlo, Consolas, monospace;
+  font-size: clamp(5.5px, min(var(--par-largeur), var(--par-hauteur)), 14px);
+  line-height: 1.55;
+  letter-spacing: 0.02em;
+  color: var(--creme);
+  white-space: pre;
+  overflow-x: auto;
+  text-shadow: 0 0 14px rgb(242 192 120 / 12%);
+  transition: opacity 320ms ease;
+}
+
+.page[aria-busy='true'] {
+  color: var(--brun-sourd);
+  text-shadow: none;
+}
+
+.page--failure {
+  color: #b4553f;
+  white-space: pre-wrap;
+}
+
+/* ------------------------------------------------------------- indications */
+
+.hints {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 2rem;
+  padding-top: 0.9rem;
+  border-top: 1px solid var(--brun-sourd);
+  font-size: 0.78rem;
+  color: var(--ombre-chaude);
+}
+
+kbd {
+  display: inline-block;
+  min-width: 1.6em;
+  margin-right: 0.25rem;
+  padding: 0.1em 0.4em;
+  border: 1px solid var(--brun-sourd);
+  border-radius: 2px;
+  color: var(--sable);
+  font-family: inherit;
+  font-size: 0.9em;
+  text-align: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition-duration: 1ms !important;
+  }
+}

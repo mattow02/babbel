@@ -1,6 +1,6 @@
 # Roadmap — Babbel
 
-État : **Phase 2 terminée. Prochaine étape : Phase 3 (lecture, sans 3D).**
+État : **Phase 3 terminée. Prochaine étape : Phase 4 (la galerie 3D).**
 Mise à jour : 2026-08-29
 
 Règle : une phase n'est close que si ses critères de sortie sont vérifiés.
@@ -83,12 +83,31 @@ réveiller pendant l'écran d'entrée, pas au moment où le visiteur ouvre un li
   près de 1 % d'une image, à chaque consultation. `Map` compare les BigInt par
   valeur, donc la clé brute est 300 fois plus rapide.
 
-## Phase 3 — Lecture, sans 3D
-Une page HTML nue qui affiche le livre. Sert à valider le contenu.
-- [ ] Affichage 410 pages / 40 lignes / 80 colonnes
-- [ ] Navigation clavier
-- [ ] Barre d'adresse + URL synchronisée
-**Sortie :** on peut lire un livre, partager l'URL, retomber sur le même texte.
+## Phase 3 — Lecture, sans 3D ✅ (2026-08-29)
+- [x] Affichage 410 pages / 40 lignes / 80 colonnes, taille de police **calculée**
+      pour tenir en largeur et en hauteur (D22)
+- [x] Navigation clavier : ←/→ une page, Maj ou Pg↑/Pg↓ dix pages, ↑/↓ volume
+      voisin, Début/Fin bords du volume — bornée, testée
+- [x] Barre d'adresse (galerie tronquée, mur, étagère, volume, page) + copie
+- [x] URL dans le **fragment** (D20), synchronisée dans les deux sens
+- [x] Direction artistique appliquée : noir chaud, calcaire, or, vignettage
+- [x] 16 tests supplémentaires (90 au total)
+
+**Sortie atteinte, vérifiée dans Chromium sur le build de production :**
+- navigation clavier complète, bornes respectées (page 410 ne déborde pas) ;
+- une adresse profonde de **2 901 caractères** partagée puis ouverte **à froid**
+  redonne un texte **identique au caractère près** ;
+- le format tient partout : 40 lignes × 80 colonnes.
+
+Capture : `docs/captures/phase3-lecteur.png`.
+
+**Deux points de conception :**
+- `usePageText` lit le cache **pendant le rendu** (`peek`) au lieu de le recopier
+  dans un état : une page déjà générée s'affiche sans clignotement et sans le
+  rendu en cascade qu'imposerait un `setState` dans un effet.
+- Le worker est réveillé au montage, pas à l'ouverture du livre : les 60 ms de
+  démarrage relevées en phase 2 sont payées pendant que le visiteur regarde
+  l'écran d'entrée.
 
 ## Phase 4 — La galerie 3D
 - [ ] Géométrie de l'hexagone (4 murs, 5 étagères, 32 livres, couloirs)

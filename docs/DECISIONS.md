@@ -163,6 +163,42 @@ Regle generale a retenir : dans ce projet, toute conversion d'un grand entier
 vers du texte est chere et n'a rien a faire sur un chemin chaud.
 Mesure et decide le 2026-08-29.
 
+
+### D20 — L'adresse vit dans le fragment de l'URL, pas dans le chemin
+Deux raisons, et la seconde est la plus interessante.
+
+1. Le site est deploye en statique. Un chemin profond comme `/7c4g…/1/2/24/368`
+   obligerait l'hebergeur a reecrire toutes les routes vers `index.html`, sinon
+   un simple rechargement renvoie une 404. Le fragment marche partout, sans la
+   moindre configuration.
+2. **Un fragment n'est jamais envoye au serveur.** L'hebergeur ne peut donc pas
+   savoir quelle page est lue — non par politique de confidentialite, mais par
+   construction du web. C'est le prolongement exact de l'exigence du projet :
+   le serveur ne sert que des fichiers statiques, et il ne sait rien.
+
+Sur la longueur (environ 2 890 caracteres) : ce n'est pas un defaut de
+conception. Le numero de galerie PORTE le contenu de la page. Une URL courte
+devrait pointer vers un stockage, et il n'y en a pas. La longueur de l'URL est
+la preuve qu'on ne triche pas. Decide le 2026-08-29.
+
+### D21 — Zustand repousse a la phase 4
+L'architecture prevoit zustand pour tenir l'etat hors de React et eviter un
+rendu par image. La phase 3 n'a pas de boucle de rendu : l'etat de React et
+l'URL suffisent. On n'ajoute pas une dependance avant qu'elle ne gagne sa place.
+Elle sera introduite avec la scene 3D, la ou le probleme existe reellement.
+Decide le 2026-08-29.
+
+### D22 — La taille de la page est calculee, pas choisie
+Une page fait 80 caracteres sur 40 lignes : ces dimensions sont imposees par
+Borges, pas par le design. La taille de police est donc **derivee** de la place
+disponible dans les deux dimensions (80 caracteres monospace font environ 48em
+de large, 40 lignes a 1,55 d'interligne font 62em de haut), et on garde la plus
+contraignante des deux.
+
+Piege rencontre et corrige : dans un `font-size`, un pourcentage se rapporte a
+la police du parent, jamais a la largeur. Il faut des unites de fenetre.
+Decide le 2026-08-29.
+
 ## Ouvertes (à trancher avec l'utilisateur)
 
 _Aucune. Toutes les décisions de cadrage sont prises._

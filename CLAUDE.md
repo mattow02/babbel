@@ -48,6 +48,7 @@ livre est généré à la volée dans le navigateur du visiteur.
 | `docs/DECISIONS.md` | Chaque choix structurant + son pourquoi (ADR) |
 | `docs/DIRECTION-ARTISTIQUE.md` | Palette, formes, matériaux, post-process, motifs |
 | `design/` | Les 10 captures de référence — **la vérité visuelle** |
+| `docs/captures/` | Captures de l'état du projet, phase par phase |
 
 **Avant toute session de dev : lire ROADMAP.md pour savoir où on en est.**
 
@@ -137,3 +138,9 @@ film. La contrainte technique et l'intention esthétique coïncident.
   **2,80 ms au total**, soit 17 % du budget d'UNE image. Clé de cache en BigInt
   et non en chaîne (D19, 300× plus rapide). Prochaine étape : Phase 3, le
   lecteur en HTML nu.
+- **2026-08-29 (suite)** — **Phase 3 terminée.** Lecteur React : 40×80, clavier
+  borné, barre d'adresse, URL dans le **fragment** (D20 : marche en statique
+  sans config, et le serveur ne peut pas savoir ce qu'on lit). DA appliquée.
+  90 tests verts. **Vérifié en Chromium** : une adresse de 2 901 caractères
+  partagée puis ouverte à froid redonne un texte identique au caractère près.
+  Zustand repoussé à la phase 4 (D21). Prochaine étape : Phase 4, la galerie 3D.
