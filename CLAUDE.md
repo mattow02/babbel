@@ -68,11 +68,27 @@ livre est généré à la volée dans le navigateur du visiteur.
   S'il casse, tout est faux.
 - Mesurer avant d'optimiser : `<Perf>` de drei actif en dev.
 
-## Ressources à récupérer
-- [ ] **Vidéo YouTube de référence** fournie par l'utilisateur (lien à demander)
+## Décisions actées (2026-08-29)
+- **Alphabet : 25 symboles**, fidèle à Borges (22 lettres + espace + virgule + point).
+  Mais paramétré dans `core/alphabet.ts` : jamais 25 en dur ailleurs.
+- **Stack : Vite + React + TypeScript** (Next.js écarté).
+- **Navigation : première personne, sans ZQSD** — schéma de contrôle à trancher.
+- **Deux mondes distincts** (D11) : *le Seuil*, scène authorée à la main
+  (extérieur → dôme → marches → entrée unique → grand hall → cube flottant),
+  et *la Bibliothèque*, procédurale et infinie. Budgets et dossiers séparés.
+  La séquence d'arrivée est le morceau de bravoure esthétique, elle a le droit
+  d'être coûteuse parce qu'elle est unique.
+
+## Ressources
+- **Vidéo de référence** : « Le Vertige Infini de la Bibliothèque de Babel »
+  <https://www.youtube.com/watch?v=J3JsyxABi0g>
+  ⚠️ Claude ne peut pas voir les images d'une vidéo YouTube. La direction
+  artistique s'appuiera sur des **captures d'écran** fournies par l'utilisateur.
+- [ ] Captures d'écran de la vidéo (en attente)
 
 ## Journal
 - **2026-08-29** — Création du projet. Phase 0 : recherche faite (Borges,
   algorithme de libraryofbabel.info, limites navigateur), architecture et
   roadmap rédigées. En attente des arbitrages `docs/DECISIONS.md` § ouvertes.
   Aucun code applicatif écrit à ce stade, volontairement.
+  Arbitrages rendus dans la foulée : D9 à D12 (voir DECISIONS.md).

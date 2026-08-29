@@ -32,9 +32,9 @@ Toute la conception découle de là :
 | Tests | **Vitest** | le cœur (bijection) doit être testé, c'est du pur calcul |
 | Qualité | ESLint + Prettier + `tsc --noEmit` en CI | |
 
-**Alternative écartée : Next.js.** Aucun besoin de SSR ni d'API routes ; la
-page est une expérience 3D client. Vite est plus simple et plus rapide ici.
-(À rediscuter si on veut du SEO sur des pages éditoriales autour.)
+**Stack confirmée le 2026-08-29.** Next.js écarté : aucun besoin de SSR ni
+d'API routes, l'expérience est entièrement cliente, et le HMR de Vite est
+décisif quand on itère sur de la 3D.
 
 ## 3. Structure des dossiers
 
@@ -66,7 +66,14 @@ Babbel/
     │   └── client.ts          # API promisifiée du worker + cache LRU
     │
     ├── scene/                 # tout le three.js
-    │   ├── Library.tsx        # racine de la scène
+    │   ├── threshold/          # LE SEUIL — scène authorée, non procédurale
+    │   │   ├── Threshold.tsx   # racine de la séquence d'arrivée
+    │   │   ├── Exterior.tsx    # le dôme (demi-sphère) vu du dehors
+    │   │   ├── Stairs.tsx      # les marches vers l'entrée unique
+    │   │   ├── Portal.tsx      # l'entrée unique
+    │   │   ├── Atrium.tsx      # le grand hall
+    │   │   └── Cube.tsx        # le cube flottant au centre
+    │   ├── Library.tsx        # racine de la bibliothèque procédurale
     │   ├── hexagon/           # géométrie de la galerie
     │   │   ├── Hexagon.tsx
     │   │   ├── Shelves.tsx    # InstancedMesh des 640 livres
@@ -164,3 +171,38 @@ On construit du **plus contraint vers le plus libre** :
 6. l'esthétique et l'ambiance (le seul espace vraiment libre).
 
 Faire l'inverse (commencer par la 3D jolie) mènerait à tout refaire.
+
+
+## 9. Les deux mondes (décision D11)
+
+Le projet contient deux natures de scène qu'il ne faut jamais confondre, ni dans
+le code ni dans le budget de performance.
+
+| | **Le Seuil** (`scene/threshold/`) | **La Bibliothèque** (`scene/hexagon/`) |
+|---|---|---|
+| Nature | authorée à la main, finie | procédurale, infinie |
+| Contenu | extérieur, dôme, marches, entrée unique, grand hall, cube flottant | galeries hexagonales, 640 livres chacune |
+| Chargement | une fois, à l'arrivée | streaming permanent par chunks |
+| Budget | généreux : scène unique, jamais dupliquée. On peut y mettre des matériaux coûteux, de la géométrie détaillée, un éclairage travaillé | serré : instancing obligatoire, LOD, pool d'objets |
+| Rôle | le morceau de bravoure esthétique, la première impression | le vertige, l'infini, la lecture |
+
+La séquence d'arrivée est le premier contact du visiteur avec le site : c'est
+là que se joue l'impression esthétique. Elle a le droit d'être chère, parce
+qu'elle est unique et qu'on la quitte ensuite.
+
+### Parcours d'arrivée
+```
+extérieur (on voit le dôme) → montée des marches → franchissement de l'entrée
+unique → grand hall, le cube flotte au centre → descente/entrée dans les galeries
+```
+Chaque transition est une occasion de composition. Le passage du Seuil à la
+Bibliothèque est aussi le moment naturel pour précharger les premiers chunks.
+
+## 10. Navigation (décision D12, schéma à trancher)
+
+Première personne retenue, ZQSD écarté. Le schéma doit satisfaire :
+- **une seule main, une souris ou un trackpad** — c'est un site web, pas un jeu ;
+- **aucun apprentissage** — le visiteur comprend en trois secondes ;
+- **transposable au tactile** sans réécrire la logique ;
+- **peu de mal des transports** — accélérations douces, pas de secousses,
+  FOV modéré (55–65°), respect de `prefers-reduced-motion`.

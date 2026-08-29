@@ -39,15 +39,46 @@ C'est ce qui rend l'ensemble tenable.
 Le cœur mathématique est du TypeScript pur, testable sans navigateur.
 Le rendu peut être entièrement réécrit sans y toucher.
 
+
+### D9 — Alphabet : 25 symboles, fidèle à Borges
+22 lettres + espace + virgule + point. Choix de fidélité assumé contre la
+lisibilité des fragments (l'option 29 caractères de libraryofbabel.info est
+écartée). L'alphabet reste **paramétré** dans `core/alphabet.ts` : rien dans le
+code ne doit supposer 25 en dur, pour pouvoir changer d'avis sans tout casser.
+Décidé le 2026-08-29.
+
+### D10 — Vite + React + TypeScript
+Pas de SSR ni d'API à servir : l'expérience est entièrement cliente. HMR rapide,
+ce qui est décisif quand on itère sur de la 3D. Build statique.
+Décidé le 2026-08-29.
+
+### D11 — Deux mondes distincts : le Seuil et la Bibliothèque
+Le projet contient **deux natures de scène**, à ne jamais confondre :
+
+1. **Le Seuil** — scène *authorée à la main*, finie, composée : on arrive à
+   l'extérieur, on voit le dôme (demi-sphère), on monte les marches, on franchit
+   l'entrée unique, on débouche dans le grand hall où flotte le cube.
+   C'est la séquence d'arrivée, le morceau de bravoure esthétique. Budget de
+   rendu généreux (scène unique, chargée une fois, jamais dupliquée).
+2. **La Bibliothèque** — infinie, *procédurale*, streamée par chunks,
+   sous contrainte permanente de draw calls et de mémoire.
+
+Conséquence : deux budgets de performance, deux méthodes de construction, deux
+dossiers séparés dans `src/scene/`. Le Seuil peut se permettre ce que la
+Bibliothèque ne peut pas. Décidé le 2026-08-29.
+
+### D12 — Navigation à la première personne, sans ZQSD
+La première personne est retenue (immersion), mais le clavier ZQSD est écarté :
+inconfortable, et inadapté à un site web qu'on visite au trackpad ou au doigt.
+Le schéma de contrôle exact reste à trancher (voir O3').
+Décidé le 2026-08-29.
+
 ## Ouvertes (à trancher avec l'utilisateur)
 
-- **O1** — Alphabet : 25 symboles (fidèle à Borges) ou 29 (a–z + espace +
-  virgule + point, comme libraryofbabel.info, texte plus lisible) ?
 - **O2** — Recherche inverse (« trouver où se trouve ce texte ») : dans le
   périmètre v1 ou plus tard ? Elle contraint fortement la bijection.
-- **O3** — Navigation : première personne libre (pointer lock) ou déplacement
-  par points d'intérêt (plus cinématographique, plus accessible, moins de
-  mal des transports) ?
-- **O4** — Direction artistique : quel registre ?
-- **O5** — Vite ou Next.js ?
+- **O3'** — Schéma de contrôle exact de la première personne (voir D12).
+- **O4'** — Direction artistique : référence = la vidéo « Le Vertige Infini de
+  la Bibliothèque de Babel » (youtube.com/watch?v=J3JsyxABi0g). Non consultable
+  par Claude (pas d'accès aux images). **En attente de captures d'écran.**
 - **O6** — Mobile : cible v1 ou desktop d'abord ?

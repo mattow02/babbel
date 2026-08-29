@@ -13,7 +13,10 @@ On ne passe pas à la suivante « à peu près ».
 - [x] Compréhension de l'algorithme de libraryofbabel.info
 - [x] Limites physiques et techniques identifiées
 - [x] Architecture proposée
-- [ ] **Décisions en attente de l'utilisateur** (voir DECISIONS.md, section "ouvertes")
+- [x] Arbitrages : alphabet 25 (Borges), Vite+React+TS, 1re personne sans ZQSD,
+      séquence d'arrivée par le Seuil (D9 à D12)
+- [ ] Reste ouvert : schéma de contrôle, direction artistique (captures de la
+      vidéo attendues), recherche inverse, mobile
 
 ## Phase 1 — Le cœur mathématique
 Pur TypeScript, aucun rendu. C'est la fondation.
@@ -51,6 +54,15 @@ Une page HTML nue qui affiche le livre. Sert à valider le contenu.
 - [ ] ChunkManager : hexagones voisins seulement, pool d'objets
 - [ ] Transition marche -> prendre un livre -> lecture
 **Sortie :** marcher 5 minutes sans fuite mémoire (heap stable au profiler).
+
+## Phase 5bis — Le Seuil (séquence d'arrivée)
+Scène authorée, hors contrainte procédurale. Voir ARCHITECTURE § 9.
+- [ ] Extérieur et dôme (demi-sphère)
+- [ ] Marches et montée vers l'entrée unique
+- [ ] Franchissement du portail
+- [ ] Grand hall et cube flottant au centre
+- [ ] Enchaînement Seuil -> Bibliothèque, avec préchargement des premiers chunks
+**Sortie :** les 30 premières secondes du site donnent envie. C'est le test.
 
 ## Phase 6 — Esthétique
 La phase où on a le droit d'être ambitieux, parce que le reste tient.
