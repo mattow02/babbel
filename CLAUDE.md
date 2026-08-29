@@ -70,6 +70,10 @@ livre est généré à la volée dans le navigateur du visiteur.
   et **jamais** `read()` en `await`. Une frame ne peut pas attendre.
 - Toute conversion d'un grand entier vers du texte est chère (0,14 ms) : jamais
   sur un chemin chaud (D19).
+- Le placement 3D s'écrit en maths pures dans `scene/**/layout3d.ts` et
+  `parts.ts`, sans three.js : c'est la seule façon de vérifier 640 objets (D24).
+- Toute géométrie répétée passe par une **boîte unitaire instanciée** (D25) :
+  un appel de rendu par matériau, quel que soit le nombre d'objets.
 - Zéro allocation et zéro `setState` React dans `useFrame`.
 - Le test `inverse(forward(x)) === x` est le test le plus important du projet.
   S'il casse, tout est faux. Il vit dans `src/core/__tests__/bijection.test.ts`.
@@ -143,4 +147,11 @@ film. La contrainte technique et l'intention esthétique coïncident.
   sans config, et le serveur ne peut pas savoir ce qu'on lit). DA appliquée.
   90 tests verts. **Vérifié en Chromium** : une adresse de 2 901 caractères
   partagée puis ouverte à froid redonne un texte identique au caractère près.
-  Zustand repoussé à la phase 4 (D21). Prochaine étape : Phase 4, la galerie 3D.
+  Zustand repoussé à la phase 4 (D21).
+- **2026-08-29 (suite)** — **Phase 4 terminée.** Galerie hexagonale en R3F :
+  placement en maths pures et testé sans GPU (D24), tout ramené à une boîte
+  unitaire instanciée (D25), murs libres opposés pour que la perspective file
+  (D23), lampe sphérique de Borges avec ombres sur une seule galerie (D26),
+  sonde de performance maison (D27). 105 tests verts. **Mesuré sur GPU réel :
+  27 appels de rendu (budget 100), 0,37 ms par image (budget 16,6 ms)**,
+  1 920 volumes affichés. Prochaine étape : Phase 5, navigation et streaming.

@@ -199,6 +199,44 @@ Piege rencontre et corrige : dans un `font-size`, un pourcentage se rapporte a
 la police du parent, jamais a la largeur. Il faut des unites de fenetre.
 Decide le 2026-08-29.
 
+
+### D23 — Les deux murs libres sont OPPOSES
+Borges dit que les etageres « couvrent tous les cotes sauf deux », sans preciser
+lesquels. Nous prenons deux murs opposes plutot qu'adjacents : des ouvertures
+opposees alignent les galeries et creusent une perspective qui file au loin,
+alors que des ouvertures adjacentes donneraient un labyrinthe. Nous voulons un
+abime, pas un dedale. Decide le 2026-08-29.
+
+### D24 — Le placement 3D est ecrit en mathematiques pures
+`scene/hexagon/layout3d.ts` et `parts.ts` ne dependent pas de three.js : ils
+rendent des nombres, pas des objets de rendu. On verifie donc sans GPU que les
+640 volumes sont plaques contre les bons murs, reposent sur leur planche, ne se
+chevauchent pas et ne debordent pas — exactement le genre de defaut qu'on ne
+voit pas a l'oeil parmi 640 objets. Meme discipline que pour `core/` (D8).
+Decide le 2026-08-29.
+
+### D25 — Tout se ramene a une boite unitaire mise a l'echelle
+Murs, jambages, linteaux, parois de couloir, planches, montants et volumes
+partagent une seule geometrie de boite, mise a l'echelle par instance. Resultat :
+un appel de rendu par MATERIAU, quel que soit le nombre d'objets. La galerie
+entiere, trois exemplaires compris, tient en 27 appels.
+Decide le 2026-08-29.
+
+### D26 — Une seule lampe projette des ombres
+Une lumiere ponctuelle avec ombres coute six rendus de carte d'ombre (une par
+face du cube). En accorder une a chaque galerie triplerait ce cout pour un gain
+invisible a travers un couloir. Seule la galerie ou se trouve le visiteur
+projette des ombres. Decide le 2026-08-29.
+
+### D27 — Sonde de performance maison plutot que r3f-perf
+`r3f-perf` refuse de cohabiter avec Fiber 9 (conflit de peer dependencies), et
+nous n'avons besoin que de deux nombres : les appels de rendu et le cout d'une
+image. Les lire dans `gl.info` coute zero dependance, et permet en prime
+d'exposer un banc d'essai appelable depuis l'exterieur — indispensable pour
+verifier automatiquement le critere de sortie depuis un navigateur pilote, ou
+compter les images par seconde ne veut rien dire (voir la note d'exploitation
+dans ROADMAP). Decide le 2026-08-29.
+
 ## Ouvertes (à trancher avec l'utilisateur)
 
 _Aucune. Toutes les décisions de cadrage sont prises._

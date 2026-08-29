@@ -1,6 +1,6 @@
 # Roadmap — Babbel
 
-État : **Phase 3 terminée. Prochaine étape : Phase 4 (la galerie 3D).**
+État : **Phase 4 terminée. Prochaine étape : Phase 5 (navigation et streaming).**
 Mise à jour : 2026-08-29
 
 Règle : une phase n'est close que si ses critères de sortie sont vérifiés.
@@ -109,12 +109,39 @@ Capture : `docs/captures/phase3-lecteur.png`.
   démarrage relevées en phase 2 sont payées pendant que le visiteur regarde
   l'écran d'entrée.
 
-## Phase 4 — La galerie 3D
-- [ ] Géométrie de l'hexagone (4 murs, 5 étagères, 32 livres, couloirs)
-- [ ] 640 livres en un seul InstancedMesh
-- [ ] Éclairage : la lampe sphérique de Borges
-- [ ] Puits central + balustrade + escalier
-**Sortie :** 60 fps stables, < 100 draw calls, mesuré au Perf monitor.
+## Phase 4 — La galerie 3D ✅ (2026-08-29)
+- [x] Géométrie de l'hexagone : 6 murs, dont 4 portent 5 étagères de 32 volumes
+      et 2 sont percés d'un couloir — **placement en mathématiques pures**,
+      testable sans GPU (`scene/hexagon/layout3d.ts`, `parts.ts`)
+- [x] 640 volumes (1 920 sur trois galeries) en **un seul appel de rendu**,
+      couleur et hauteur de tranche par instance, dérivées de l'indice
+- [x] Éclairage : la lampe sphérique de Borges, une par galerie, ombres portées
+      seulement sur celle du visiteur
+- [x] Couloirs opposés : la perspective file de galerie en galerie
+- [x] Sonde de performance maison + zustand pour l'état hors React
+- [x] 15 tests supplémentaires (105 au total)
+
+**Sortie atteinte, mesurée dans Chromium sur GPU réel** (Intel Iris Xe) :
+
+| | Mesuré | Budget |
+|---|---|---|
+| Appels de rendu | **27** | < 100 |
+| Coût d'une image | **0,37 ms** | 16,6 ms |
+| Triangles | 173 500 | — |
+| Volumes affichés | 1 920 | — |
+
+**Écart au plan assumé :** le « puits central + balustrade + escalier » de la
+roadmap initiale n'est pas fidèle au texte — chez Borges l'escalier en colimaçon
+est dans le *couloir*, pas au centre de la salle. Reporté en phase 5 avec la
+navigation verticale, plutôt que d'inventer une géométrie que la nouvelle ne
+décrit pas.
+
+**Reste pour la phase 6 (esthétique) :** l'éclairage est encore plat, sans
+clair-obscur marqué ; pas de bloom sur la lampe, pas de grain, pas de
+vignettage. C'est exactement le contenu de la phase 6, et c'est là que les
+lightmaps du Seuil (D16) entreront en jeu.
+
+Capture : `docs/captures/phase4-galerie.png`.
 
 ## Phase 5 — Navigation et streaming
 - [ ] Déplacement à la première personne
