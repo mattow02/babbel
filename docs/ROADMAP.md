@@ -1,6 +1,6 @@
 # Roadmap — Babbel
 
-État : **Phase 0 — recherche terminée, en attente de validation des choix.**
+État : **Phase 0 close. Prêt à démarrer la Phase 1.**
 Mise à jour : 2026-08-29
 
 Règle : une phase n'est close que si ses critères de sortie sont vérifiés.
@@ -15,8 +15,9 @@ On ne passe pas à la suivante « à peu près ».
 - [x] Architecture proposée
 - [x] Arbitrages : alphabet 25 (Borges), Vite+React+TS, 1re personne sans ZQSD,
       séquence d'arrivée par le Seuil (D9 à D12)
-- [ ] Reste ouvert : schéma de contrôle, direction artistique (captures de la
-      vidéo attendues), recherche inverse, mobile
+- [x] Schéma de contrôle, recherche inverse, mobile tranchés (D13 à D15)
+- [x] Direction artistique établie à partir de `design/` (D16, DIRECTION-ARTISTIQUE.md)
+- [x] **Phase 0 close. Plus aucune question ouverte.**
 
 ## Phase 1 — Le cœur mathématique
 Pur TypeScript, aucun rendu. C'est la fondation.
@@ -66,7 +67,9 @@ Scène authorée, hors contrainte procédurale. Voir ARCHITECTURE § 9.
 
 ## Phase 6 — Esthétique
 La phase où on a le droit d'être ambitieux, parce que le reste tient.
-- [ ] Direction artistique arrêtée (moodboard, palette, matériaux)
+- [x] Direction artistique arrêtée (voir DIRECTION-ARTISTIQUE.md)
+- [ ] Lightmaps bakées du Seuil
+- [ ] Matériaux : calcaire mat, marbre veiné, or émissif, sol réfléchissant
 - [ ] Post-processing : bloom, grain, vignettage, aberration
 - [ ] Son d'ambiance
 - [ ] Écran d'entrée

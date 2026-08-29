@@ -46,6 +46,8 @@ livre est généré à la volée dans le navigateur du visiteur.
 | `docs/ARCHITECTURE.md` | Stack, arborescence, modèle de données, budget perf |
 | `docs/ROADMAP.md` | Les 7 phases et l'état d'avancement |
 | `docs/DECISIONS.md` | Chaque choix structurant + son pourquoi (ADR) |
+| `docs/DIRECTION-ARTISTIQUE.md` | Palette, formes, matériaux, post-process, motifs |
+| `design/` | Les 10 captures de référence — **la vérité visuelle** |
 
 **Avant toute session de dev : lire ROADMAP.md pour savoir où on en est.**
 
@@ -85,16 +87,35 @@ livre est généré à la volée dans le navigateur du visiteur.
   La séquence d'arrivée est le morceau de bravoure esthétique, elle a le droit
   d'être coûteuse parce qu'elle est unique.
 
-## Ressources
-- **Vidéo de référence** : « Le Vertige Infini de la Bibliothèque de Babel »
-  <https://www.youtube.com/watch?v=J3JsyxABi0g>
-  ⚠️ Claude ne peut pas voir les images d'une vidéo YouTube. La direction
-  artistique s'appuiera sur des **captures d'écran** fournies par l'utilisateur.
-- [ ] Captures d'écran de la vidéo (en attente)
+## Direction artistique
+**Référence visuelle de vérité : les 10 captures de `design/`**, tirées de la
+vidéo « Viens, je vais te Montrer l'Infini »
+<https://www.youtube.com/watch?v=J3JsyxABi0g>.
+DA complète : `docs/DIRECTION-ARTISTIQUE.md`. En résumé :
+- **Deux régimes de lumière** : le Seuil solaire, calcaire crème et or, ciel teal.
+  La Bibliothèque ténébreuse, noir chaud et halos ambrés. Le visiteur passe du
+  plein soleil aux ténèbres : c'est l'arc du site entier.
+- Géométrie **primitive et monumentale** (sphère, bol, cube, colonnes),
+  symétrie frontale, point de fuite central, contre-plongée basse, échelle écrasante.
+- **Répétition sérielle** partout (cyprès, colonnades, caissons, dos de livres) :
+  elle dit l'infini, et c'est gratuit en instancing GPU.
+- Sol **poli réfléchissant** dans tous les intérieurs, c'est ce qui donne la profondeur.
+- Post-process par ordre d'importance : vignettage lourd, bloom sur les sources,
+  grain, DOF léger, aberration chromatique subtile, tone mapping ACES.
+- ⛔ Jamais de gris neutre ni de lumière blanche uniforme. Les ombres tirent vers
+  le brun-violacé, les lumières vers l'ambre.
+
+**Le levier technique clé (D16) :** le Seuil est statique, donc son éclairage
+sera **précalculé en lightmaps** — c'est ce qui permet d'approcher en WebGL la
+qualité des rendus offline de référence. La Bibliothèque, procédurale, ne peut
+pas être bakée : elle sera donc sombre, ce qui est justement le parti pris du
+film. La contrainte technique et l'intention esthétique coïncident.
 
 ## Journal
 - **2026-08-29** — Création du projet. Phase 0 : recherche faite (Borges,
   algorithme de libraryofbabel.info, limites navigateur), architecture et
   roadmap rédigées. En attente des arbitrages `docs/DECISIONS.md` § ouvertes.
   Aucun code applicatif écrit à ce stade, volontairement.
-  Arbitrages rendus dans la foulée : D9 à D12 (voir DECISIONS.md).
+  Arbitrages rendus dans la foulée : D9 à D15 (voir DECISIONS.md).
+  Captures de référence reçues dans `design/` et direction artistique établie
+  (D16). **Plus aucune question ouverte : la Phase 1 peut démarrer.**

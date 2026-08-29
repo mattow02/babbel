@@ -100,8 +100,21 @@ La qualité visuelle se juge sur desktop. Mais les leviers de dégradation
 raccourcie) sont prévus dans l'architecture dès maintenant, pour ne pas avoir à
 la retourner plus tard. Décidé le 2026-08-29.
 
+
+### D16 — Direction artistique arrêtée, et éclairage baké au Seuil
+DA établie à partir des 10 captures de `design/` (film « Viens, je vais te
+Montrer l'Infini »), documentée dans `docs/DIRECTION-ARTISTIQUE.md`.
+Parti pris : **deux régimes de lumière** — le Seuil solaire et doré, la
+Bibliothèque ténébreuse — qui recoupe exactement le découpage D11.
+
+Décision technique qui en découle : **le Seuil, étant statique, aura son
+éclairage précalculé en lightmaps** (baking hors ligne, chargé comme texture).
+C'est ce qui rend atteignable en WebGL une qualité proche des rendus offline de
+référence. La Bibliothèque, procédurale, ne peut pas être bakée : elle sera donc
+sombre, avec très peu de sources dynamiques — ce qui est précisément le parti
+pris artistique du film. La contrainte technique et l'intention esthétique
+coïncident. Décidé le 2026-08-29.
+
 ## Ouvertes (à trancher avec l'utilisateur)
 
-- **O4'** — Direction artistique : référence = la vidéo « Le Vertige Infini de
-  la Bibliothèque de Babel » (youtube.com/watch?v=J3JsyxABi0g). Non consultable
-  par Claude (pas d'accès aux images). **En attente de captures d'écran.**
+_Aucune. Toutes les décisions de cadrage sont prises._
