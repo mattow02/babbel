@@ -73,12 +73,35 @@ inconfortable, et inadapté à un site web qu'on visite au trackpad ou au doigt.
 Le schéma de contrôle exact reste à trancher (voir O3').
 Décidé le 2026-08-29.
 
+
+### D13 — Schéma de contrôle : clic maintenu + points d'intérêt
+- souris : oriente le regard en continu ;
+- clic maintenu : on avance vers où l'on regarde ; relâcher : on s'arrête ;
+- clic sur un point d'intérêt (étagère, couloir, escalier, livre) : travelling
+  cadré vers lui, la caméra compose le plan elle-même ;
+- tactile : doigt appuyé = avancer, glissé = regarder. Même logique, rien à réécrire ;
+- ZQSD reste fonctionnel en fallback silencieux, jamais annoncé dans l'UI.
+
+Une seule règle à comprendre, une seule main, et les beaux plans sont placés
+dans les points d'intérêt plutôt que laissés au hasard du joueur.
+Contraintes de confort : accélérations douces, FOV 55-65°, respect de
+`prefers-reduced-motion`. Décidé le 2026-08-29.
+
+### D14 — Bijection inversible dès le départ, recherche exposée plus tard
+Le LCG est inversible **par construction** : rendre `core/bijection.ts`
+réversible ne coûte rien de plus maintenant, alors que l'ajouter après
+obligerait à tout reconcevoir. On implémente donc l'inverse et son test dès la
+Phase 1, mais l'interface de recherche n'entre dans le périmètre qu'en Phase 7.
+Décidé le 2026-08-29.
+
+### D15 — Desktop cible v1, mobile en mode dégradé prévu dès le départ
+La qualité visuelle se juge sur desktop. Mais les leviers de dégradation
+(`dpr` plafonné, post-processing réduit, LOD agressif, distance de streaming
+raccourcie) sont prévus dans l'architecture dès maintenant, pour ne pas avoir à
+la retourner plus tard. Décidé le 2026-08-29.
+
 ## Ouvertes (à trancher avec l'utilisateur)
 
-- **O2** — Recherche inverse (« trouver où se trouve ce texte ») : dans le
-  périmètre v1 ou plus tard ? Elle contraint fortement la bijection.
-- **O3'** — Schéma de contrôle exact de la première personne (voir D12).
 - **O4'** — Direction artistique : référence = la vidéo « Le Vertige Infini de
   la Bibliothèque de Babel » (youtube.com/watch?v=J3JsyxABi0g). Non consultable
   par Claude (pas d'accès aux images). **En attente de captures d'écran.**
-- **O6** — Mobile : cible v1 ou desktop d'abord ?

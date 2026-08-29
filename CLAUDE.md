@@ -72,7 +72,13 @@ livre est généré à la volée dans le navigateur du visiteur.
 - **Alphabet : 25 symboles**, fidèle à Borges (22 lettres + espace + virgule + point).
   Mais paramétré dans `core/alphabet.ts` : jamais 25 en dur ailleurs.
 - **Stack : Vite + React + TypeScript** (Next.js écarté).
-- **Navigation : première personne, sans ZQSD** — schéma de contrôle à trancher.
+- **Navigation : première personne.** Souris = regard, clic maintenu = avancer,
+  clic sur un point d'intérêt = travelling cadré. Tactile : doigt appuyé =
+  avancer. ZQSD en fallback silencieux. FOV 55-65°, accélérations douces,
+  `prefers-reduced-motion` respecté.
+- **Bijection inversible dès la Phase 1** (gratuit maintenant, coûteux après),
+  interface de recherche seulement en Phase 7.
+- **Desktop cible v1**, leviers de dégradation mobile prévus dès l'architecture.
 - **Deux mondes distincts** (D11) : *le Seuil*, scène authorée à la main
   (extérieur → dôme → marches → entrée unique → grand hall → cube flottant),
   et *la Bibliothèque*, procédurale et infinie. Budgets et dossiers séparés.
