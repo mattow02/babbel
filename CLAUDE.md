@@ -65,6 +65,10 @@ livre est généré à la volée dans le navigateur du visiteur.
 - `src/core/` est du TypeScript pur : **aucune** dépendance à React ou three.js.
   Testable sans navigateur. Si le rendu change, le cœur ne bouge pas.
 - Tout calcul dans un Web Worker. Le thread de rendu ne calcule jamais.
+- Depuis la boucle de rendu, on appelle `PageLibrary.peek()` (synchrone, cache)
+  et **jamais** `read()` en `await`. Une frame ne peut pas attendre.
+- Toute conversion d'un grand entier vers du texte est chère (0,14 ms) : jamais
+  sur un chemin chaud (D19).
 - Zéro allocation et zéro `setState` React dans `useFrame`.
 - Le test `inverse(forward(x)) === x` est le test le plus important du projet.
   S'il casse, tout est faux. Il vit dans `src/core/__tests__/bijection.test.ts`.
@@ -126,3 +130,10 @@ film. La contrainte technique et l'intention esthétique coïncident.
   simple à prouver correct, aucun cas particulier. Une page se génère en 0,6 ms,
   le cœur pèse 2 ko gzip. `locate(texte)` fonctionne déjà de bout en bout.
   Prochaine étape : Phase 2, la génération dans un Web Worker.
+- **2026-08-29 (suite)** — **Phase 2 terminée.** `src/workers/` : worker sans
+  état, moteur injectable (D18), cache LRU, déduplication, préchargement des
+  voisines. 74 tests verts. **Vérifié dans un vrai Chromium** sur le build de
+  production : 100 tournages de page ne bloquent le thread principal que
+  **2,80 ms au total**, soit 17 % du budget d'UNE image. Clé de cache en BigInt
+  et non en chaîne (D19, 300× plus rapide). Prochaine étape : Phase 3, le
+  lecteur en HTML nu.

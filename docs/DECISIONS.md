@@ -138,6 +138,31 @@ par une constante impaire dense), avec inversion des multiplications par
 elevation de Hensel plutot qu'Euclide etendu (quatorze tours au lieu d'une
 recursion). Decide et implemente le 2026-08-29.
 
+
+### D18 — Un seul worker, sans etat, avec moteur injectable
+Un seul worker suffit : une page coute 0,6 ms, donc meme une file de dix
+demandes se vide en 6 ms, bien sous le budget de 16,6 ms d'une image. Ouvrir
+plusieurs workers ajouterait complexite et memoire pour un probleme que nous
+n'avons pas. On y reviendra si la mesure l'exige.
+
+Le worker ne garde **aucun etat** : le cache vit cote client, ou il est visible
+et mesurable. Un worker sans etat peut etre tue et relance sans rien perdre.
+
+Le client ne connait qu'une interface `PageEngine`, ce qui permet de basculer
+sur un calcul direct la ou `Worker` n'existe pas, d'injecter un faux moteur
+dans les tests, et de changer de strategie plus tard sans toucher au client.
+Decide le 2026-08-29.
+
+### D19 — La cle de cache est un BigInt, jamais une chaine
+`peek()` est appele a chaque image. Convertir le numero d'emplacement (14 861
+bits) en base 36 pour s'en servir de cle coute **0,14 ms**, soit pres de 1 % du
+budget d'une image, pour une simple recherche dans un cache. `Map` comparant les
+BigInt par valeur, la cle brute fait le meme travail **300 fois plus vite**.
+
+Regle generale a retenir : dans ce projet, toute conversion d'un grand entier
+vers du texte est chere et n'a rien a faire sur un chemin chaud.
+Mesure et decide le 2026-08-29.
+
 ## Ouvertes (à trancher avec l'utilisateur)
 
 _Aucune. Toutes les décisions de cadrage sont prises._

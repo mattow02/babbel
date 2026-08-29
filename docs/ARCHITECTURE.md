@@ -63,7 +63,11 @@ Babbel/
     │
     ├── workers/
     │   ├── page.worker.ts     # génère les pages hors thread principal
-    │   └── client.ts          # API promisifiée du worker + cache LRU
+    │   ├── protocol.ts        # le contrat entre les deux threads
+    │   ├── engine.ts          # worker réel / calcul direct de repli / injectable
+    │   ├── cache.ts           # LRU générique
+    │   ├── neighbourhood.ts   # quelles pages précharger, dans quel ordre
+    │   └── client.ts          # PageLibrary : peek / read / prefetch
     │
     ├── scene/                 # tout le three.js
     │   ├── threshold/          # LE SEUIL — scène authorée, non procédurale

@@ -1,6 +1,6 @@
 # Roadmap — Babbel
 
-État : **Phase 1 terminée. Prochaine étape : Phase 2 (génération asynchrone).**
+État : **Phase 2 terminée. Prochaine étape : Phase 3 (lecture, sans 3D).**
 Mise à jour : 2026-08-29
 
 Règle : une phase n'est close que si ses critères de sortie sont vérifiés.
@@ -48,11 +48,40 @@ la même page ; `locate(texte)` retrouve son adresse, vérifié bout en bout.
 libraryofbabel.info. Le cycle walking (Black & Rogaway) s'est révélé plus propre
 — voir la décision D17.
 
-## Phase 2 — Génération asynchrone
-- [ ] `workers/page.worker.ts`
-- [ ] Client promisifié + cache LRU
-- [ ] Préchargement des pages n−1 / n+1
-**Sortie :** tourner 100 pages d'affilée sans une seule frame perdue.
+## Phase 2 — Génération asynchrone ✅ (2026-08-29)
+- [x] `workers/page.worker.ts` — sans état, une seule responsabilité
+- [x] `workers/engine.ts` — worker réel, moteur direct de repli, moteur injectable
+- [x] `workers/cache.ts` — LRU en 60 lignes, sur la seule propriété d'ordre de `Map`
+- [x] `workers/client.ts` — `PageLibrary` : `peek` / `read` / `prefetch`, déduplication
+- [x] `workers/neighbourhood.ts` — quelles pages précharger, et dans quel ordre
+- [x] 26 tests supplémentaires (74 au total)
+
+**Sortie atteinte, et vérifiée dans un vrai navigateur** (Chromium, build de
+production servi par `vite preview`) :
+
+| | |
+|---|---|
+| 100 tournages de page, temps bloquant sur le thread principal | **2,80 ms au total** |
+| Budget d'UNE image à 60 fps | 16,60 ms |
+| Taux de succès du cache en lecture suivie | 99 sur 100 |
+| Première page (démarrage du worker compris) | 60,5 ms |
+| Worker émis comme chunk séparé | 2,30 ko |
+
+Les 100 tournages réunis consomment 17 % du budget d'une seule image : aucune
+frame ne peut être perdue.
+
+**À retenir pour la phase 3 :** la toute première page coûte 60 ms, entièrement
+dus au démarrage du worker (chargement et compilation du module). Il faudra le
+réveiller pendant l'écran d'entrée, pas au moment où le visiteur ouvre un livre.
+
+**Deux points de conception qui ont émergé :**
+- `peek()` (lecture synchrone du cache) est la méthode centrale : une boucle de
+  rendu ne peut pas `await`. Le cache n'est pas une optimisation, c'est ce qui
+  rend l'affichage possible sans bloquer.
+- La clé de cache est le numéro d'emplacement **en BigInt**, jamais sa forme
+  textuelle : convertir un entier de 14 861 bits en base 36 coûte 0,14 ms, soit
+  près de 1 % d'une image, à chaque consultation. `Map` compare les BigInt par
+  valeur, donc la clé brute est 300 fois plus rapide.
 
 ## Phase 3 — Lecture, sans 3D
 Une page HTML nue qui affiche le livre. Sert à valider le contenu.
