@@ -1,8 +1,53 @@
-import { OrbitControls } from '@react-three/drei'
 import { Canvas } from '@react-three/fiber'
-import { ACESFilmicToneMapping } from 'three'
+import { useCallback } from 'react'
+import { ACESFilmicToneMapping, Vector3 } from 'three'
+import { useLibraryStore } from '../store/useLibraryStore.ts'
+import { approachFor } from './hexagon/approach.ts'
 import { Library } from './Library.tsx'
 import { PALETTE } from './materials/palette.ts'
+import { EYE_HEIGHT, usePlayer } from './navigation/usePlayer.ts'
+
+/** Profondeur de galeries visibles de part et d'autre. 1 => trois galeries. */
+export const DEPTH = 1
+
+/**
+ * La scene : le visiteur, et ce qu'il peut designer.
+ *
+ * Elle vit DANS la toile, parce qu'elle a besoin de la camera et de la boucle
+ * de rendu. Tout tient dans un seul composant : le gestionnaire de
+ * deplacement et le gestionnaire de designation sont crees au meme endroit, il
+ * n'y a donc rien a se passer entre eux.
+ */
+function Scene(): React.ReactElement {
+  const player = usePlayer()
+  const hexagon = useLibraryStore((state) => state.hexagon)
+  const open = useLibraryStore((state) => state.open)
+
+  const onSelectBook = useCallback(
+    (instanceId: number) => {
+      // Un appui long est une marche, pas une designation.
+      if (!player.isClick()) return
+      const approach = approachFor(instanceId, DEPTH, hexagon, EYE_HEIGHT)
+      if (!approach) return
+
+      /*
+       * On se place DEVANT le volume avant de l'ouvrir : la lecture ne surgit
+       * pas, on s'en approche. C'est le travelling cadre promis par D13, et
+       * c'est ce qui relie la marche a la lecture.
+       */
+      player.travelTo(
+        new Vector3(approach.destination.x, approach.destination.y, approach.destination.z),
+        new Vector3(approach.lookAt.x, approach.lookAt.y, approach.lookAt.z),
+        () => {
+          open(approach.address)
+        },
+      )
+    },
+    [player, hexagon, open],
+  )
+
+  return <Library depth={DEPTH} onSelectBook={onSelectBook} />
+}
 
 /**
  * La toile.
@@ -12,52 +57,18 @@ import { PALETTE } from './materials/palette.ts'
  *   - brouillard exponentiel de la couleur du noir chaud, qui fait disparaitre
  *     les galeries lointaines au lieu de les couper net ;
  *   - `dpr` plafonne a 1,5 : au-dela on paye des pixels que personne ne voit.
- *
- * Les commandes sont provisoires. La navigation reelle — souris pour le
- * regard, clic maintenu pour avancer, travelling vers les points d'interet
- * (D13) — arrive en phase 5. Ici, une orbite suffit a inspecter la geometrie.
  */
 export function Gallery(): React.ReactElement {
   return (
     <Canvas
-      /*
-       * `shadows` tout court demande PCFSoftShadowMap, qui est deprecie depuis
-       * three 0.185 et retombe silencieusement sur PCFShadowMap. Autant le
-       * demander explicitement plutot que de laisser une retrogradation muette.
-       */
       shadows="percentage"
       dpr={[1, 1.5]}
       gl={{ antialias: true, toneMapping: ACESFilmicToneMapping, toneMappingExposure: 0.95 }}
-      /*
-       * On se tient en retrait, dos a un couloir, et on regarde vers l'autre :
-       * la porte d'en face cadre la galerie suivante, et celle d'apres. C'est
-       * le plan qui raconte l'infini.
-       *
-       * Le point de vue est BAS et legerement en contre-plongee : c'est la
-       * grammaire de cadrage des images de reference (DIRECTION-ARTISTIQUE
-       * § 4), et cela evite surtout que le sol, tout proche, mange le cadre.
-       */
-      camera={{ position: [-1.645, 1.42, -0.95], fov: 55, near: 0.05, far: 60 }}
-      /*
-       * Piege : la camera par defaut de R3F regarde l'origine (0, 0, 0), et le
-       * `target` d'OrbitControls ne la reoriente PAS au montage. Sans ce
-       * lookAt, on regardait le sol a 37 degres sous l'horizon. On vise donc
-       * explicitement, a hauteur d'oeil.
-       */
-      onCreated={({ camera }) => {
-        camera.lookAt(0, 1.42, 0)
-      }}
+      camera={{ position: [0, EYE_HEIGHT, 0], fov: 62, near: 0.05, far: 60 }}
     >
       <color attach="background" args={[PALETTE.nuit]} />
       <fogExp2 attach="fog" args={[PALETTE.nuit, 0.085]} />
-      <Library depth={1} />
-      <OrbitControls
-        target={[0, 1.42, 0]}
-        enablePan={false}
-        minDistance={0.6}
-        maxDistance={6}
-        rotateSpeed={-0.35}
-      />
+      <Scene />
     </Canvas>
   )
 }

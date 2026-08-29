@@ -18,23 +18,36 @@ import { usePageText } from './ui/usePageText.ts'
  */
 const ORIGIN: Address = { hexagon: 0n, wall: 0, shelf: 0, volume: 0, page: 1 }
 
-/** Profondeur de galeries visibles de part et d'autre. 1 => trois galeries. */
-const DEPTH = 1
-const GALLERIES = DEPTH * 2 + 1
-
 export function App(): React.ReactElement {
   const library = useLibrary(ORIGIN)
   const [address, goTo] = useAddress(ORIGIN)
   const state = usePageText(library, address)
+
   const mode = useLibraryStore((store) => store.mode)
-  const toggleMode = useLibraryStore((store) => store.toggleMode)
+  const setMode = useLibraryStore((store) => store.setMode)
+  const opened = useLibraryStore((store) => store.opened)
+  const hexagon = useLibraryStore((store) => store.hexagon)
+  const setHexagon = useLibraryStore((store) => store.setHexagon)
+
+  // L'URL reste la source de verite : au premier chargement, elle decide dans
+  // quelle galerie on se trouve.
+  useEffect(() => {
+    setHexagon(address.hexagon)
+    // Volontairement au montage seulement : ensuite, c'est la marche qui decide.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  // Un volume designe dans la galerie devient l'adresse courante.
+  useEffect(() => {
+    if (opened) goTo(opened)
+  }, [opened, goTo])
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent): void => {
       if (event.metaKey || event.ctrlKey || event.altKey) return
       if (event.key === 'Escape') {
         event.preventDefault()
-        toggleMode()
+        setMode(mode === 'reader' ? 'gallery' : 'reader')
         return
       }
       if (mode !== 'reader') return
@@ -47,7 +60,7 @@ export function App(): React.ReactElement {
     return () => {
       window.removeEventListener('keydown', onKeyDown)
     }
-  }, [address, goTo, mode, toggleMode])
+  }, [address, goTo, mode, setMode])
 
   if (mode === 'gallery') {
     return (
@@ -55,10 +68,12 @@ export function App(): React.ReactElement {
         <div className="canvas">
           <Gallery />
         </div>
+        <div className="reticle" aria-hidden="true" />
         <div className="overlay">
-          <PerfHud galleries={GALLERIES} />
+          <PerfHud hexagon={hexagon} />
           <p className="overlay__hint">
-            <kbd>Échap</kbd> ouvrir un livre · glisser pour regarder · molette pour approcher
+            maintenir le <kbd>clic</kbd> pour avancer · curseur vers les bords pour regarder ·
+            cliquer un volume pour l’ouvrir
           </p>
         </div>
       </div>

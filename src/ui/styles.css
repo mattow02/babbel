@@ -282,3 +282,26 @@ kbd {
 .perf--faible {
   color: #b4553f;
 }
+
+/*
+ * Le reticule : le curseur reste visible et sert a viser, mais un repere
+ * central aide a comprendre qu'on ne tourne la tete qu'en allant vers les
+ * bords (voir scene/navigation/steering.ts).
+ */
+.reticle {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  z-index: 1;
+  width: 5px;
+  height: 5px;
+  margin: -2.5px 0 0 -2.5px;
+  border-radius: 50%;
+  background: var(--soleil);
+  opacity: 0.35;
+  pointer-events: none;
+}
+
+.shell--gallery {
+  cursor: crosshair;
+}

@@ -1,5 +1,6 @@
 import { useLayoutEffect, useMemo, useRef } from 'react'
 import { Color, type InstancedMesh } from 'three'
+import { BOOKS_PER_HEXAGON } from '../../core/index.ts'
 import { BOOK_DEPTH, BOOK_HEIGHT, BOOK_WIDTH } from '../dimensions.ts'
 import { writeBoxMatrices, type Box } from '../instancing.ts'
 import { spineHeightFactor, spineOf } from '../materials/palette.ts'
@@ -16,7 +17,17 @@ import type { Origin } from './parts.ts'
  * Aucun texte n'est genere ici. De loin, un livre n'est qu'une tranche
  * coloree ; le texte n'existe que pour la page ouverte (decision D7).
  */
-export function Books({ origins }: { origins: readonly Origin[] }): React.ReactElement {
+export function Books({
+  origins,
+  hexagon,
+  depth,
+  onSelect,
+}: {
+  origins: readonly Origin[]
+  hexagon: bigint
+  depth: number
+  onSelect: (instanceId: number) => void
+}): React.ReactElement {
   const ref = useRef<InstancedMesh>(null)
 
   const boxes = useMemo<Box[]>(() => {
@@ -46,13 +57,26 @@ export function Books({ origins }: { origins: readonly Origin[] }): React.ReactE
       mesh.setMatrixAt(index, matrix)
     })
     mesh.instanceMatrix.needsUpdate = true
-    const couleur = new Color()
-    for (let index = 0; index < boxes.length; index += 1) {
-      mesh.setColorAt(index, couleur.set(spineOf(index)))
-    }
-    if (mesh.instanceColor) mesh.instanceColor.needsUpdate = true
     mesh.computeBoundingSphere()
   }, [boxes])
+
+  /*
+   * Les couleurs de tranche dependent de la GALERIE, pas seulement de la place
+   * du volume : sans cela, toutes les galeries se ressembleraient exactement et
+   * l'on ne sentirait jamais qu'on avance. Elles sont recalculees au passage
+   * d'un couloir — 1 920 ecritures, une fois de temps en temps, c'est gratuit.
+   */
+  useLayoutEffect(() => {
+    const mesh = ref.current
+    if (!mesh) return
+    const couleur = new Color()
+    const graine = Number(hexagon % 4294967291n)
+    for (let index = 0; index < boxes.length; index += 1) {
+      const galerie = Math.floor(index / BOOKS_PER_HEXAGON) - depth
+      mesh.setColorAt(index, couleur.set(spineOf(index + (graine + galerie) * 7919)))
+    }
+    if (mesh.instanceColor) mesh.instanceColor.needsUpdate = true
+  }, [boxes, hexagon, depth])
 
   return (
     <instancedMesh
@@ -62,6 +86,11 @@ export function Books({ origins }: { origins: readonly Origin[] }): React.ReactE
       castShadow
       receiveShadow
       frustumCulled={false}
+      onClick={(event) => {
+        if (event.instanceId === undefined) return
+        event.stopPropagation()
+        onSelect(event.instanceId)
+      }}
     >
       <boxGeometry args={[1, 1, 1]} />
       <meshStandardMaterial roughness={0.82} metalness={0.02} />

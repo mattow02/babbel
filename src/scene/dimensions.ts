@@ -38,7 +38,7 @@ export const SHELF_SPACING = 0.34
 export const SHELF_THICKNESS = 0.025
 
 /** Ouverture d'un couloir. */
-export const CORRIDOR_WIDTH = 1.2
+export const CORRIDOR_WIDTH = 1.62
 export const CORRIDOR_HEIGHT = 2.2
 export const CORRIDOR_LENGTH = 1.6
 
@@ -48,3 +48,10 @@ export const GALLERY_PITCH = 2 * HEXAGON_APOTHEM + CORRIDOR_LENGTH
 /** La lampe spherique, suspendue au centre. */
 export const LAMP_RADIUS = 0.16
 export const LAMP_Y = ROOM_HEIGHT - 0.75
+
+/** L'escalier en colimacon du couloir : « une escalier spirale, qui s'abime et s'eleve ». */
+export const STAIR_RADIUS = 0.38
+export const STAIR_STEPS = 14
+export const STAIR_RISE = 0.19
+export const STAIR_TREAD_WIDTH = 0.34
+export const STAIR_TREAD_THICKNESS = 0.045

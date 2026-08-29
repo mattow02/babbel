@@ -1,6 +1,6 @@
 # Roadmap — Babbel
 
-État : **Phase 4 terminée. Prochaine étape : Phase 5 (navigation et streaming).**
+État : **Phase 5 terminée. Prochaine étape : Phase 5bis (le Seuil) puis Phase 6 (esthétique).**
 Mise à jour : 2026-08-29
 
 Règle : une phase n'est close que si ses critères de sortie sont vérifiés.
@@ -143,11 +143,43 @@ lightmaps du Seuil (D16) entreront en jeu.
 
 Capture : `docs/captures/phase4-galerie.png`.
 
-## Phase 5 — Navigation et streaming
-- [ ] Déplacement à la première personne
-- [ ] ChunkManager : hexagones voisins seulement, pool d'objets
-- [ ] Transition marche -> prendre un livre -> lecture
-**Sortie :** marcher 5 minutes sans fuite mémoire (heap stable au profiler).
+## Phase 5 — Navigation et streaming ✅ (2026-08-30)
+- [x] Déplacement à la première personne : souris aux bords pour le regard,
+      clic maintenu pour avancer, ZQSD en secours (D28)
+- [x] Collisions et couloirs, en **maths pures** (`navigation/geometry.ts`)
+- [x] **Origine flottante** (D30) : indispensable, aucun système de coordonnées
+      ne couvre 10^4468 galeries
+- [x] ~~ChunkManager, pool d'objets~~ → **inutiles** (D29), voir ci-dessous
+- [x] Transition marche → désigner un volume → travelling → lecture
+      (`hexagon/approach.ts`, testé)
+- [x] Escalier en colimaçon dans le couloir (D31)
+- [x] 39 tests supplémentaires (144 au total)
+
+**Sortie atteinte, mesurée dans Chromium :**
+
+| | Mesuré |
+|---|---|
+| Marche continue | **~25 000 images**, tas de 8 à 18 Mo, **sans dérive** |
+| Après 5 640 images de marche | tas **18,5 → 14,0 Mo**, stable au repos |
+| Franchissements de galeries | 0 → 1 → 3, l'écart latéral reste nul |
+| Coordonnées après 100 000 galeries (test unitaire) | aucune dérive |
+
+**La découverte de la phase :** il n'y a **rien à streamer**. Toutes les galeries
+sont géométriquement identiques et le visiteur est toujours ramené au centre de
+la sienne, donc l'ensemble des galeries visibles ne change jamais. Les maillages
+instanciés sont construits une fois au montage et ne bougent plus. Il n'y a donc
+aucune allocation en cours de marche — pas de fuite possible, non parce qu'on la
+prévient mais parce qu'il n'y a rien à allouer. Seules les couleurs des tranches
+suivent le numéro de galerie, pour qu'on sente qu'on avance.
+
+**Non vérifié de bout en bout :** l'ouverture d'un volume au clic. Le calcul
+(indice d'instance → adresse → point d'approche) est couvert par 13 tests, mais
+le clic lui-même n'a pas pu être déclenché dans le navigateur piloté : R3F
+ignore les événements de pointeur synthétiques, et le clic réel de Playwright
+attend une stabilité d'image impossible avec `requestAnimationFrame` bridé.
+**À vérifier à la main en premier.**
+
+Captures : `docs/captures/phase5-marche.png`.
 
 ## Phase 5bis — Le Seuil (séquence d'arrivée)
 Scène authorée, hors contrainte procédurale. Voir ARCHITECTURE § 9.

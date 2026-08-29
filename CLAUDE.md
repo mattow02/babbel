@@ -74,6 +74,10 @@ livre est généré à la volée dans le navigateur du visiteur.
   `parts.ts`, sans three.js : c'est la seule façon de vérifier 640 objets (D24).
 - Toute géométrie répétée passe par une **boîte unitaire instanciée** (D25) :
   un appel de rendu par matériau, quel que soit le nombre d'objets.
+- Les positions du monde sont **toujours relatives à la galerie courante** (D30).
+  Jamais de coordonnée absolue : il y a 10^4468 galeries.
+- Toute logique un peu subtile d'un composant 3D est extraite en module pur et
+  testée (`geometry.ts`, `steering.ts`, `picking.ts`, `approach.ts`).
 - Zéro allocation et zéro `setState` React dans `useFrame`.
 - Le test `inverse(forward(x)) === x` est le test le plus important du projet.
   S'il casse, tout est faux. Il vit dans `src/core/__tests__/bijection.test.ts`.
@@ -154,4 +158,13 @@ film. La contrainte technique et l'intention esthétique coïncident.
   (D23), lampe sphérique de Borges avec ombres sur une seule galerie (D26),
   sonde de performance maison (D27). 105 tests verts. **Mesuré sur GPU réel :
   27 appels de rendu (budget 100), 0,37 ms par image (budget 16,6 ms)**,
-  1 920 volumes affichés. Prochaine étape : Phase 5, navigation et streaming.
+  1 920 volumes affichés.
+- **2026-08-30** — **Phase 5 terminée.** Navigation 1re personne (regard par les
+  bords de l'écran D28, clic maintenu pour avancer, ZQSD en secours),
+  collisions en maths pures, **origine flottante** obligatoire (D30),
+  désignation d'un volume → travelling → lecture, escalier en colimaçon dans le
+  couloir (D31). 144 tests verts. **Mémoire stable sur ~25 000 images de marche**
+  (tas 18,5 → 14,0 Mo). **Le ChunkManager prévu s'est révélé inutile** (D29) :
+  toutes les galeries étant identiques, il n'y a rien à charger ni décharger.
+  ⚠️ L'ouverture d'un volume au clic n'est pas vérifiée de bout en bout dans le
+  navigateur — à tester à la main. Prochaine étape : Phase 5bis, le Seuil.

@@ -237,6 +237,61 @@ verifier automatiquement le critere de sortie depuis un navigateur pilote, ou
 compter les images par seconde ne veut rien dire (voir la note d'exploitation
 dans ROADMAP). Decide le 2026-08-29.
 
+
+### D28 — Le regard s'oriente par les BORDS de l'ecran
+La decision D13 demande trois choses qui se contredisent si l'on capture le
+pointeur : un regard continu, un clic maintenu pour avancer, et un clic sur un
+point d'interet. Sans curseur visible, on ne peut plus viser un livre.
+
+Retenu : le curseur reste visible et sert de reticule. Il ne tourne la tete que
+lorsqu'il approche des bords, avec une large zone morte au centre (45 % de
+l'ecran) ou l'on ne fait que viser. Reponse quadratique au sortir de la zone
+morte, pour eviter l'a-coup. Le regard reste continu, il n'y a jamais de
+capture de pointeur, et le clic reste disponible pour designer.
+
+Un appui de moins de 220 ms est un clic ; au-dela, c'est une marche. C'est ce
+qui permet aux deux gestes de cohabiter sur le meme bouton.
+Decide le 2026-08-30.
+
+### D29 — Il n'y a pas de gestionnaire de morceaux, et c'est voulu
+La roadmap prevoyait un « ChunkManager » et un reservoir d'objets a recycler.
+En regardant le probleme, les deux se sont reveles inutiles.
+
+Toutes les galeries sont geometriquement IDENTIQUES, et le visiteur est
+toujours ramene au centre de la sienne par l'origine flottante. L'ensemble des
+galeries visibles est donc toujours le meme : de -depth a +depth, aux memes
+positions relatives. Les maillages instancies sont construits une fois au
+montage et **ne changent plus jamais**, quelle que soit la distance parcourue.
+
+Consequence : aucune allocation en cours de marche, donc aucune fuite possible
+— non parce qu'on la previent, mais parce qu'il n'y a rien a allouer. Seules
+les couleurs des tranches suivent le numero de galerie, pour qu'on sente qu'on
+avance ; elles se recalculent au passage d'un couloir.
+
+C'est l'infini parfaitement repetitif de Borges qui paye.
+Decide le 2026-08-30.
+
+### D30 — Origine flottante, obligatoire et non negociable
+L'axe des couloirs EST l'enumeration des galeries : avancer d'une galerie,
+c'est incrementer le numero d'hexagone. Or il y en a environ 10^4468. Aucun
+systeme de coordonnees ne peut les couvrir — un float perd toute precision bien
+avant.
+
+Les positions sont donc toujours relatives a la galerie courante, et franchir
+un couloir remet le compteur pres de zero en incrementant un BigInt. Teste sur
+cent mille galeries parcourues : les coordonnees ne derivent jamais.
+Decide le 2026-08-30.
+
+### D31 — L'escalier est dans le couloir, pas au centre de la salle
+La premiere roadmap parlait d'un « puits central + balustrade ». Relecture faite,
+Borges ne decrit rien de tel : l'escalier en colimacon est dans le zaguan, le
+couloir. Nous l'y mettons, plaque contre une paroi pour laisser le passage, et
+le couloir passe de 1,20 m a 1,62 m de large pour l'accueillir.
+
+Il est pour l'instant DECORATIF : la navigation verticale entre etages n'existe
+pas encore. Il donne deja au couloir sa profondeur.
+Decide le 2026-08-30.
+
 ## Ouvertes (à trancher avec l'utilisateur)
 
 _Aucune. Toutes les décisions de cadrage sont prises._

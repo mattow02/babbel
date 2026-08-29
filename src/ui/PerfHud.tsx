@@ -1,5 +1,10 @@
 import { useLibraryStore } from '../store/useLibraryStore.ts'
-import { BOOKS_PER_HEXAGON } from '../core/index.ts'
+
+/** Raccourcit un numero de galerie, qui compte des milliers de chiffres. */
+function shortenGallery(hexagon: bigint): string {
+  const name = hexagon.toString(36)
+  return name.length <= 18 ? name : `${name.slice(0, 9)}…${name.slice(-6)}`
+}
 
 /**
  * Le releve, affiche.
@@ -7,12 +12,15 @@ import { BOOKS_PER_HEXAGON } from '../core/index.ts'
  * Ce composant est le SEUL a se rafraichir quand les chiffres changent, parce
  * qu'il est le seul a s'abonner a `perf`. La scene, elle, ne se rerend jamais.
  */
-export function PerfHud({ galleries }: { galleries: number }): React.ReactElement {
+export function PerfHud({ hexagon }: { hexagon: bigint }): React.ReactElement {
   const perf = useLibraryStore((state) => state.perf)
-  const livres = galleries * BOOKS_PER_HEXAGON
 
   return (
     <dl className="perf">
+      <div>
+        <dt>galerie</dt>
+        <dd title={hexagon.toString(36)}>{shortenGallery(hexagon)}</dd>
+      </div>
       <div>
         <dt>images/s</dt>
         <dd className={perf.fps >= 55 ? 'perf--bon' : 'perf--faible'}>{perf.fps}</dd>
@@ -20,14 +28,6 @@ export function PerfHud({ galleries }: { galleries: number }): React.ReactElemen
       <div>
         <dt>appels de rendu</dt>
         <dd className={perf.calls <= 100 ? 'perf--bon' : 'perf--faible'}>{perf.calls}</dd>
-      </div>
-      <div>
-        <dt>galeries</dt>
-        <dd>{galleries}</dd>
-      </div>
-      <div>
-        <dt>volumes</dt>
-        <dd>{livres.toLocaleString('fr-FR')}</dd>
       </div>
     </dl>
   )

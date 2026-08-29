@@ -17,6 +17,7 @@ export function PerfProbe(): null {
   const gl = useThree((state) => state.gl)
   const scene = useThree((state) => state.scene)
   const camera = useThree((state) => state.camera)
+  const advance = useThree((state) => state.advance)
   const setPerf = useLibraryStore((state) => state.setPerf)
   const images = useRef(0)
   // Initialise a la premiere image, jamais pendant le rendu : appeler
@@ -73,7 +74,25 @@ export function PerfProbe(): null {
       }
     }
     ;(window as unknown as { __babbelBench?: unknown }).__babbelBench = bench
-  }, [gl, scene, camera])
+
+    /*
+     * Faire tourner la boucle a la demande.
+     *
+     * Indispensable pour verifier la stabilite memoire : dans un navigateur
+     * pilote dont la fenetre est occultee, requestAnimationFrame est bride a
+     * une image par seconde, et l'on ne peut pas « marcher cinq minutes ».
+     * Cette fonction avance la simulation autant de fois qu'on le demande.
+     */
+    const step = (frames = 600, msPerFrame = 16.67): number => {
+      let clock = performance.now()
+      for (let index = 0; index < frames; index += 1) {
+        clock += msPerFrame
+        advance(clock)
+      }
+      return frames
+    }
+    ;(window as unknown as { __babbelStep?: unknown }).__babbelStep = step
+  }, [gl, scene, camera, advance])
 
   return null
 }
