@@ -1,5 +1,5 @@
 import { useLayoutEffect, useMemo, useRef } from 'react'
-import type { InstancedMesh } from 'three'
+import type { InstancedMesh, Material } from 'three'
 import { writeBoxMatrices, type Box } from './instancing.ts'
 
 /**
@@ -16,6 +16,7 @@ export function Boxes({
   castShadow = false,
   receiveShadow = true,
   meshRef,
+  materialRef,
 }: {
   boxes: readonly Box[]
   color: string
@@ -25,6 +26,8 @@ export function Boxes({
   receiveShadow?: boolean
   /** Publie le maillage, pour qu'on puisse y lancer un rayon. */
   meshRef?: React.RefObject<InstancedMesh | null> | undefined
+  /** Greffe sur le materiau, par exemple un motif de pierre. */
+  materialRef?: ((material: Material | null) => void) | undefined
 }): React.ReactElement {
   const own = useRef<InstancedMesh>(null)
   const ref = meshRef ?? own
@@ -53,7 +56,16 @@ export function Boxes({
       frustumCulled={false}
     >
       <boxGeometry args={args} />
-      <meshStandardMaterial color={color} roughness={roughness} metalness={metalness} />
+      {/*
+        Quand un motif est greffe, il multiplie la couleur de base : on laisse
+        donc le materiau en blanc pour ne pas assombrir deux fois.
+      */}
+      <meshStandardMaterial
+        ref={materialRef ?? null}
+        color={materialRef ? '#ffffff' : color}
+        roughness={roughness}
+        metalness={metalness}
+      />
     </instancedMesh>
   )
 }

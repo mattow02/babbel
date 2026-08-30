@@ -55,23 +55,39 @@ export function Exterior(): React.ReactElement {
   /** Les montagnes de l'horizon, en silhouette. */
   const montagnes = useMemo<Box[]>(() => {
     const reliefs: Box[] = []
-    // Des massifs, pas des pyramides : on les enfonce a moitie dans le sol,
-    // on ecrase leur hauteur, et on fait varier fortement leur emprise. Deux
-    // cones superposes et decales suffisent a casser la silhouette conique.
-    for (let index = 0; index < 44; index += 1) {
-      const angle = (index / 44) * Math.PI * 2 + jitterOf(index) * 0.28
-      const distance = 700 + unitOf(index * 17) * 320
-      const hauteur = 90 + unitOf(index * 31) * 210
-      const emprise = hauteur * (1.9 + unitOf(index * 53) * 1.6)
-      reliefs.push({
-        x: Math.cos(angle) * distance,
-        y: hauteur / 2 - hauteur * 0.42,
-        z: Math.sin(angle) * distance,
-        rotY: angle + unitOf(index * 7) * 3,
-        sx: emprise,
-        sy: hauteur,
-        sz: emprise * (0.7 + unitOf(index * 11) * 0.6),
-      })
+    /*
+     * Des MASSIFS, pas des pyramides.
+     *
+     * Un cone isole se lit toujours comme une pyramide, quel que soit son
+     * nombre de faces. Ce qui fait une montagne, c'est une silhouette BRISEE :
+     * on empile donc deux ou trois cones decales et d'echelles differentes par
+     * relief, ce qui casse l'arete unique et cree des epaules et des ressauts.
+     * Le tout reste dans le meme appel de rendu.
+     */
+    for (let index = 0; index < 34; index += 1) {
+      const angle = (index / 34) * Math.PI * 2 + jitterOf(index) * 0.3
+      const distance = 700 + unitOf(index * 17) * 340
+      const hauteur = 100 + unitOf(index * 31) * 220
+
+      const sommets = 2 + Math.floor(unitOf(index * 71) * 2)
+      for (let bosse = 0; bosse < sommets; bosse += 1) {
+        const graine = index * 101 + bosse * 7
+        // Chaque bosse est plus basse et decalee : c'est ce decalage qui
+        // produit les epaules d'une chaine de montagnes.
+        const facteur = bosse === 0 ? 1 : 0.45 + unitOf(graine) * 0.4
+        const h = hauteur * facteur
+        const emprise = h * (1.7 + unitOf(graine + 3) * 1.5)
+        const ecart = hauteur * 0.55 * bosse * (unitOf(graine + 5) > 0.5 ? 1 : -1)
+        reliefs.push({
+          x: Math.cos(angle) * distance - Math.sin(angle) * ecart,
+          y: h / 2 - h * (0.34 + unitOf(graine + 9) * 0.16),
+          z: Math.sin(angle) * distance + Math.cos(angle) * ecart,
+          rotY: angle + unitOf(graine + 11) * 3,
+          sx: emprise,
+          sy: h,
+          sz: emprise * (0.65 + unitOf(graine + 13) * 0.7),
+        })
+      }
     }
     return reliefs
   }, [])
@@ -86,7 +102,7 @@ export function Exterior(): React.ReactElement {
 
       {/* Les montagnes, loin, sans ombres : elles ne sont qu'une silhouette. */}
       <InstancedShapes items={montagnes} receiveShadow={false}>
-        <coneGeometry args={[0.5, 1, 8]} />
+        <coneGeometry args={[0.5, 1, 9]} />
         <meshStandardMaterial color={SEUIL.montagne} roughness={1} flatShading />
       </InstancedShapes>
 

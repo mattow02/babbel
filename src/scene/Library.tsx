@@ -12,6 +12,7 @@ import { Effects } from './effects/Effects.tsx'
 import { Halo } from './effects/LightShaft.tsx'
 import { LAMP_RADIUS, LAMP_Y, ROOM_HEIGHT } from './dimensions.ts'
 import { Lamps } from './lighting/Lamp.tsx'
+import { useMarble } from './materials/Marble.tsx'
 import { PALETTE } from './materials/palette.ts'
 
 /**
@@ -49,6 +50,14 @@ export function Library({
   const hexagon = useLibraryStore((state) => state.hexagon)
   const profile = useLibraryStore((state) => state.profile)
 
+  /*
+   * Le calcaire des murs n'est pas uni : il porte de longues veines sourdes.
+   * C'est ce que demande la direction artistique (§ 5) — « calcaire mat,
+   * micro-relief » — et c'est ce qui empeche les grandes surfaces claires de
+   * ressembler a du carton.
+   */
+  const calcaire = useMarble({ base: PALETTE.calcaire, vein: '#a89073', scale: 2.8, sharpness: 2.6 })
+
   const origins = useMemo(() => galleryOrigins(depth), [depth])
   const stone = useMemo(() => origins.flatMap((origin) => stoneBoxes(origin)), [origins])
   const wood = useMemo(() => origins.flatMap((origin) => woodBoxes(origin)), [origins])
@@ -67,7 +76,7 @@ export function Library({
       />
 
       <Slabs origins={origins} />
-      <Boxes boxes={stone} color={PALETTE.calcaire} roughness={0.94} castShadow />
+      <Boxes boxes={stone} color={PALETTE.calcaire} roughness={0.94} castShadow materialRef={calcaire} />
       <Boxes boxes={wood} color={PALETTE.bois} roughness={0.75} castShadow />
       <Boxes
         boxes={stairs}

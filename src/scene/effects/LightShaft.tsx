@@ -17,10 +17,12 @@ import { AdditiveBlending, BackSide, Color, DoubleSide } from 'three'
 const vertexShader = `
   varying vec2 vUv;
   varying vec3 vView;
+  varying vec3 vNormale;
   void main() {
     vUv = uv;
     vec4 vue = modelViewMatrix * vec4(position, 1.0);
     vView = normalize(-vue.xyz);
+    vNormale = normalize(normalMatrix * normal);
     gl_Position = projectionMatrix * vue;
   }
 `
@@ -30,12 +32,24 @@ const fragmentShader = `
   uniform float force;
   varying vec2 vUv;
   varying vec3 vView;
+  varying vec3 vNormale;
   void main() {
     // Le faisceau s'eteint vers le bas : la lumiere se dilue en descendant.
-    float bas = pow(1.0 - vUv.y, 1.6);
-    // Et il s'eteint sur les bords, la ou l'on regarde la surface de biais.
-    // Sans ce terme, le cone aurait une arete franche et paraitrait solide.
-    float bord = pow(clamp(abs(vView.z), 0.0, 1.0), 1.4);
+    float bas = pow(1.0 - vUv.y, 1.9);
+
+    /*
+     * Le terme de silhouette.
+     *
+     * On compare la NORMALE de la surface a la direction du regard, et non la
+     * direction du regard a elle-meme — l'erreur de la premiere version, qui
+     * rendait le cone opaque de face et le faisait ressembler a du plastique.
+     *
+     * Vu de face, on ne traverse presque pas de matiere : c'est transparent.
+     * Vu de biais, le regard traverse toute l'epaisseur du cone : c'est la que
+     * la lumiere se voit. D'ou l'inversion.
+     */
+    float bord = pow(1.0 - abs(dot(normalize(vNormale), normalize(vView))), 1.7);
+
     gl_FragColor = vec4(teinte, bas * bord * force);
   }
 `
