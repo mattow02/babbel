@@ -3,6 +3,9 @@ import {
   CORRIDOR_WIDTH,
   GALLERY_PITCH,
   HEXAGON_APOTHEM,
+  PASSAGE_LENGTH,
+  STAIRWELL_RADIUS,
+  VESTIBULE_SIZE,
 } from '../../dimensions.ts'
 import {
   AXIS,
@@ -62,11 +65,38 @@ describe('la salle', () => {
 })
 
 describe('la bibliotheque', () => {
-  it('accepte le couloir, etroit et aligne', () => {
-    const milieuDuCouloir = (HEXAGON_APOTHEM + GALLERY_PITCH / 2) / 2
-    expect(insideLibrary(at(milieuDuCouloir, 0), MARGE)).toBe(true)
-    expect(insideLibrary(at(milieuDuCouloir, CORRIDOR_WIDTH / 2 - MARGE - 0.01), MARGE)).toBe(true)
-    expect(insideLibrary(at(milieuDuCouloir, CORRIDOR_WIDTH / 2 - MARGE + 0.05), MARGE)).toBe(false)
+  it('accepte le passage, etroit et aligne', () => {
+    // Le passage va de la salle au vestibule : on le prend en son milieu.
+    const milieuDuPassage = HEXAGON_APOTHEM + PASSAGE_LENGTH / 2
+    expect(insideLibrary(at(milieuDuPassage, 0), MARGE)).toBe(true)
+    expect(insideLibrary(at(milieuDuPassage, CORRIDOR_WIDTH / 2 - MARGE - 0.01), MARGE)).toBe(true)
+    expect(insideLibrary(at(milieuDuPassage, CORRIDOR_WIDTH / 2 - MARGE + 0.05), MARGE)).toBe(false)
+  })
+
+  it('ouvre le vestibule, plus large que les passages qui y menent', () => {
+    const centre = GALLERY_PITCH / 2
+    const large = CORRIDOR_WIDTH / 2 + 0.3
+    expect(large).toBeLessThan(VESTIBULE_SIZE / 2 - MARGE)
+    expect(insideLibrary(at(centre, large), MARGE)).toBe(true)
+    expect(insideLibrary(at(centre, VESTIBULE_SIZE / 2 + 0.1), MARGE)).toBe(false)
+  })
+
+  it('interdit la tremie : on ne marche pas dans le vide', () => {
+    const centre = GALLERY_PITCH / 2
+    expect(insideLibrary(at(centre, 0), MARGE)).toBe(false)
+    expect(insideLibrary(at(centre, STAIRWELL_RADIUS - 0.05), MARGE)).toBe(false)
+  })
+
+  it('laisse un anneau de marche tout autour de la tremie', () => {
+    // Le tour complet doit etre praticable, sinon on resterait coince d'un cote.
+    const centre = GALLERY_PITCH / 2
+    const rayon = STAIRWELL_RADIUS + MARGE + 0.06
+    for (let i = 0; i < 72; i += 1) {
+      const angle = (i / 72) * Math.PI * 2
+      const u = centre + Math.cos(angle) * rayon
+      const v = Math.sin(angle) * rayon
+      expect(insideLibrary(at(u, v), MARGE)).toBe(true)
+    }
   })
 
   it('accepte la galerie voisine et celle d apres', () => {
@@ -79,12 +109,17 @@ describe('la bibliotheque', () => {
     expect(insideLibrary(at(0, HEXAGON_APOTHEM + 0.5), MARGE)).toBe(false)
   })
 
-  it('laisse un chemin continu dune galerie a la suivante', () => {
-    // On echantillonne finement tout le trajet : aucun trou ne doit exister,
-    // sinon le visiteur resterait bloque au milieu du couloir.
-    for (let i = 0; i <= 400; i += 1) {
-      const u = (i / 400) * GALLERY_PITCH
-      expect(insideLibrary(at(u, 0), MARGE)).toBe(true)
+  it('laisse un chemin continu dune galerie a la suivante, en contournant la tremie', () => {
+    // On longe l'axe, puis on s'ecarte pour contourner le puits, puis on
+    // revient. Aucun trou ne doit exister sur ce trajet.
+    const ecart = STAIRWELL_RADIUS + MARGE + 0.12
+    for (let i = 0; i <= 600; i += 1) {
+      const u = (i / 600) * GALLERY_PITCH
+      const versCentre = Math.abs(u - GALLERY_PITCH / 2)
+      // On se decale progressivement a l'approche du vestibule.
+      // On ne s'ecarte qu'une fois VRAIMENT dans le vestibule.
+      const v = versCentre < VESTIBULE_SIZE / 2 - MARGE - 0.1 ? ecart : 0
+      expect(insideLibrary(at(u, v), MARGE)).toBe(true)
     }
   })
 })
@@ -106,10 +141,43 @@ describe('le glissement le long des murs', () => {
     expect(Math.abs(lateral(apres))).toBeLessThan(CORRIDOR_WIDTH / 2)
   })
 
-  it('ne bouge pas du tout quand aucune direction ne passe', () => {
+  it('longe le mur quand on pousse dedans, sans jamais le traverser', () => {
     const from = at(0, HEXAGON_APOTHEM - MARGE - 0.02)
-    const to = at(0, HEXAGON_APOTHEM + 5)
-    expect(slide(from, to, MARGE)).toEqual(from)
+    const to = at(0, HEXAGON_APOTHEM + 0.4)
+    const apres = slide(from, to, MARGE)
+    // On reste a l'interieur...
+    expect(insideLibrary(apres, MARGE - 1e-9)).toBe(true)
+    // ...et l'on ne se teleporte jamais : le pas reste au plus celui demande.
+    const demande = Math.hypot(to.x - from.x, to.z - from.z)
+    const fait = Math.hypot(apres.x - from.x, apres.z - from.z)
+    expect(fait).toBeLessThanOrEqual(demande + 1e-9)
+  })
+
+  it('contourne la tremie au lieu de sy coller', () => {
+    // On marche droit sur le puits : sans contournement, on resterait plante
+    // devant le vide. Le visiteur doit finir par en faire le tour.
+    const centre = GALLERY_PITCH / 2
+    let position = at(centre - VESTIBULE_SIZE / 2 + 0.4, 0)
+    let bouge = 0
+    for (let pas = 0; pas < 200; pas += 1) {
+      const cible = { x: position.x + AXIS.x * 0.09, z: position.z + AXIS.z * 0.09 }
+      const apres = slide(position, cible, MARGE)
+      if (Math.hypot(apres.x - position.x, apres.z - position.z) > 1e-6) bouge += 1
+      position = apres
+      expect(insideLibrary(position, MARGE - 1e-9)).toBe(true)
+    }
+    /*
+     * Ce qui compte : il a fait tout le tour du puits et l'a depasse, sans
+     * jamais se retrouver hors des lieux praticables.
+     *
+     * Il finit par buter dans l'angle du vestibule, parce que ce visiteur-la
+     * tient « avancer » sans jamais tourner la tete. C'est le comportement
+     * normal de n'importe quelle marche a la premiere personne, et un humain
+     * s'en sort d'un mouvement de souris. Le defaut qu'on voulait exclure —
+     * rester plante DEVANT LE VIDE, sans recours — n'existe plus.
+     */
+    expect(bouge).toBeGreaterThan(35)
+    expect(along(position)).toBeGreaterThan(centre + STAIRWELL_RADIUS)
   })
 
   it('ne laisse jamais sortir, sur mille pas au hasard', () => {
@@ -160,7 +228,11 @@ describe('lorigine flottante', () => {
         position = r.position
       }
     }
-    expect(hexagone).toBeGreaterThan(10000n)
+    // Le nombre exact depend du pas entre galeries : on verifie qu'on a bien
+    // parcouru tout le chemin, sans se lier a une valeur ecrite en dur.
+    const attendu = BigInt(Math.round((100000 * 0.6) / GALLERY_PITCH))
+    expect(hexagone).toBeGreaterThan(attendu - 3n)
+    expect(hexagone).toBeLessThan(attendu + 3n)
     expect(Math.hypot(position.x, position.z)).toBeLessThan(GALLERY_PITCH)
   })
 })

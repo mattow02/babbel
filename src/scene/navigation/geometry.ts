@@ -34,6 +34,8 @@ import {
   CORRIDOR_WIDTH,
   GALLERY_PITCH,
   HEXAGON_APOTHEM,
+  STAIRWELL_RADIUS,
+  VESTIBULE_SIZE,
 } from '../dimensions.ts'
 import { CORRIDOR_SIDES, SIDES, sideAngle } from '../hexagon/layout3d.ts'
 
@@ -86,44 +88,70 @@ export function insideHexagon(point: Point2, margin: number): boolean {
 }
 
 /**
+ * Le point est-il dans le zaguan, et hors de sa tremie ?
+ *
+ * Le vestibule est une salle carree, percee en son centre d'un puits. On y
+ * marche donc sur un ANNEAU : dans le carre, et hors du puits — plus les deux
+ * embrasures par lesquelles on y entre.
+ *
+ * @param u avancee depuis le centre du vestibule
+ * @param v ecart lateral depuis ce meme centre
+ */
+export function insideVestibule(u: number, v: number, margin: number): boolean {
+  const demi = VESTIBULE_SIZE / 2
+
+  // On ne marche jamais dans le vide.
+  if (Math.hypot(u, v) < STAIRWELL_RADIUS + margin) return false
+
+  const dansLeCarre = Math.abs(u) <= demi - margin && Math.abs(v) <= demi - margin
+  /*
+   * L'EMBRASURE.
+   *
+   * Aux deux extremites du vestibule il n'y a pas de mur, mais l'ouverture du
+   * passage. Sans ce cas, la garde au mur fermerait la porte de l'interieur et
+   * l'on resterait bloque a l'entree du zaguan — ce qui est exactement ce qui
+   * arrivait avant d'ecrire ce test.
+   */
+  const dansLEmbrasure = Math.abs(v) <= CORRIDOR_WIDTH / 2 - margin
+
+  return dansLeCarre || dansLEmbrasure
+}
+
+/**
  * Le point est-il quelque part dans la bibliotheque ?
  *
- * `point` est relatif au centre de la galerie COURANTE. On regarde la galerie
- * la plus proche, puis le couloir qui y mene.
+ * `point` est relatif au centre de la galerie COURANTE. Trois lieux possibles,
+ * et un seul suffit : la salle hexagonale, l'un des deux passages, ou le
+ * vestibule qui les separe.
  */
 export function insideLibrary(point: Point2, margin: number): boolean {
   const u = along(point)
+  const v = lateral(point)
+
   const nearest = Math.round(u / GALLERY_PITCH)
   const local: Point2 = {
     x: point.x - AXIS.x * nearest * GALLERY_PITCH,
     z: point.z - AXIS.z * nearest * GALLERY_PITCH,
   }
   if (insideHexagon(local, margin)) return true
-  // Sinon, on n'est admissible que dans le couloir : etroit, et aligne.
-  return Math.abs(lateral(point)) <= CORRIDOR_WIDTH / 2 - margin
-}
 
-/**
- * Deplace le visiteur de `from` vers `to` sans traverser les murs.
- *
- * Resolution par glissement : si le pas complet ne passe pas, on tente
- * l'avancee seule, puis l'ecart lateral seul. On longe ainsi les murs au lieu
- * de s'y coller net, ce qui est bien plus agreable et ne coute que deux tests
- * supplementaires.
- */
-export function slide(from: Point2, to: Point2, margin: number): Point2 {
-  if (insideLibrary(to, margin)) return to
+  /*
+   * Chaque lieu ne vaut que sur SON domaine.
+   *
+   * `du` est l'avancee depuis le centre de la galerie la plus proche, donc au
+   * plus une demi-foulee. Le vestibule occupe la fin de cet intervalle, le
+   * passage le milieu. Sans ce decoupage, le test du passage — large ouvert au
+   * centre — laisserait marcher droit dans la tremie.
+   */
+  const du = u - nearest * GALLERY_PITCH
+  const versVestibule = Math.abs(du) - GALLERY_PITCH / 2
+  const demiVestibule = VESTIBULE_SIZE / 2
 
-  const du = along(to) - along(from)
-  const dv = lateral(to) - lateral(from)
+  if (Math.abs(versVestibule) <= demiVestibule) {
+    return insideVestibule(versVestibule, v, margin)
+  }
 
-  const seulementAxe: Point2 = { x: from.x + AXIS.x * du, z: from.z + AXIS.z * du }
-  if (insideLibrary(seulementAxe, margin)) return seulementAxe
-
-  const seulementLateral: Point2 = { x: from.x + LATERAL.x * dv, z: from.z + LATERAL.z * dv }
-  if (insideLibrary(seulementLateral, margin)) return seulementLateral
-
-  return from
+  return Math.abs(v) <= CORRIDOR_WIDTH / 2 - margin
 }
 
 /** Le resultat d'un recentrage : de combien de galeries on a bouge, et ou on est. */
@@ -152,4 +180,63 @@ export function rebase(point: Point2): Rebase {
       z: point.z - AXIS.z * shift * GALLERY_PITCH,
     },
   }
+}
+
+/**
+ * Deplace le visiteur de `from` vers `to` sans traverser les murs.
+ *
+ * Resolution par glissement : si le pas complet ne passe pas, on tente
+ * l'avancee seule, puis l'ecart lateral seul. On longe ainsi les murs au lieu
+ * de s'y coller net — et c'est aussi ce qui permet de contourner la tremie
+ * sans avoir a viser.
+ */
+export function slide(from: Point2, to: Point2, margin: number): Point2 {
+  if (insideLibrary(to, margin)) return to
+
+  const du = along(to) - along(from)
+  const dv = lateral(to) - lateral(from)
+
+  /*
+   * Attention au piege : si l'on marche pile dans l'axe, l'ecart lateral vaut
+   * zero, et le candidat « lateral seul » EST la position actuelle — valide,
+   * evidemment. On repondrait alors « je ne bouge pas » sans avoir rien tente.
+   * D'ou le seuil : une composante nulle n'est pas un candidat.
+   */
+  const NEGLIGEABLE = 1e-6
+
+  if (Math.abs(du) > NEGLIGEABLE) {
+    const seulementAxe: Point2 = { x: from.x + AXIS.x * du, z: from.z + AXIS.z * du }
+    if (insideLibrary(seulementAxe, margin)) return seulementAxe
+  }
+
+  if (Math.abs(dv) > NEGLIGEABLE) {
+    const seulementLateral: Point2 = { x: from.x + LATERAL.x * dv, z: from.z + LATERAL.z * dv }
+    if (insideLibrary(seulementLateral, margin)) return seulementLateral
+  }
+
+  /*
+   * Le contournement.
+   *
+   * Les deux essais precedents suffisent le long d'un mur droit, mais pas
+   * contre un obstacle ROND : en marchant droit sur la tremie du zaguan, ni
+   * l'avancee seule ni l'ecart seul ne passent, et l'on resterait plante
+   * devant le vide.
+   *
+   * On tente donc quelques directions deviees, de part et d'autre et de plus
+   * en plus franches. La premiere qui passe est la bonne : c'est ce qui fait
+   * qu'on longe naturellement le puits au lieu de s'y coller.
+   */
+  const dx = to.x - from.x
+  const dz = to.z - from.z
+  for (const angle of [0.45, -0.45, 0.9, -0.9, 1.35, -1.35, 1.7, -1.7]) {
+    const cos = Math.cos(angle)
+    const sin = Math.sin(angle)
+    const devie: Point2 = {
+      x: from.x + dx * cos - dz * sin,
+      z: from.z + dx * sin + dz * cos,
+    }
+    if (insideLibrary(devie, margin)) return devie
+  }
+
+  return from
 }

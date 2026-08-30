@@ -25,8 +25,14 @@ export const EYE_HEIGHT = 1.55
 /** Vitesse de marche, en metres par seconde. */
 const WALK_SPEED = 2.1
 
-/** Distance gardee avec les murs et les etageres. */
-const CLEARANCE = 0.42
+/**
+ * Distance gardee avec les murs et les etageres.
+ *
+ * Elle est plus serree qu'un rayon d'epaules parce que l'anneau de marche du
+ * zaguan est etroit : trop de garde, et l'on ne pourrait plus faire le tour de
+ * la tremie.
+ */
+const CLEARANCE = 0.32
 
 /** Au-dela, un appui n'est plus un clic mais une marche. */
 const CLICK_MS = 220

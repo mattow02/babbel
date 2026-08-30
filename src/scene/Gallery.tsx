@@ -4,7 +4,8 @@ import { ACESFilmicToneMapping, Raycaster, Vector2, Vector3, type InstancedMesh 
 import { useLibraryStore } from '../store/useLibraryStore.ts'
 import { approachFor } from './hexagon/approach.ts'
 import { CORRIDOR_SIDES, sideAngle } from './hexagon/layout3d.ts'
-import { CORRIDOR_LENGTH, CORRIDOR_WIDTH, HEXAGON_APOTHEM, STAIR_RADIUS } from './dimensions.ts'
+import { STAIRWELL_RADIUS } from './dimensions.ts'
+import { stairwellCentre } from './hexagon/stairs.ts'
 import { above, below } from './navigation/floors.ts'
 import { Library } from './Library.tsx'
 import { PerfProbe } from './PerfProbe.tsx'
@@ -38,28 +39,20 @@ const REACH = 3.2
  */
 function stairFoot(): { position: { x: number; z: number }; yaw: number } {
   const theta = sideAngle(CORRIDOR_SIDES[0] as number)
-  const along = HEXAGON_APOTHEM + CORRIDOR_LENGTH / 2
+  const centre = stairwellCentre()
+
+  /*
+   * On se pose sur l'anneau de marche, du cote d'ou l'on vient, et FACE au
+   * puits. Sans le cap, on atterrit dos a l'escalier qu'on vient d'emprunter
+   * et l'on ne comprend plus ou l'on est.
+   */
+  const recul = STAIRWELL_RADIUS + 0.55
   const nx = Math.cos(theta)
   const nz = Math.sin(theta)
-  const tx = -Math.sin(theta)
-  const tz = Math.cos(theta)
-
-  // On se pose au milieu du couloir, decale du cote OPPOSE a l'escalier...
-  const ecart = CORRIDOR_WIDTH / 2 - STAIR_RADIUS * 0.55
-  const position = { x: nx * along - tx * ecart * 0.5, z: nz * along - tz * ecart * 0.5 }
-  // ...et l'on regarde vers lui : le regard suit (-sin(cap), -cos(cap)).
-  const versEscalier = { x: tx * ecart * 1.5, z: tz * ecart * 1.5 }
-  return { position, yaw: Math.atan2(-versEscalier.x, -versEscalier.z) }
+  const position = { x: centre.x - nx * recul, z: centre.z - nz * recul }
+  return { position, yaw: Math.atan2(-nx, -nz) }
 }
 
-/**
- * La scene : le visiteur, et ce qu'il peut designer.
- *
- * Elle vit DANS la toile, parce qu'elle a besoin de la camera et de la boucle
- * de rendu. Tout tient dans un seul composant : le gestionnaire de
- * deplacement et le gestionnaire de designation sont crees au meme endroit, il
- * n'y a donc rien a se passer entre eux.
- */
 function Scene({ depth }: { depth: number }): React.ReactElement {
   const hexagon = useLibraryStore((state) => state.hexagon)
   const setHexagon = useLibraryStore((state) => state.setHexagon)

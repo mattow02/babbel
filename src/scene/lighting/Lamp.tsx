@@ -1,4 +1,5 @@
-import { LAMP_RADIUS, LAMP_Y } from '../dimensions.ts'
+import { LAMP_RADIUS, LAMP_Y, VESTIBULE_HEIGHT } from '../dimensions.ts'
+import { stairwellCentre } from '../hexagon/stairs.ts'
 import { PALETTE } from '../materials/palette.ts'
 import type { Origin } from '../hexagon/parts.ts'
 
@@ -23,6 +24,28 @@ export function Lamps({
 }): React.ReactElement {
   return (
     <>
+      {origins.map((origin, index) => (
+        <group key={`zaguan-${index}`} position={[origin.x + stairwellCentre().x, VESTIBULE_HEIGHT - 0.45, origin.z + stairwellCentre().z]}>
+          {/*
+            La lampe du zaguan.
+            Sans elle le vestibule est un trou noir : on ne voit ni la tremie,
+            ni l'escalier, ni la galerie suivante. Elle est plus faible que
+            celle des salles — on ne s'attarde pas dans un couloir.
+          */}
+          <mesh>
+            <sphereGeometry args={[LAMP_RADIUS * 0.7, 16, 12]} />
+            <meshBasicMaterial color={PALETTE.lampe} />
+          </mesh>
+          <pointLight
+            color={PALETTE.lampe}
+            intensity={7}
+            distance={9}
+            decay={2.1}
+            castShadow={false}
+          />
+        </group>
+      ))}
+
       {origins.map((origin, index) => (
         <group key={index} position={[origin.x, LAMP_Y, origin.z]}>
           <mesh>

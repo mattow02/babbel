@@ -40,7 +40,32 @@ export const SHELF_THICKNESS = 0.025
 /** Ouverture d'un couloir. */
 export const CORRIDOR_WIDTH = 1.62
 export const CORRIDOR_HEIGHT = 2.2
-export const CORRIDOR_LENGTH = 1.6
+
+/**
+ * Le zaguan : le vestibule qui separe deux galeries.
+ *
+ * Borges ne relie pas ses salles par un simple trou de souris : « dans le
+ * zaguan il y a un miroir... une escalier spirale, qui s'abime et s'eleve vers
+ * le lointain ». C'est la, et nulle part ailleurs, que se trouve l'escalier.
+ *
+ * Nous en faisons une petite salle carree, plus large et plus haute que les
+ * passages qui y menent, percee en son centre d'une TREMIE : le sol et le
+ * plafond s'ouvrent autour de l'escalier, et l'on voit le puits s'abimer et
+ * s'elever. C'est ce qui donne le vertige que la nouvelle decrit.
+ *
+ * Un anneau de marche fait tout le tour du puits : le passage n'est jamais
+ * bouche, ce qui etait impossible tant que l'escalier tenait dans le couloir.
+ */
+export const PASSAGE_LENGTH = 1.15
+export const VESTIBULE_SIZE = 3.6
+export const VESTIBULE_HEIGHT = 3
+export const STAIRWELL_RADIUS = 0.7
+
+/** Profondeur visible du puits, au-dessus et en dessous du vestibule. */
+export const SHAFT_DEPTH = 5.5
+
+/** Longueur totale du chemin d'une galerie a l'autre. */
+export const CORRIDOR_LENGTH = 2 * PASSAGE_LENGTH + VESTIBULE_SIZE
 
 /** Distance entre deux centres de galeries voisines, le long d'un couloir. */
 export const GALLERY_PITCH = 2 * HEXAGON_APOTHEM + CORRIDOR_LENGTH
@@ -49,9 +74,9 @@ export const GALLERY_PITCH = 2 * HEXAGON_APOTHEM + CORRIDOR_LENGTH
 export const LAMP_RADIUS = 0.16
 export const LAMP_Y = ROOM_HEIGHT - 0.75
 
-/** L'escalier en colimacon du couloir : « une escalier spirale, qui s'abime et s'eleve ». */
-export const STAIR_RADIUS = 0.38
-export const STAIR_STEPS = 14
-export const STAIR_RISE = 0.19
-export const STAIR_TREAD_WIDTH = 0.34
-export const STAIR_TREAD_THICKNESS = 0.045
+/** L'escalier en colimacon du zaguan : « qui s'abime et s'eleve vers le lointain ». */
+export const STAIR_RADIUS = 0.5
+export const STAIR_STEPS = 34
+export const STAIR_RISE = 0.2
+export const STAIR_TREAD_WIDTH = 0.52
+export const STAIR_TREAD_THICKNESS = 0.055
