@@ -1,3 +1,5 @@
+import { hash32, unitOf } from '../hash.ts'
+
 /**
  * La palette de la direction artistique, cote 3D.
  *
@@ -37,15 +39,18 @@ export const SPINES: readonly string[] = [
   '#5a4632',
 ]
 
-/** Choisit un dos de facon deterministe a partir de l'indice du volume. */
+/**
+ * Choisit un dos de facon deterministe a partir de l'indice du volume.
+ *
+ * Le melange passe par `hash32` et non par une simple multiplication : une
+ * multiplication est affine, et les couleurs se mettraient a defiler selon un
+ * motif qui se repete le long des etageres. Voir scene/hash.ts.
+ */
 export function spineOf(index: number): string {
-  // Un melange bon marche, juste assez pour casser les alignements visibles.
-  const mixed = (index * 2654435761) >>> 0
-  return SPINES[(mixed >>> 13) % SPINES.length] as string
+  return SPINES[hash32(index) % SPINES.length] as string
 }
 
 /** Petite variation de hauteur, pour que les tranches ne soient pas alignees. */
 export function spineHeightFactor(index: number): number {
-  const mixed = (index * 40503 + 12345) >>> 0
-  return 0.9 + ((mixed >>> 16) % 100) / 500 // entre 0,90 et 1,10
+  return 0.9 + unitOf(index ^ 0x5bf03635) * 0.2 // entre 0,90 et 1,10
 }

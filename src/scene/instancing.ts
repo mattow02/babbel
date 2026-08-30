@@ -10,20 +10,25 @@
  * la meme geometrie et ne coutent qu'un appel par materiau.
  */
 
-import { Matrix4, Quaternion, Vector3 } from 'three'
+import { Euler, Matrix4, Quaternion, Vector3 } from 'three'
 
-/** Une boite posee dans le monde : position, rotation autour de y, dimensions. */
+/** Une boite posee dans le monde : position, orientation, dimensions. */
 export interface Box {
   readonly x: number
   readonly y: number
   readonly z: number
   readonly rotY: number
+  /**
+   * Inclinaison autour de l'axe X LOCAL, appliquee apres le lacet.
+   *
+   * Sans elle, impossible de plaquer un caisson sur une coupole : il resterait
+   * vertical et saillirait de la surface au lieu d'en epouser la courbure.
+   */
+  readonly rotX?: number
   readonly sx: number
   readonly sy: number
   readonly sz: number
 }
-
-const AXE_Y = new Vector3(0, 1, 0)
 
 /**
  * Remplit les matrices d'un InstancedMesh a partir d'une liste de boites.
@@ -39,11 +44,13 @@ export function writeBoxMatrices(
   const matrix = new Matrix4()
   const position = new Vector3()
   const quaternion = new Quaternion()
+  const euler = new Euler()
   const scale = new Vector3()
   for (let index = 0; index < boxes.length; index += 1) {
     const box = boxes[index] as Box
     position.set(box.x, box.y, box.z)
-    quaternion.setFromAxisAngle(AXE_Y, box.rotY)
+    euler.set(box.rotX ?? 0, box.rotY, 0, 'YXZ')
+    quaternion.setFromEuler(euler)
     scale.set(box.sx, box.sy, box.sz)
     matrix.compose(position, quaternion, scale)
     setMatrixAt(index, matrix)

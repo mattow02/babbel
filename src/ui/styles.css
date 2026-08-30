@@ -305,3 +305,64 @@ kbd {
 .shell--gallery {
   cursor: crosshair;
 }
+
+/* ------------------------------------------------------------------ seuil */
+
+.overlay--seuil {
+  inset: 0;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+
+/*
+ * Le titre est en bas, discret, en calcaire : il ne doit pas concurrencer
+ * l'image. C'est le monument qui parle, pas la typographie.
+ */
+.seuil__titre {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  color: var(--creme);
+  font-size: clamp(1.4rem, 3.4vw, 2.6rem);
+  line-height: 1.05;
+  letter-spacing: 0.02em;
+  text-shadow: 0 2px 24px rgb(0 0 0 / 45%);
+  animation: seuil-apparait 2.4s ease-out both;
+}
+
+.seuil__titre span:last-child {
+  padding-left: 1.6em;
+  color: var(--soleil);
+}
+
+.seuil__passer {
+  padding: 0.5rem 1.2rem;
+  border: 1px solid rgb(232 220 200 / 35%);
+  border-radius: 2px;
+  background: rgb(13 11 10 / 25%);
+  color: var(--creme);
+  font: inherit;
+  font-size: 0.85rem;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  pointer-events: auto;
+  backdrop-filter: blur(2px);
+  transition: border-color 220ms ease, color 220ms ease;
+  animation: seuil-apparait 3.6s ease-out both;
+}
+
+.seuil__passer:hover,
+.seuil__passer:focus-visible {
+  border-color: var(--or);
+  color: var(--soleil);
+  outline: none;
+}
+
+@keyframes seuil-apparait {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

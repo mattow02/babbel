@@ -77,7 +77,10 @@ livre est généré à la volée dans le navigateur du visiteur.
 - Les positions du monde sont **toujours relatives à la galerie courante** (D30).
   Jamais de coordonnée absolue : il y a 10^4468 galeries.
 - Toute logique un peu subtile d'un composant 3D est extraite en module pur et
-  testée (`geometry.ts`, `steering.ts`, `picking.ts`, `approach.ts`).
+  testée (`geometry.ts`, `steering.ts`, `picking.ts`, `approach.ts`,
+  `landscape.ts`, `sequence.ts`).
+- Pour dérégler un alignement, passer par `scene/hash.ts` — **jamais** par une
+  simple multiplication, qui est affine et produit un motif périodique (D32).
 - Zéro allocation et zéro `setState` React dans `useFrame`.
 - Le test `inverse(forward(x)) === x` est le test le plus important du projet.
   S'il casse, tout est faux. Il vit dans `src/core/__tests__/bijection.test.ts`.
@@ -167,4 +170,13 @@ film. La contrainte technique et l'intention esthétique coïncident.
   (tas 18,5 → 14,0 Mo). **Le ChunkManager prévu s'est révélé inutile** (D29) :
   toutes les galeries étant identiques, il n'y a rien à charger ni décharger.
   ⚠️ L'ouverture d'un volume au clic n'est pas vérifiée de bout en bout dans le
-  navigateur — à tester à la main. Prochaine étape : Phase 5bis, le Seuil.
+  navigateur — à tester à la main.
+- **2026-08-30 (suite)** — **Phase 5bis terminée : le Seuil.** Séquence
+  d'arrivée de 29,5 s en plans composés : plaine, dôme dans son bassin, deux
+  anneaux de cyprès, montagnes, ciel en dégradé (shader), montée des marches,
+  entrée unique (passage traité en **coupe**, D34), grand hall à coupole
+  caissonnée avec le **cube d'or en lévitation**, puis passage automatique à la
+  bibliothèque. 171 tests verts, 20-22 appels de rendu dehors, 6 dans le hall.
+  Deux défauts visuels attrapés : hachage affine donnant des motifs périodiques
+  (D32) et caissons saillants faute d'inclinaison (D33).
+  Prochaine étape : Phase 6, l'esthétique.

@@ -292,6 +292,34 @@ Il est pour l'instant DECORATIF : la navigation verticale entre etages n'existe
 pas encore. Il donne deja au couloir sa profondeur.
 Decide le 2026-08-30.
 
+
+### D32 — Un hachage sans structure lineaire
+On est tente d'ecrire `(index * grandNombrePremier) >>> 0` pour deregler un
+alignement. C'est une erreur, et elle SE VOIT : une multiplication est une
+fonction affine de l'indice, donc l'ecart entre deux indices consecutifs est
+constant. Les valeurs sont bien reparties prises isolement, mais elles defilent
+avec une periode courte — et une rangee de cypres, ou de tranches de livres, se
+met a montrer un motif qui se repete.
+
+C'est le meme probleme que le LCG nu de `core/bijection.ts`, et la meme reponse :
+une couche de decalages et de XOR. `scene/hash.ts` utilise le finalisateur
+« lowbias32 ». Un test verifie explicitement l'absence de structure lineaire.
+Trouve et corrige le 2026-08-30.
+
+### D33 — Une boite instanciee peut s'incliner
+`Box` n'avait qu'un lacet. Impossible dans ces conditions de plaquer un caisson
+sur une coupole : il restait vertical et saillait comme un plot. On ajoute une
+inclinaison optionnelle, appliquee apres le lacet (ordre YXZ). Le cout est nul
+et cela ouvre tout ce qui doit epouser une surface courbe.
+Decide le 2026-08-30.
+
+### D34 — Le passage dehors -> dedans est une COUPE
+On ne modelise pas le tunnel de l'entree, et on ne fait pas de fondu : on change
+de plan. C'est du montage, et c'est ce que font les images de reference — une
+succession de plans composes, pas un travelling continu. Cela evite aussi d'avoir
+a percer une demi-sphere de 46 metres de rayon, ce qui n'apporterait rien a
+l'image. Decide le 2026-08-30.
+
 ## Ouvertes (à trancher avec l'utilisateur)
 
 _Aucune. Toutes les décisions de cadrage sont prises._

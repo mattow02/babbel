@@ -18,6 +18,14 @@ import type { Address } from '../core/index.ts'
 
 export type Mode = 'gallery' | 'reader'
 
+/**
+ * Ou en est le visiteur dans le site.
+ *
+ * `threshold` : la sequence d'arrivee (le Seuil, decision D11).
+ * `library`   : la bibliotheque infinie, ou l'on marche et l'on lit.
+ */
+export type Stage = 'threshold' | 'library'
+
 export interface Perf {
   readonly fps: number
   readonly calls: number
@@ -25,6 +33,9 @@ export interface Perf {
 }
 
 interface LibraryState {
+  stage: Stage
+  enterLibrary: () => void
+
   mode: Mode
   setMode: (mode: Mode) => void
   toggleMode: () => void
@@ -43,6 +54,11 @@ interface LibraryState {
 }
 
 export const useLibraryStore = create<LibraryState>((set) => ({
+  stage: 'threshold',
+  enterLibrary: () => {
+    set({ stage: 'library' })
+  },
+
   mode: 'gallery',
   setMode: (mode) => {
     set({ mode })

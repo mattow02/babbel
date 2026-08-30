@@ -23,6 +23,8 @@ export function App(): React.ReactElement {
   const [address, goTo] = useAddress(ORIGIN)
   const state = usePageText(library, address)
 
+  const stage = useLibraryStore((store) => store.stage)
+  const enterLibrary = useLibraryStore((store) => store.enterLibrary)
   const mode = useLibraryStore((store) => store.mode)
   const setMode = useLibraryStore((store) => store.setMode)
   const opened = useLibraryStore((store) => store.opened)
@@ -61,6 +63,25 @@ export function App(): React.ReactElement {
       window.removeEventListener('keydown', onKeyDown)
     }
   }, [address, goTo, mode, setMode])
+
+  if (stage === 'threshold') {
+    return (
+      <div className="shell shell--gallery">
+        <div className="canvas">
+          <Gallery />
+        </div>
+        <div className="overlay overlay--seuil">
+          <p className="seuil__titre">
+            <span>La Bibliothèque</span>
+            <span>de Babel</span>
+          </p>
+          <button type="button" className="seuil__passer" onClick={enterLibrary}>
+            entrer directement
+          </button>
+        </div>
+      </div>
+    )
+  }
 
   if (mode === 'gallery') {
     return (

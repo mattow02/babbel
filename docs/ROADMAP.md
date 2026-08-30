@@ -1,6 +1,6 @@
 # Roadmap — Babbel
 
-État : **Phase 5 terminée. Prochaine étape : Phase 5bis (le Seuil) puis Phase 6 (esthétique).**
+État : **Phase 5bis terminée. Prochaine étape : Phase 6 (esthétique).**
 Mise à jour : 2026-08-29
 
 Règle : une phase n'est close que si ses critères de sortie sont vérifiés.
@@ -181,14 +181,39 @@ attend une stabilité d'image impossible avec `requestAnimationFrame` bridé.
 
 Captures : `docs/captures/phase5-marche.png`.
 
-## Phase 5bis — Le Seuil (séquence d'arrivée)
+## Phase 5bis — Le Seuil ✅ (2026-08-30)
 Scène authorée, hors contrainte procédurale. Voir ARCHITECTURE § 9.
-- [ ] Extérieur et dôme (demi-sphère)
-- [ ] Marches et montée vers l'entrée unique
-- [ ] Franchissement du portail
-- [ ] Grand hall et cube flottant au centre
-- [ ] Enchaînement Seuil -> Bibliothèque, avec préchargement des premiers chunks
-**Sortie :** les 30 premières secondes du site donnent envie. C'est le test.
+- [x] Extérieur : dôme dans son bassin, deux terrasses plantées de cyprès,
+      montagnes en silhouette, ciel en dégradé teal → brume dorée (shader)
+- [x] Marches et montée vers l'entrée unique
+- [x] Franchissement du portail, traité en **coupe** et non en fondu
+- [x] Grand hall : coupole à caissons, colonnade, **cube d'or en lévitation**
+- [x] Enchaînement Seuil → Bibliothèque, automatique en fin de séquence
+- [x] Bouton « entrer directement » pour passer la séquence
+- [x] 27 tests supplémentaires (171 au total)
+
+**Mesures :** 20 à 22 appels de rendu à l'extérieur, 6 dans le hall, contre un
+budget de 100. La séquence dure **29,5 s**, sous les 30 s du critère.
+
+Captures : `docs/captures/phase5bis-seuil.png` et `phase5bis-hall.png`.
+
+**Deux défauts visuels réels attrapés par les tests et corrigés :**
+- un hachage purement multiplicatif est **affine**, donc les écarts entre
+  indices consécutifs se répètent : les cyprès *et* les couleurs de tranches
+  suivaient un motif périodique. Corrigé par un vrai finalisateur
+  (`scene/hash.ts`, D32) ;
+- les caissons de la coupole saillaient comme des plots faute d'inclinaison :
+  une boîte instanciée ne pouvait pivoter qu'autour de la verticale (D33).
+
+**Reste pour la phase 6 :** l'éclairage du hall est encore brun et plat — pas
+de faisceau visible sous l'oculus, pas de bloom sur le cube, marbre trop chaud.
+Les montagnes gardent une silhouette trop conique. C'est exactement le contenu
+de la phase suivante.
+
+**Note d'exploitation :** l'éclairage précalculé du Seuil (D16) n'est pas fait.
+L'extérieur n'en a pas besoin — il n'a qu'une source, le soleil. C'est
+l'intérieur du hall qui le réclame, et cela suppose une chaîne de cuisson hors
+ligne : c'est une optimisation de phase 6/7, pas un prérequis.
 
 ## Phase 6 — Esthétique
 La phase où on a le droit d'être ambitieux, parce que le reste tient.

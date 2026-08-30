@@ -8,7 +8,6 @@ import { stoneBoxes, woodBoxes } from './hexagon/parts.ts'
 import { stairBoxes } from './hexagon/stairs.ts'
 import { Lamps } from './lighting/Lamp.tsx'
 import { PALETTE } from './materials/palette.ts'
-import { PerfProbe } from './PerfProbe.tsx'
 
 /**
  * Les galeries visibles autour du visiteur.
@@ -49,8 +48,6 @@ export function Library({
 
   return (
     <>
-      <PerfProbe />
-
       {/*
         Une ambiance tres faible, juste pour que les noirs ne soient pas des
         trous. Toute la lumiere vient des lampes spheriques.

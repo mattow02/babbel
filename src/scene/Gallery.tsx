@@ -4,6 +4,8 @@ import { ACESFilmicToneMapping, Vector3 } from 'three'
 import { useLibraryStore } from '../store/useLibraryStore.ts'
 import { approachFor } from './hexagon/approach.ts'
 import { Library } from './Library.tsx'
+import { PerfProbe } from './PerfProbe.tsx'
+import { Threshold } from './threshold/Threshold.tsx'
 import { PALETTE } from './materials/palette.ts'
 import { EYE_HEIGHT, usePlayer } from './navigation/usePlayer.ts'
 
@@ -59,16 +61,31 @@ function Scene(): React.ReactElement {
  *   - `dpr` plafonne a 1,5 : au-dela on paye des pixels que personne ne voit.
  */
 export function Gallery(): React.ReactElement {
+  const stage = useLibraryStore((state) => state.stage)
+  const enterLibrary = useLibraryStore((state) => state.enterLibrary)
+
   return (
     <Canvas
       shadows="percentage"
       dpr={[1, 1.5]}
       gl={{ antialias: true, toneMapping: ACESFilmicToneMapping, toneMappingExposure: 0.95 }}
-      camera={{ position: [0, EYE_HEIGHT, 0], fov: 62, near: 0.05, far: 60 }}
+      /*
+       * Une seule toile pour les deux mondes. `far` doit porter jusqu'aux
+       * montagnes du Seuil ; le brouillard de la bibliotheque se charge de
+       * cacher ce qui est loin quand on est dedans.
+       */
+      camera={{ position: [0, 6, 250], fov: 58, near: 0.08, far: 1600 }}
     >
-      <color attach="background" args={[PALETTE.nuit]} />
-      <fogExp2 attach="fog" args={[PALETTE.nuit, 0.085]} />
-      <Scene />
+      <PerfProbe />
+      {stage === 'threshold' ? (
+        <Threshold onFinish={enterLibrary} />
+      ) : (
+        <>
+          <color attach="background" args={[PALETTE.nuit]} />
+          <fogExp2 attach="fog" args={[PALETTE.nuit, 0.085]} />
+          <Scene />
+        </>
+      )}
     </Canvas>
   )
 }
