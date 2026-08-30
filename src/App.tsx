@@ -156,7 +156,7 @@ export function App(): React.ReactElement {
           <PerfHud hexagon={hexagon} />
           <p className="overlay__hint">
             maintenir le <kbd>clic</kbd> pour avancer · curseur vers les bords pour regarder ·
-            cliquer un volume pour l’ouvrir
+            <kbd>E</kbd> ou clic bref pour prendre le volume visé · l’escalier change d’étage
             <button type="button" className="overlay__son" onClick={() => { setRecherche(true) }}>
               chercher une phrase
             </button>

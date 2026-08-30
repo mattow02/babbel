@@ -74,6 +74,9 @@ des chantiers restants, par ordre d'importance.
   sur un chemin chaud (D19).
 - Le placement 3D s'écrit en maths pures dans `scene/**/layout3d.ts` et
   `parts.ts`, sans three.js : c'est la seule façon de vérifier 640 objets (D24).
+- L'interaction ne passe **pas** par les événements du moteur de rendu : on
+  lance le rayon soi-même depuis le réticule (D42). C'est plus juste, et c'est
+  la seule version vérifiable de l'extérieur.
 - Toute géométrie répétée passe par une **boîte unitaire instanciée** (D25) :
   un appel de rendu par matériau, quel que soit le nombre d'objets.
 - Les positions du monde sont **toujours relatives à la galerie courante** (D30).
@@ -201,3 +204,11 @@ film. La contrainte technique et l'intention esthétique coïncident.
   Vérifié en Chromium : on tape une phrase, le site calcule son adresse et ouvre
   la page — première ligne = la phrase, reste blanc, URL partageable.
   **Ce qui reste ouvert est listé en fin de `docs/ROADMAP.md`.**
+- **2026-08-30 (suite)** — **Reprise après la roadmap.** Deux chantiers repris :
+  (1) **le rayon d'interaction est lancé à la main** depuis le réticule, plus
+  par R3F (D42) — le réticule devient le viseur, <kbd>E</kbd> et le clic bref
+  sont le même geste, et **le trou de vérification ouvert depuis la phase 5 est
+  comblé** : ouverture d'un volume vérifiée en Chromium ; (2) **la bibliothèque
+  a des étages** (D43) : `galerie = étage × 25^800 + colonne` — le même entier
+  lu dans deux dimensions, sans toucher à la bijection ni aux URL déjà
+  partagées. Étages 0 → 1 → 2 → 0 vérifiés. 216 tests, zéro avertissement.

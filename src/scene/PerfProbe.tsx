@@ -32,6 +32,10 @@ export function PerfProbe(): null {
    * ce qui est le seul chiffre honnete.
    */
   useEffect(() => {
+    // Le linter deconseille de modifier ce qu'un hook a rendu. Ici c'est
+    // l'objet three.js lui-meme, dont c'est l'API prevue : il n'y a pas
+    // d'autre facon de desactiver la remise a zero automatique.
+    // oxlint-disable-next-line react/immutability
     gl.info.autoReset = false
     return () => {
       gl.info.autoReset = true

@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { PAGES_PER_BOOK, toPath, type Address } from '../core/index.ts'
+import { columnOf, floorOf } from '../scene/navigation/floors.ts'
 
 /** Les galeries ont des noms de 2 870 caracteres : on n'en montre que les bouts. */
 function shortenGallery(hexagon: bigint): string {
@@ -25,8 +26,12 @@ export function AddressBar({ address }: { address: Address }): React.ReactElemen
     <header className="address">
       <dl className="address__coords">
         <div>
+          <dt>étage</dt>
+          <dd>{shortenGallery(floorOf(address.hexagon))}</dd>
+        </div>
+        <div>
           <dt>galerie</dt>
-          <dd title={address.hexagon.toString(36)}>{shortenGallery(address.hexagon)}</dd>
+          <dd title={address.hexagon.toString(36)}>{shortenGallery(columnOf(address.hexagon))}</dd>
         </div>
         <div>
           <dt>mur</dt>

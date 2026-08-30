@@ -15,6 +15,7 @@ export function Boxes({
   metalness = 0,
   castShadow = false,
   receiveShadow = true,
+  meshRef,
 }: {
   boxes: readonly Box[]
   color: string
@@ -22,8 +23,11 @@ export function Boxes({
   metalness?: number
   castShadow?: boolean
   receiveShadow?: boolean
+  /** Publie le maillage, pour qu'on puisse y lancer un rayon. */
+  meshRef?: React.RefObject<InstancedMesh | null> | undefined
 }): React.ReactElement {
-  const ref = useRef<InstancedMesh>(null)
+  const own = useRef<InstancedMesh>(null)
+  const ref = meshRef ?? own
   const count = boxes.length
 
   useLayoutEffect(() => {
@@ -34,7 +38,7 @@ export function Boxes({
     })
     mesh.instanceMatrix.needsUpdate = true
     mesh.computeBoundingSphere()
-  }, [boxes])
+  }, [boxes, ref])
 
   // La geometrie unitaire est creee une fois pour toutes.
   const args = useMemo(() => [1, 1, 1] as const, [])

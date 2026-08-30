@@ -396,6 +396,49 @@ d'arrivee.
 La decision est une fonction pure, donc testable sans appareil.
 Decide le 2026-08-30.
 
+
+### D42 — Le rayon est lance a la main, pas par le moteur de rendu
+La designation d'un objet ne passe plus par les evenements de React Three
+Fiber : on lance nous-memes un rayon depuis le centre exact de l'ecran. Trois
+raisons, et la troisieme a fini par etre decisive :
+
+  - le reticule EST le viseur (D28). On designe ce qu'on REGARDE, pas ce que
+    survole un curseur qui peut etre ailleurs ;
+  - la touche « E » et le clic bref deviennent litteralement le meme geste, au
+    lieu de deux chemins de code differents ;
+  - cela ne depend plus d'aucune plomberie d'evenements — et devient donc
+    verifiable depuis l'exterieur. Le trou de verification ouvert depuis la
+    phase 5, ou R3F ignorait les evenements synthetiques et ou le clic reel de
+    Playwright expirait, s'est referme tout seul.
+
+Corollaire : une portee (3,2 m). Sans elle, le rayon traverserait les portes et
+l'on ouvrirait par megarde un volume de la galerie voisine.
+
+Autre correction issue de l'essai : monter ou descendre un escalier se lit dans
+la DIRECTION du regard, pas dans le point touche. Le fut de l'escalier monte
+bien au-dessus des yeux ; en se fiant au point d'impact, on montait meme en
+regardant ses pieds. Decide le 2026-08-30.
+
+### D43 — Les etages : un seul entier lu dans deux dimensions
+Le numero de galerie etait deja l'unique coordonnee du monde. Pour donner de la
+hauteur a la bibliotheque, on n'ajoute PAS une seconde coordonnee : on lit le
+meme entier autrement.
+
+    galerie = etage x FOULEE + colonne
+
+Monter, c'est ajouter une foulee ; avancer, c'est ajouter un. L'adresse d'un
+livre ne change pas d'un iota, et rien de ce qui precede n'a eu besoin d'etre
+touche — ni la bijection, ni l'origine flottante, ni les URL deja partagees.
+
+FOULEE = 25^800 : le nombre de textes distincts de huit cents caracteres. Un
+etage est donc long d'autant de galeries qu'il y a de facons de remplir huit
+cents signes, soit environ 10^1118. Le choix reste arbitraire, mais il est tire
+de l'alphabet plutot que du vide.
+
+On atterrit toujours FACE a l'escalier apres un changement d'etage : sans cela
+on se retrouve dos a ce qu'on vient d'emprunter, et l'on ne comprend plus ou
+l'on est. Decide le 2026-08-30.
+
 ## Ouvertes (à trancher avec l'utilisateur)
 
 _Aucune. Toutes les décisions de cadrage sont prises._

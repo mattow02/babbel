@@ -1,4 +1,5 @@
 import { useMemo } from 'react'
+import type { InstancedMesh } from 'three'
 import { useLibraryStore } from '../store/useLibraryStore.ts'
 import { Boxes } from './Boxes.tsx'
 import { galleryOrigins } from './galleries.ts'
@@ -38,10 +39,12 @@ import { PALETTE } from './materials/palette.ts'
  */
 export function Library({
   depth = 1,
-  onSelectBook,
+  booksRef,
+  stairsRef,
 }: {
   depth?: number
-  onSelectBook: (instanceId: number) => void
+  booksRef?: React.RefObject<InstancedMesh | null> | undefined
+  stairsRef?: React.RefObject<InstancedMesh | null> | undefined
 }): React.ReactElement {
   const hexagon = useLibraryStore((state) => state.hexagon)
   const profile = useLibraryStore((state) => state.profile)
@@ -66,8 +69,15 @@ export function Library({
       <Slabs origins={origins} />
       <Boxes boxes={stone} color={PALETTE.calcaire} roughness={0.94} castShadow />
       <Boxes boxes={wood} color={PALETTE.bois} roughness={0.75} castShadow />
-      <Boxes boxes={stairs} color={PALETTE.bois} roughness={0.6} metalness={0.25} castShadow />
-      <Books origins={origins} hexagon={hexagon} depth={depth} onSelect={onSelectBook} />
+      <Boxes
+        boxes={stairs}
+        color={PALETTE.bois}
+        roughness={0.6}
+        metalness={0.25}
+        castShadow
+        meshRef={stairsRef}
+      />
+      <Books origins={origins} hexagon={hexagon} depth={depth} meshRef={booksRef} />
 
       {/*
         L'aureole des lampes. Le bloom seul ne suffit pas quand la source est

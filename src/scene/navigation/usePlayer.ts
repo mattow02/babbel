@@ -45,8 +45,23 @@ export interface Traveling {
 export interface PlayerHandle {
   /** Lance un travelling cadre vers un point, puis execute `onArrival`. */
   travelTo: (destination: Vector3, lookAt: Vector3, onArrival: () => void) => void
-  /** Vrai si un appui en cours doit compter comme un clic et non comme une marche. */
-  isClick: () => boolean
+  /** Vrai pendant un travelling : la scene ne doit alors rien declencher. */
+  isTravelling: () => boolean
+  /**
+   * Declare ce qu'il faut faire quand le visiteur DESIGNE quelque chose :
+   * un appui bref, ou la touche « E ».
+   *
+   * On enregistre le geste au lieu de le passer en argument, pour que la scene
+   * puisse s'appuyer sur le gestionnaire lui-meme sans le lire avant qu'il
+   * n'existe. Rend une fonction de desinscription.
+   */
+  setInteract: (handler: () => void) => () => void
+  /**
+   * Repose le visiteur a un endroit donne, relatif a la galerie courante, et
+   * oriente son regard. Sans le cap, on atterrit dos a ce qu'on vient
+   * d'emprunter, et l'on ne comprend plus ou l'on est.
+   */
+  placeAt: (position: Point2, yaw?: number) => void
 }
 
 /** Adoucit le depart et l'arrivee d'un travelling. */
@@ -79,18 +94,12 @@ export function usePlayer(): PlayerHandle {
    */
   const cursor = useRef<{ x: number; y: number } | null>(null)
   const pressedAt = useRef<number | null>(null)
-  /*
-   * Duree du DERNIER appui, retenue apres son relachement.
-   *
-   * Indispensable a cause de l'ordre des evenements : `click` arrive APRES
-   * `pointerup`. Si l'on interrogeait l'appui en cours, il serait deja termine
-   * au moment ou la scene nous demande « etait-ce un clic ? », et aucun livre
-   * ne s'ouvrirait jamais.
-   */
-  const lastPressWasClick = useRef(false)
   const walking = useRef(false)
   const keys = useRef(new Set<string>())
   const travel = useRef<Traveling | null>(null)
+  // Les ecouteurs sont poses une seule fois ; ils appellent toujours la
+  // derniere version du gestionnaire, via cette reference.
+  const interact = useRef<() => void>(() => {})
 
   // Vecteurs de travail, alloues une seule fois.
   const forward = useRef(new Vector3())
@@ -106,12 +115,22 @@ export function usePlayer(): PlayerHandle {
       walking.current = true
     }
     const onPointerUp = (): void => {
-      lastPressWasClick.current = isClickWindow(pressedAt.current)
+      const bref = isClickWindow(pressedAt.current)
       pressedAt.current = null
       walking.current = false
+      // Un appui bref est une designation, pas une marche.
+      if (bref) interact.current()
     }
     const onKeyDown = (event: KeyboardEvent): void => {
-      keys.current.add(event.key.toLowerCase())
+      const touche = event.key.toLowerCase()
+      // « E » designe ce qui se trouve sous le reticule. Le meme geste que le
+      // clic bref, pour ceux qui preferent le clavier — et le seul chemin qui
+      // ne depende d'aucun systeme d'evenements de rendu.
+      if (touche === 'e') {
+        interact.current()
+        return
+      }
+      keys.current.add(touche)
     }
     const onKeyUp = (event: KeyboardEvent): void => {
       keys.current.delete(event.key.toLowerCase())
@@ -121,7 +140,6 @@ export function usePlayer(): PlayerHandle {
       keys.current.clear()
       walking.current = false
       pressedAt.current = null
-      lastPressWasClick.current = false
     }
 
     window.addEventListener('pointermove', onPointerMove)
@@ -217,7 +235,20 @@ export function usePlayer(): PlayerHandle {
         onArrival,
       }
     },
-    isClick: () => lastPressWasClick.current || isClickWindow(pressedAt.current),
+    isTravelling: () => travel.current !== null,
+    placeAt: (next, cap) => {
+      position.current = next
+      if (cap !== undefined) {
+        yaw.current = cap
+        pitch.current = 0
+      }
+    },
+    setInteract: (handler) => {
+      interact.current = handler
+      return () => {
+        if (interact.current === handler) interact.current = () => {}
+      }
+    },
   }
 }
 

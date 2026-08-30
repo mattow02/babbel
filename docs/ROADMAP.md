@@ -1,6 +1,6 @@
 # Roadmap — Babbel
 
-État : **Les sept phases sont terminées.** Reste ouvert : voir « Ce qui n'est pas fait » en fin de document.
+État : **Sept phases + une reprise.** Reste ouvert : voir « Ce qui n'est pas fait » en fin de document.
 Mise à jour : 2026-08-29
 
 Règle : une phase n'est close que si ses critères de sortie sont vérifiés.
@@ -273,24 +273,57 @@ vit dans le fragment (D20). `npm run build` puis servir `dist/`, n'importe où.
 
 ---
 
+## Phase 8 — Après la roadmap ✅ (2026-08-30)
+
+Deux chantiers de la liste « ce qui n'est pas fait » ont été repris.
+
+### L'interaction ne passe plus par le moteur de rendu (D42)
+Le rayon est désormais lancé **à la main**, depuis le centre exact de l'écran,
+au lieu de dépendre du système d'événements de R3F. Trois gains :
+
+- le réticule **est** le viseur (D28) : on désigne ce qu'on regarde, pas ce que
+  survole un curseur ;
+- la touche <kbd>E</kbd> et le clic bref deviennent le même geste ;
+- cela ne dépend plus d'aucune plomberie d'événements, **et devient donc
+  vérifiable de l'extérieur.**
+
+**Le trou de vérification ouvert depuis la phase 5 est comblé.** Mesuré dans
+Chromium : le visiteur marche jusqu'à une étagère, vise, appuie sur <kbd>E</kbd>,
+la caméra fait son travelling et la page s'ouvre — `#/0/3/3/30/1`, mur 4,
+étagère 4, volume 31, 40 lignes × 80 colonnes.
+
+### La bibliothèque a des étages (D43)
+Elle n'est plus une ligne de galeries : c'est un volume. Sans ajouter la
+moindre coordonnée — **le même entier est lu dans deux dimensions** :
+
+```
+galerie = étage × 25^800 + colonne
+```
+
+Monter d'un étage ajoute une foulée, avancer dans un couloir ajoute un. Un
+étage est donc long d'autant de galeries qu'il y a de façons de remplir huit
+cents signes, soit environ 10^1118. L'escalier en colimaçon, décoratif depuis
+la phase 5, sert enfin.
+
+Mesuré dans Chromium : étages **0 → 1 → 2 → 0**, la colonne ne bouge pas — on
+monte bien à la verticale.
+
+**216 tests.** Zéro avertissement de lint.
+
+---
+
 ## Ce qui n'est pas fait
 
 Honnêtement, et par ordre d'importance :
 
-1. **L'ouverture d'un volume au clic n'est pas vérifiée de bout en bout.** Le
-   calcul est couvert par 13 tests, mais le clic lui-même n'a jamais pu être
-   déclenché dans le navigateur piloté : R3F ignore les événements de pointeur
-   synthétiques, et le clic réel de Playwright attend une stabilité d'image
-   impossible avec `requestAnimationFrame` bridé. **À essayer à la main en
-   premier.**
-2. **L'éclairage précalculé du hall** (D16). L'extérieur n'en a pas besoin — il
+1. **L'éclairage précalculé du hall** (D16). L'extérieur n'en a pas besoin — il
    n'a qu'une source. Le hall le réclame, et cela suppose une chaîne de cuisson
    hors ligne : un chantier, pas une itération.
-3. **Marbre veiné et sol réfléchissant** (DIRECTION-ARTISTIQUE § 5). Le sol poli
+2. **Marbre veiné et sol réfléchissant** (DIRECTION-ARTISTIQUE § 5). Le sol poli
    est en place mais ne réfléchit pas encore.
+3. **Pas de cage d'escalier.** On change d'étage par un court travelling, mais
+   le couloir n'a pas de trémie : on ne voit ni au-dessus ni en dessous. C'est
+   ce qui donnerait vraiment le vertige.
 4. **La silhouette des montagnes** reste un peu trop conique.
-5. **Navigation verticale.** L'escalier en colimaçon est décoratif : on ne
-   change pas d'étage. La bibliothèque est pour l'instant une ligne de galeries,
-   pas un volume.
-6. **Aucun test sur un vrai appareil mobile.** Le mode dégradé est décidé par
+5. **Aucun test sur un vrai appareil mobile.** Le mode dégradé est décidé par
    une fonction testée, mais son rendu n'a été vu que sur ordinateur.

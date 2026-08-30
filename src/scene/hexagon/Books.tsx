@@ -21,14 +21,16 @@ export function Books({
   origins,
   hexagon,
   depth,
-  onSelect,
+  meshRef,
 }: {
   origins: readonly Origin[]
   hexagon: bigint
   depth: number
-  onSelect: (instanceId: number) => void
+  /** Publie le maillage, pour que la scene puisse y lancer son rayon. */
+  meshRef?: React.RefObject<InstancedMesh | null> | undefined
 }): React.ReactElement {
-  const ref = useRef<InstancedMesh>(null)
+  const own = useRef<InstancedMesh>(null)
+  const ref = meshRef ?? own
 
   const boxes = useMemo<Box[]>(() => {
     const all: Box[] = []
@@ -58,7 +60,7 @@ export function Books({
     })
     mesh.instanceMatrix.needsUpdate = true
     mesh.computeBoundingSphere()
-  }, [boxes])
+  }, [boxes, ref])
 
   /*
    * Les couleurs de tranche dependent de la GALERIE, pas seulement de la place
@@ -76,7 +78,7 @@ export function Books({
       mesh.setColorAt(index, couleur.set(spineOf(index + (graine + galerie) * 7919)))
     }
     if (mesh.instanceColor) mesh.instanceColor.needsUpdate = true
-  }, [boxes, hexagon, depth])
+  }, [boxes, hexagon, depth, ref])
 
   return (
     <instancedMesh
@@ -86,11 +88,6 @@ export function Books({
       castShadow
       receiveShadow
       frustumCulled={false}
-      onClick={(event) => {
-        if (event.instanceId === undefined) return
-        event.stopPropagation()
-        onSelect(event.instanceId)
-      }}
     >
       <boxGeometry args={[1, 1, 1]} />
       <meshStandardMaterial roughness={0.82} metalness={0.02} />

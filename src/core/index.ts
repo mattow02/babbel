@@ -6,7 +6,7 @@
  * (discipline posee dans CLAUDE.md, decision D8).
  */
 
-export { ALPHABET, RADIX, isSymbol, symbolOf, valueOf } from './alphabet.ts'
+export { ALPHABET, RADIX, RADIX_BIG, isSymbol, symbolOf, valueOf } from './alphabet.ts'
 export {
   HEXAGON_COUNT,
   addressOf,

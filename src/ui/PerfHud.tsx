@@ -1,4 +1,5 @@
 import { useLibraryStore } from '../store/useLibraryStore.ts'
+import { columnOf, floorOf } from '../scene/navigation/floors.ts'
 
 /** Raccourcit un numero de galerie, qui compte des milliers de chiffres. */
 function shortenGallery(hexagon: bigint): string {
@@ -18,8 +19,12 @@ export function PerfHud({ hexagon }: { hexagon: bigint }): React.ReactElement {
   return (
     <dl className="perf">
       <div>
+        <dt>étage</dt>
+        <dd>{shortenGallery(floorOf(hexagon))}</dd>
+      </div>
+      <div>
         <dt>galerie</dt>
-        <dd title={hexagon.toString(36)}>{shortenGallery(hexagon)}</dd>
+        <dd title={hexagon.toString(36)}>{shortenGallery(columnOf(hexagon))}</dd>
       </div>
       <div>
         <dt>images/s</dt>
