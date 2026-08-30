@@ -51,6 +51,8 @@ livre est généré à la volée dans le navigateur du visiteur.
 | `docs/captures/` | Captures de l'état du projet, phase par phase |
 
 **Avant toute session de dev : lire ROADMAP.md pour savoir où on en est.**
+La section « Ce qui n'est pas fait », en fin de ROADMAP, est la liste honnête
+des chantiers restants, par ordre d'importance.
 
 ## Les 3 faits techniques à ne jamais oublier
 
@@ -190,4 +192,12 @@ film. La contrainte technique et l'intention esthétique coïncident.
   **39 appels de rendu dehors, 53 dans la bibliothèque, 5,69 ms par image**
   effets compris. Deux défauts attrapés par les tests : le bourdon était un
   accord (octave exacte), et le comptage d'appels était faux avec un composeur
-  (D35). Prochaine étape : Phase 7, la finition.
+  (D35).
+- **2026-08-30 (suite)** — **Phase 7 terminée. Les sept phases sont faites.**
+  **Recherche par texte** livrée (D39, via le worker) avec **transcription dans
+  l'alphabet de Borges** (D40 : « Kafka » → « cafca »). **Mode dégradé** décidé
+  par une fonction pure et testée (D41), `prefers-reduced-motion` respecté.
+  Déploiement statique documenté. **207 tests verts.**
+  Vérifié en Chromium : on tape une phrase, le site calcule son adresse et ouvre
+  la page — première ligne = la phrase, reste blanc, URL partageable.
+  **Ce qui reste ouvert est listé en fin de `docs/ROADMAP.md`.**

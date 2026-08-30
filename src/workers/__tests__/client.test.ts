@@ -18,6 +18,9 @@ function createSpyEngine(): PageEngine & { calls: Address[]; settle: () => Promi
         setTimeout(() => resolve(`page:${address.page}`), 0)
       })
     },
+    locate(text: string) {
+      return Promise.resolve({ hexagon: BigInt(text.length), wall: 0, shelf: 0, volume: 0, page: 1 })
+    },
     dispose() {},
     async settle() {
       await new Promise((resolve) => setTimeout(resolve, 5))
@@ -98,6 +101,7 @@ describe('PageLibrary', () => {
   it('laisse remonter lechec du moteur', async () => {
     const failing: PageEngine = {
       compute: () => Promise.reject(new Error('worker mort')),
+      locate: () => Promise.reject(new Error('worker mort')),
       dispose() {},
     }
     const library = new PageLibrary({ engine: failing })
@@ -109,6 +113,7 @@ describe('PageLibrary', () => {
   it('avale silencieusement lechec dun prechargement', async () => {
     const failing: PageEngine = {
       compute: () => Promise.reject(new Error('worker mort')),
+      locate: () => Promise.reject(new Error('worker mort')),
       dispose() {},
     }
     const library = new PageLibrary({ engine: failing })
@@ -120,6 +125,26 @@ describe('PageLibrary', () => {
   it('produit bien le vrai texte de Borges avec le moteur direct', async () => {
     const library = new PageLibrary({ engine: createInlineEngine() })
     await expect(library.read(AT(42))).resolves.toBe(pageAt(AT(42)))
+  })
+})
+
+describe('la recherche', () => {
+  it('passe par le moteur, jamais par le thread appelant', async () => {
+    const library = new PageLibrary({ engine: createInlineEngine() })
+    const adresse = await library.locate('la bibliotheque est totale.')
+    await expect(library.read(adresse)).resolves.toBe(pageAt(adresse))
+  })
+
+  it('retrouve exactement la page quon vient de lire', async () => {
+    const library = new PageLibrary({ engine: createInlineEngine() })
+    const texte = await library.read(AT(77))
+    await expect(library.locate(texte)).resolves.toEqual(AT(77))
+  })
+
+  it('refuse de travailler apres dispose', async () => {
+    const library = new PageLibrary({ engine: createInlineEngine() })
+    library.dispose()
+    await expect(library.locate('a')).rejects.toThrow('liberee')
   })
 })
 

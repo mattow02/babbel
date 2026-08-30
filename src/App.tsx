@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import type { Address } from './core/index.ts'
 import { Gallery } from './scene/Gallery.tsx'
 import { Entry } from './ui/Entry.tsx'
@@ -7,6 +7,7 @@ import { useLibraryStore } from './store/useLibraryStore.ts'
 import { AddressBar } from './ui/AddressBar.tsx'
 import { PerfHud } from './ui/PerfHud.tsx'
 import { Reader } from './ui/Reader.tsx'
+import { Search } from './ui/Search.tsx'
 import { resolveKey } from './ui/navigation.ts'
 import { useAddress } from './ui/useAddress.ts'
 import { useLibrary } from './ui/useLibrary.ts'
@@ -31,6 +32,8 @@ export function App(): React.ReactElement {
   const muted = useLibraryStore((store) => store.muted)
   const toggleMuted = useLibraryStore((store) => store.toggleMuted)
   const ambience = useAmbience()
+  const profile = useLibraryStore((store) => store.profile)
+  const [recherche, setRecherche] = useState(false)
   const mode = useLibraryStore((store) => store.mode)
   const setMode = useLibraryStore((store) => store.setMode)
   const opened = useLibraryStore((store) => store.opened)
@@ -53,6 +56,14 @@ export function App(): React.ReactElement {
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent): void => {
       if (event.metaKey || event.ctrlKey || event.altKey) return
+      if (recherche) return
+      // « / » ouvre la recherche, ou que l'on soit. C'est le raccourci que
+      // tout le monde essaie.
+      if (event.key === '/') {
+        event.preventDefault()
+        setRecherche(true)
+        return
+      }
       if (event.key === 'Escape') {
         event.preventDefault()
         setMode(mode === 'reader' ? 'gallery' : 'reader')
@@ -68,7 +79,26 @@ export function App(): React.ReactElement {
     return () => {
       window.removeEventListener('keydown', onKeyDown)
     }
-  }, [address, goTo, mode, setMode])
+  }, [address, goTo, mode, setMode, recherche])
+
+  const panneau = recherche ? (
+    <Search
+      library={library}
+      onClose={() => {
+        setRecherche(false)
+      }}
+      onFound={(trouve) => {
+        goTo(trouve)
+        setHexagon(trouve.hexagon)
+        // Trouver une phrase interrompt tout le reste : on quitte la sequence
+        // d'arrivee s'il le faut, et l'on ouvre la page. C'est ce que le
+        // visiteur a demande.
+        enterLibrary()
+        setMode('reader')
+        setRecherche(false)
+      }}
+    />
+  ) : null
 
   if (stage === 'entry') {
     return (
@@ -78,7 +108,13 @@ export function App(): React.ReactElement {
           // il reveille le worker, et il lance la sequence.
           ambience.start()
           library.prefetch([ORIGIN])
-          begin()
+          /*
+           * Quand le visiteur demande moins d'animations, on ne lui impose pas
+           * trente secondes de travelling : on le pose directement dans la
+           * bibliotheque. Le Seuil reste accessible, mais il ne s'impose plus.
+           */
+          if (profile.sequence) begin()
+          else enterLibrary()
         }}
       />
     )
@@ -104,6 +140,7 @@ export function App(): React.ReactElement {
             </button>
           </div>
         </div>
+        {panneau}
       </div>
     )
   }
@@ -120,11 +157,15 @@ export function App(): React.ReactElement {
           <p className="overlay__hint">
             maintenir le <kbd>clic</kbd> pour avancer · curseur vers les bords pour regarder ·
             cliquer un volume pour l’ouvrir
+            <button type="button" className="overlay__son" onClick={() => { setRecherche(true) }}>
+              chercher une phrase
+            </button>
             <button type="button" className="overlay__son" onClick={toggleMuted}>
               {muted ? 'son coupé' : 'son'}
             </button>
           </p>
         </div>
+        {panneau}
       </div>
     )
   }
@@ -141,7 +182,14 @@ export function App(): React.ReactElement {
         <span><kbd>↑</kbd><kbd>↓</kbd> volume voisin</span>
         <span><kbd>Début</kbd><kbd>Fin</kbd> bords du volume</span>
         <span><kbd>Échap</kbd> retour à la galerie</span>
+        <span>
+          <kbd>/</kbd> chercher une phrase
+          <button type="button" className="overlay__son" onClick={toggleMuted}>
+            {muted ? 'son coupé' : 'son'}
+          </button>
+        </span>
       </footer>
+      {panneau}
     </div>
   )
 }

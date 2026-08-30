@@ -359,6 +359,43 @@ Sans le terme de bord, le cone aurait une arete franche et paraitrait solide.
 Quelques lignes de shader, aucune texture, un appel de rendu.
 Decide le 2026-08-30.
 
+
+### D39 — La recherche passe par le worker, comme le reste
+Le protocole du worker porte desormais deux demandes, une par sens de la
+bijection : `page` (adresse -> texte) et `locate` (texte -> adresse). La seconde
+coute autant que la premiere, et doit donc respecter la meme regle : le thread
+qui dessine ne calcule jamais. Le resultat n'est pas mis en cache — on ne
+cherche pas deux fois la meme phrase. Decide le 2026-08-30.
+
+### D40 — On transcrit au lieu de refuser
+L'alphabet de Borges n'a que 22 lettres : ni j, ni k, ni w, ni x, et aucun
+accent. Plutot que de rejeter ce que le visiteur tape, on le TRANSCRIT comme le
+ferait un copiste latin — « Kafka » devient « cafca », « bibliothèque » devient
+« bibliotheque » — et on lui dit ce qu'on a change.
+
+Ce n'est pas une commodite technique, c'est le sujet de la nouvelle : la
+bibliotheque contient tout ce qui peut s'ecrire avec ces 25 signes, et rien
+d'autre. Tout ce qu'on veut y chercher doit d'abord y entrer.
+
+Detail : les blancs consecutifs sont ramenes a un seul. Dans une page de Borges
+ils seraient legitimes, mais dans une barre de recherche ce ne sont que des
+fautes de frappe qui meneraient a une tout autre adresse.
+Decide le 2026-08-30.
+
+### D41 — La qualite se decide sur des indices, pas sur une mesure
+Aucune API ne dit honnetement de quoi une machine est capable. On lit donc des
+indices — pointeur grossier, memoire annoncee, nombre de coeurs, largeur
+d'ecran — et on choisit PRUDEMMENT : mieux vaut un telephone qui affiche moins
+et reste fluide qu'un telephone qui rame.
+
+Une demande de sobriete (`prefers-reduced-motion`) l'emporte sur tout le reste,
+y compris sur la machine la plus puissante : ce n'est pas une question de
+puissance, c'est une question de respect. Elle fait aussi sauter la sequence
+d'arrivee.
+
+La decision est une fonction pure, donc testable sans appareil.
+Decide le 2026-08-30.
+
 ## Ouvertes (à trancher avec l'utilisateur)
 
 _Aucune. Toutes les décisions de cadrage sont prises._

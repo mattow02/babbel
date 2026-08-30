@@ -10,12 +10,14 @@
  *     une ligne du client.
  */
 
-import { pageAt, type Address } from '../core/index.ts'
-import { isFailure, type PageRequest, type PageResponse } from './protocol.ts'
+import { locate, pageAt, type Address } from '../core/index.ts'
+import { isFailure, isPage, type WorkerRequest, type WorkerResponse } from './protocol.ts'
 
 export interface PageEngine {
   /** Rend les 3 200 caracteres d'une page. */
   compute(address: Address): Promise<string>
+  /** Calcule ou se trouve un texte. L'autre sens de la bijection. */
+  locate(text: string): Promise<Address>
   /** Libere les ressources. Idempotent. */
   dispose(): void
 }
@@ -30,19 +32,24 @@ export interface PageEngine {
  */
 export function createWorkerEngine(): PageEngine {
   const worker = new Worker(new URL('./page.worker.ts', import.meta.url), { type: 'module' })
-  const pending = new Map<number, { resolve: (text: string) => void; reject: (error: Error) => void }>()
+  const pending = new Map<
+    number,
+    { resolve: (value: never) => void; reject: (error: Error) => void }
+  >()
   let nextId = 0
   let disposed = false
 
-  worker.addEventListener('message', (event: MessageEvent<PageResponse>) => {
+  worker.addEventListener('message', (event: MessageEvent<WorkerResponse>) => {
     const response = event.data
     const slot = pending.get(response.id)
     if (!slot) return
     pending.delete(response.id)
     if (isFailure(response)) {
       slot.reject(new Error(response.error))
+    } else if (isPage(response)) {
+      ;(slot.resolve as unknown as (text: string) => void)(response.text)
     } else {
-      slot.resolve(response.text)
+      ;(slot.resolve as unknown as (address: Address) => void)(response.address)
     }
   })
 
@@ -52,16 +59,23 @@ export function createWorkerEngine(): PageEngine {
     pending.clear()
   })
 
+  /** Envoie une demande et attend sa reponse, quel qu'en soit le genre. */
+  function ask<T>(build: (id: number) => WorkerRequest): Promise<T> {
+    if (disposed) return Promise.reject(new Error('Moteur libere.'))
+    const id = nextId
+    nextId += 1
+    return new Promise<T>((resolve, reject) => {
+      pending.set(id, { resolve: resolve as unknown as (value: never) => void, reject })
+      worker.postMessage(build(id))
+    })
+  }
+
   return {
     compute(address) {
-      if (disposed) return Promise.reject(new Error('Moteur libere.'))
-      const id = nextId
-      nextId += 1
-      return new Promise<string>((resolve, reject) => {
-        pending.set(id, { resolve, reject })
-        const request: PageRequest = { id, address }
-        worker.postMessage(request)
-      })
+      return ask<string>((id) => ({ kind: 'page', id, address }))
+    },
+    locate(text) {
+      return ask<Address>((id) => ({ kind: 'locate', id, text }))
     },
     dispose() {
       if (disposed) return
@@ -86,6 +100,14 @@ export function createInlineEngine(): PageEngine {
       if (disposed) return Promise.reject(new Error('Moteur libere.'))
       try {
         return Promise.resolve(pageAt(address))
+      } catch (cause) {
+        return Promise.reject(cause instanceof Error ? cause : new Error(String(cause)))
+      }
+    },
+    locate(text) {
+      if (disposed) return Promise.reject(new Error('Moteur libere.'))
+      try {
+        return Promise.resolve(locate(text))
       } catch (cause) {
         return Promise.reject(cause instanceof Error ? cause : new Error(String(cause)))
       }

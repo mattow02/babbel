@@ -2,28 +2,29 @@
 /**
  * Le worker de generation.
  *
- * Il ne fait qu'une chose : recevoir une adresse, rendre 3 200 caracteres.
- * Aucun etat, aucun cache — le cache vit du cote du client, ou il est visible
- * et mesurable. Un worker sans etat est un worker qu'on peut tuer et relancer
- * sans rien perdre.
+ * Il repond a deux demandes : rendre le texte d'une adresse, ou calculer
+ * l'adresse d'un texte. Aucun etat, aucun cache — le cache vit du cote du
+ * client, ou il est visible et mesurable. Un worker sans etat est un worker
+ * qu'on peut tuer et relancer sans rien perdre.
  *
- * Regle d'or (CLAUDE.md) : le thread qui dessine ne calcule jamais. Meme si une
- * page ne coute que 0,6 ms, le principe protege le framerate pour toujours —
- * et il tiendra encore si le cout augmente un jour.
+ * Regle d'or (CLAUDE.md) : le thread qui dessine ne calcule jamais.
  */
 
-import { pageAt } from '../core/index.ts'
-import type { PageRequest, PageResponse } from './protocol.ts'
+import { locate, pageAt } from '../core/index.ts'
+import type { WorkerRequest, WorkerResponse } from './protocol.ts'
 
 const scope = self as unknown as DedicatedWorkerGlobalScope
 
-scope.addEventListener('message', (event: MessageEvent<PageRequest>) => {
-  const { id, address } = event.data
-  let response: PageResponse
+scope.addEventListener('message', (event: MessageEvent<WorkerRequest>) => {
+  const request = event.data
+  let response: WorkerResponse
   try {
-    response = { id, text: pageAt(address) }
+    response =
+      request.kind === 'page'
+        ? { id: request.id, text: pageAt(request.address) }
+        : { id: request.id, address: locate(request.text) }
   } catch (cause) {
-    response = { id, error: cause instanceof Error ? cause.message : String(cause) }
+    response = { id: request.id, error: cause instanceof Error ? cause.message : String(cause) }
   }
   scope.postMessage(response)
 })

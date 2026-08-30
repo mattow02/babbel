@@ -1,5 +1,25 @@
 import { create } from 'zustand'
 import type { Address } from '../core/index.ts'
+import { profileFor, readCapabilities, type Profile } from '../scene/quality.ts'
+
+/**
+ * Le profil de qualite, decide une fois pour toutes au demarrage.
+ *
+ * Hors navigateur — dans les tests — on prend le profil complet : il n'y a de
+ * toute facon rien a afficher.
+ */
+function initialProfile(): Profile {
+  if (typeof window === 'undefined') {
+    return profileFor({
+      coarsePointer: false,
+      memory: undefined,
+      cores: undefined,
+      width: 1920,
+      reducedMotion: false,
+    })
+  }
+  return profileFor(readCapabilities())
+}
 
 /**
  * L'etat qui doit vivre HORS de React.
@@ -37,6 +57,9 @@ export interface Perf {
 }
 
 interface LibraryState {
+  /** Ce que cette machine peut tenir. Voir scene/quality.ts. */
+  profile: Profile
+
   stage: Stage
   begin: () => void
   enterLibrary: () => void
@@ -62,6 +85,8 @@ interface LibraryState {
 }
 
 export const useLibraryStore = create<LibraryState>((set) => ({
+  profile: initialProfile(),
+
   stage: 'entry',
   begin: () => {
     set({ stage: 'threshold' })

@@ -44,6 +44,7 @@ export function Library({
   onSelectBook: (instanceId: number) => void
 }): React.ReactElement {
   const hexagon = useLibraryStore((state) => state.hexagon)
+  const profile = useLibraryStore((state) => state.profile)
 
   const origins = useMemo(() => galleryOrigins(depth), [depth])
   const stone = useMemo(() => origins.flatMap((origin) => stoneBoxes(origin)), [origins])
@@ -57,7 +58,10 @@ export function Library({
         trous. Toute la lumiere vient des lampes spheriques.
       */}
       <ambientLight color={PALETTE.calcaire} intensity={0.045} />
-      <Lamps origins={origins} shadowIndex={Math.floor(origins.length / 2)} />
+      <Lamps
+        origins={origins}
+        shadowIndex={profile.shadows ? Math.floor(origins.length / 2) : -1}
+      />
 
       <Slabs origins={origins} />
       <Boxes boxes={stone} color={PALETTE.calcaire} roughness={0.94} castShadow />
@@ -81,7 +85,7 @@ export function Library({
 
       {/* La poussiere qui tourne dans la lumiere de la galerie courante. */}
       <Dust
-        count={520}
+        count={profile.dust}
         radius={2.2}
         height={ROOM_HEIGHT}
         color={PALETTE.lampe}
@@ -89,7 +93,7 @@ export function Library({
         size={6}
       />
 
-      <Effects ambiance="bibliotheque" />
+      <Effects ambiance="bibliotheque" complet={profile.fullEffects} />
     </>
   )
 }

@@ -481,3 +481,120 @@ kbd {
   border-color: var(--or);
   color: var(--soleil);
 }
+
+/* --------------------------------------------------------------- recherche */
+
+.recherche {
+  position: fixed;
+  inset: 0;
+  z-index: 6;
+  display: grid;
+  place-items: center;
+  padding: var(--gouttiere);
+  background: rgb(9 7 6 / 78%);
+  backdrop-filter: blur(6px);
+  animation: seuil-apparait 260ms ease-out both;
+}
+
+.recherche__panneau {
+  width: min(100%, 56ch);
+  padding: clamp(1.4rem, 4vw, 2.4rem);
+  border: 1px solid var(--brun-sourd);
+  border-radius: 3px;
+  background: linear-gradient(180deg, #17120e, #0f0c0a);
+  box-shadow: 0 40px 90px rgb(0 0 0 / 55%);
+}
+
+.recherche__label {
+  display: block;
+  margin-bottom: 0.9rem;
+  color: var(--creme);
+  font-size: 1.05rem;
+}
+
+.recherche__champ {
+  width: 100%;
+  padding: 0.7rem 0.9rem;
+  border: 1px solid var(--brun-sourd);
+  border-radius: 2px;
+  background: #0b0908;
+  color: var(--soleil);
+  font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  font-size: 1rem;
+  letter-spacing: 0.02em;
+}
+
+.recherche__champ:focus {
+  border-color: var(--or);
+  outline: none;
+}
+
+.recherche__champ::placeholder {
+  color: #4a3d31;
+}
+
+.recherche__transcrit,
+.recherche__note,
+.recherche__pied,
+.recherche__echec {
+  margin: 0.7rem 0 0;
+  font-size: 0.8rem;
+  line-height: 1.5;
+  color: var(--ombre-chaude);
+}
+
+.recherche__transcrit code {
+  color: var(--creme);
+  word-break: break-word;
+}
+
+.recherche__note code {
+  color: var(--soleil);
+}
+
+.recherche__echec {
+  color: #b4553f;
+}
+
+.recherche__pied {
+  padding-top: 0.9rem;
+  border-top: 1px solid var(--brun-sourd);
+  font-size: 0.74rem;
+}
+
+.recherche__actions {
+  display: flex;
+  gap: 0.6rem;
+  margin-top: 1.4rem;
+}
+
+.recherche__valider,
+.recherche__fermer {
+  padding: 0.5rem 1.4rem;
+  border: 1px solid var(--brun-sourd);
+  border-radius: 2px;
+  background: transparent;
+  color: var(--sable);
+  font: inherit;
+  font-size: 0.9rem;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: border-color 200ms ease, color 200ms ease;
+}
+
+.recherche__valider {
+  border-color: var(--or);
+  color: var(--soleil);
+}
+
+.recherche__valider:disabled {
+  border-color: var(--brun-sourd);
+  color: #4a3d31;
+  cursor: not-allowed;
+}
+
+.recherche__valider:not(:disabled):hover,
+.recherche__fermer:hover {
+  border-color: var(--or);
+  color: var(--soleil);
+}

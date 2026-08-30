@@ -139,6 +139,18 @@ export class PageLibrary {
     }
   }
 
+  /**
+   * Ou se trouve ce texte.
+   *
+   * L'autre sens de la bijection (D14). Le resultat n'est pas mis en cache :
+   * on ne cherche pas deux fois la meme chose, et le calcul coute moins d'une
+   * milliseconde.
+   */
+  locate(text: string): Promise<Address> {
+    if (this.#disposed) return Promise.reject(new Error('Bibliotheque liberee.'))
+    return this.#engine.locate(text)
+  }
+
   /** Vide le cache sans liberer le moteur. */
   clear(): void {
     this.#cache.clear()

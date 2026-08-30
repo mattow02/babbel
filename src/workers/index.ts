@@ -14,4 +14,4 @@ export {
   type PageLibraryStats,
 } from './client.ts'
 export { DEFAULT_RADIUS, readingNeighbourhood } from './neighbourhood.ts'
-export { isFailure, type PageRequest, type PageResponse } from './protocol.ts'
+export { isFailure, isPage, type WorkerRequest, type WorkerResponse } from './protocol.ts'

@@ -1,6 +1,6 @@
 # Roadmap — Babbel
 
-État : **Phase 6 terminée. Prochaine étape : Phase 7 (finition).**
+État : **Les sept phases sont terminées.** Reste ouvert : voir « Ce qui n'est pas fait » en fin de document.
 Mise à jour : 2026-08-29
 
 Règle : une phase n'est close que si ses critères de sortie sont vérifiés.
@@ -250,8 +250,47 @@ ligne : c'est une optimisation de phase 6/7, pas un prérequis.
 de cuisson hors ligne et n'est pas fait ; le marbre veiné et le sol réfléchissant
 non plus. Les montagnes gardent une silhouette un peu conique.
 
-## Phase 7 — Finition
-- [ ] Mode dégradé mobile
-- [ ] Recherche par texte (bijection inverse) exposée dans l'UI
-- [ ] Accessibilité de l'overlay, réduction des animations
-- [ ] Déploiement statique
+## Phase 7 — Finition ✅ (2026-08-30)
+- [x] **Recherche par texte** — la contrepartie de la bijection, promise en
+      phase 1 (D14). Le calcul passe par le worker (D39)
+- [x] **Transcription dans l'alphabet de Borges** (D40) : « Kafka » → « cafca »,
+      « bibliothèque » → « bibliotheque », accents retirés, j/k/w/x transcrits
+- [x] **Mode dégradé** décidé par une fonction pure et testée (`scene/quality.ts`)
+- [x] `prefers-reduced-motion` respecté : la séquence d'arrivée ne s'impose plus
+- [x] Déploiement statique documenté, `vercel.json`, métadonnées de partage
+- [x] 26 tests supplémentaires (207 au total)
+
+**Vérifié dans Chromium, de bout en bout :** on tape « Kafka a écrit dans la
+bibliothèque », le site l'écrit « cafca a ecrit dans la bibliotheque » en
+expliquant pourquoi, puis **calcule** son adresse — galerie `70ze8o0zbtso…`,
+mur 3, étagère 1, volume 29, page 241 — et ouvre la page. La phrase est sur la
+première ligne, le reste est blanc, le format reste 40 × 80, l'URL de 2 902
+caractères est partageable.
+
+**Déploiement :** aucune réécriture de route n'est nécessaire, puisque l'adresse
+vit dans le fragment (D20). `npm run build` puis servir `dist/`, n'importe où.
+
+
+---
+
+## Ce qui n'est pas fait
+
+Honnêtement, et par ordre d'importance :
+
+1. **L'ouverture d'un volume au clic n'est pas vérifiée de bout en bout.** Le
+   calcul est couvert par 13 tests, mais le clic lui-même n'a jamais pu être
+   déclenché dans le navigateur piloté : R3F ignore les événements de pointeur
+   synthétiques, et le clic réel de Playwright attend une stabilité d'image
+   impossible avec `requestAnimationFrame` bridé. **À essayer à la main en
+   premier.**
+2. **L'éclairage précalculé du hall** (D16). L'extérieur n'en a pas besoin — il
+   n'a qu'une source. Le hall le réclame, et cela suppose une chaîne de cuisson
+   hors ligne : un chantier, pas une itération.
+3. **Marbre veiné et sol réfléchissant** (DIRECTION-ARTISTIQUE § 5). Le sol poli
+   est en place mais ne réfléchit pas encore.
+4. **La silhouette des montagnes** reste un peu trop conique.
+5. **Navigation verticale.** L'escalier en colimaçon est décoratif : on ne
+   change pas d'étage. La bibliothèque est pour l'instant une ligne de galeries,
+   pas un volume.
+6. **Aucun test sur un vrai appareil mobile.** Le mode dégradé est décidé par
+   une fonction testée, mais son rendu n'a été vu que sur ordinateur.

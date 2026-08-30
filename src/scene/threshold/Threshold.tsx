@@ -7,6 +7,7 @@ import { Exterior } from './Exterior.tsx'
 import { SEUIL } from './palette.ts'
 import { Sky } from './Sky.tsx'
 import { INSIDE_AT, THRESHOLD_DURATION, cameraAt } from './sequence.ts'
+import { useLibraryStore } from '../../store/useLibraryStore.ts'
 import { Dust } from '../effects/Dust.tsx'
 import { Effects } from '../effects/Effects.tsx'
 import { Halo, LightShaft } from '../effects/LightShaft.tsx'
@@ -24,6 +25,7 @@ import { ATRIUM_RADIUS, ATRIUM_WALL_HEIGHT, CUBE_SIZE, CUBE_Y } from './dimensio
  * ce qui garantit que la premiere impression est la meme pour tout le monde.
  */
 export function Threshold({ onFinish }: { onFinish: () => void }): React.ReactElement {
+  const profile = useLibraryStore((state) => state.profile)
   const camera = useThree((state) => state.camera)
   const elapsed = useRef(0)
   const done = useRef(false)
@@ -72,14 +74,14 @@ export function Threshold({ onFinish }: { onFinish: () => void }): React.ReactEl
         />
         <Halo position={[0, CUBE_Y, 0]} radius={CUBE_SIZE * 2.6} color={SEUIL.or} strength={0.4} />
         <Dust
-          count={1400}
+          count={Math.round(profile.dust * 2.7)}
           radius={ATRIUM_RADIUS * 0.42}
           height={ATRIUM_WALL_HEIGHT * 1.2}
           color={SEUIL.soleil}
           strength={0.3}
           size={9}
         />
-        <Effects ambiance="hall" />
+        <Effects ambiance="hall" complet={profile.fullEffects} />
       </>
     )
   }
@@ -103,7 +105,7 @@ export function Threshold({ onFinish }: { onFinish: () => void }): React.ReactEl
         color={SEUIL.soleil}
         intensity={3.1}
         position={[-190, 70, 230]}
-        castShadow
+        castShadow={profile.shadows}
         shadow-mapSize-width={2048}
         shadow-mapSize-height={2048}
         shadow-camera-near={1}
@@ -118,7 +120,7 @@ export function Threshold({ onFinish }: { onFinish: () => void }): React.ReactEl
 
       <Exterior />
 
-      <Effects ambiance="exterieur" />
+      <Effects ambiance="exterieur" complet={profile.fullEffects} />
 
       {/* Un halo chaud pose sur le dome, cote soleil : le liseré des captures. */}
       <pointLight

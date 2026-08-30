@@ -78,9 +78,28 @@ const REGLAGES: Record<Ambiance, Reglages> = {
   },
 }
 
-export function Effects({ ambiance }: { ambiance: Ambiance }): React.ReactElement {
+/**
+ * @param complet quand il est faux, on ne garde que le vignettage — le seul
+ *   effet dont l'image ne peut pas se passer, et le moins cher. C'est le mode
+ *   des appareils modestes (scene/quality.ts).
+ */
+export function Effects({
+  ambiance,
+  complet = true,
+}: {
+  ambiance: Ambiance
+  complet?: boolean
+}): React.ReactElement {
   const r = REGLAGES[ambiance]
   const decalage = useMemo(() => new Vector2(r.aberration, r.aberration * 0.6), [r.aberration])
+
+  if (!complet) {
+    return (
+      <EffectComposer multisampling={0} enableNormalPass={false}>
+        <Vignette eskil={false} offset={r.vignetteFondu} darkness={r.vignette} />
+      </EffectComposer>
+    )
+  }
 
   return (
     <EffectComposer

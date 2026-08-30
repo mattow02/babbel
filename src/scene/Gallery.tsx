@@ -9,7 +9,12 @@ import { Threshold } from './threshold/Threshold.tsx'
 import { PALETTE } from './materials/palette.ts'
 import { EYE_HEIGHT, usePlayer } from './navigation/usePlayer.ts'
 
-/** Profondeur de galeries visibles de part et d'autre. 1 => trois galeries. */
+/**
+ * Profondeur de galeries visibles de part et d'autre.
+ *
+ * Fixee par le profil de qualite (scene/quality.ts) : trois galeries sur une
+ * machine confortable, une seule sur un appareil modeste.
+ */
 export const DEPTH = 1
 
 /**
@@ -20,7 +25,7 @@ export const DEPTH = 1
  * deplacement et le gestionnaire de designation sont crees au meme endroit, il
  * n'y a donc rien a se passer entre eux.
  */
-function Scene(): React.ReactElement {
+function Scene({ depth }: { depth: number }): React.ReactElement {
   const player = usePlayer()
   const hexagon = useLibraryStore((state) => state.hexagon)
   const open = useLibraryStore((state) => state.open)
@@ -29,7 +34,7 @@ function Scene(): React.ReactElement {
     (instanceId: number) => {
       // Un appui long est une marche, pas une designation.
       if (!player.isClick()) return
-      const approach = approachFor(instanceId, DEPTH, hexagon, EYE_HEIGHT)
+      const approach = approachFor(instanceId, depth, hexagon, EYE_HEIGHT)
       if (!approach) return
 
       /*
@@ -45,10 +50,10 @@ function Scene(): React.ReactElement {
         },
       )
     },
-    [player, hexagon, open],
+    [player, hexagon, open, depth],
   )
 
-  return <Library depth={DEPTH} onSelectBook={onSelectBook} />
+  return <Library depth={depth} onSelectBook={onSelectBook} />
 }
 
 /**
@@ -63,11 +68,12 @@ function Scene(): React.ReactElement {
 export function Gallery(): React.ReactElement {
   const stage = useLibraryStore((state) => state.stage)
   const enterLibrary = useLibraryStore((state) => state.enterLibrary)
+  const profile = useLibraryStore((state) => state.profile)
 
   return (
     <Canvas
-      shadows="percentage"
-      dpr={[1, 1.5]}
+      shadows={profile.shadows ? 'percentage' : false}
+      dpr={profile.dpr}
       gl={{ antialias: true, toneMapping: ACESFilmicToneMapping, toneMappingExposure: 0.86 }}
       /*
        * Une seule toile pour les deux mondes. `far` doit porter jusqu'aux
@@ -83,7 +89,7 @@ export function Gallery(): React.ReactElement {
         <>
           <color attach="background" args={[PALETTE.nuit]} />
           <fogExp2 attach="fog" args={[PALETTE.nuit, 0.085]} />
-          <Scene />
+          <Scene depth={profile.depth} />
         </>
       )}
     </Canvas>
