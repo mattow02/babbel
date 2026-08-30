@@ -7,6 +7,10 @@ import { Exterior } from './Exterior.tsx'
 import { SEUIL } from './palette.ts'
 import { Sky } from './Sky.tsx'
 import { INSIDE_AT, THRESHOLD_DURATION, cameraAt } from './sequence.ts'
+import { Dust } from '../effects/Dust.tsx'
+import { Effects } from '../effects/Effects.tsx'
+import { Halo, LightShaft } from '../effects/LightShaft.tsx'
+import { ATRIUM_RADIUS, ATRIUM_WALL_HEIGHT, CUBE_SIZE, CUBE_Y } from './dimensions.ts'
 
 /**
  * Le Seuil : la sequence d'arrivee.
@@ -54,6 +58,28 @@ export function Threshold({ onFinish }: { onFinish: () => void }): React.ReactEl
         <color attach="background" args={['#0f0c09']} />
         <fogExp2 attach="fog" args={['#0f0c09', 0.012]} />
         <Atrium />
+
+        {/*
+          Le rai de l'oculus, tombant sur le cube. C'est le plan de la
+          capture 4 : une seule colonne de lumiere dans une salle noire.
+        */}
+        <LightShaft
+          position={[0, ATRIUM_WALL_HEIGHT * 0.62, 0]}
+          radius={ATRIUM_RADIUS * 0.34}
+          height={ATRIUM_WALL_HEIGHT * 1.5}
+          color={SEUIL.soleil}
+          strength={0.24}
+        />
+        <Halo position={[0, CUBE_Y, 0]} radius={CUBE_SIZE * 2.6} color={SEUIL.or} strength={0.4} />
+        <Dust
+          count={1400}
+          radius={ATRIUM_RADIUS * 0.42}
+          height={ATRIUM_WALL_HEIGHT * 1.2}
+          color={SEUIL.soleil}
+          strength={0.3}
+          size={9}
+        />
+        <Effects ambiance="hall" />
       </>
     )
   }
@@ -91,6 +117,8 @@ export function Threshold({ onFinish }: { onFinish: () => void }): React.ReactEl
       <hemisphereLight color={SEUIL.cielBas} groundColor={SEUIL.plaine} intensity={0.55} />
 
       <Exterior />
+
+      <Effects ambiance="exterieur" />
 
       {/* Un halo chaud pose sur le dome, cote soleil : le liseré des captures. */}
       <pointLight

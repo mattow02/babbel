@@ -68,7 +68,7 @@ export function Gallery(): React.ReactElement {
     <Canvas
       shadows="percentage"
       dpr={[1, 1.5]}
-      gl={{ antialias: true, toneMapping: ACESFilmicToneMapping, toneMappingExposure: 0.95 }}
+      gl={{ antialias: true, toneMapping: ACESFilmicToneMapping, toneMappingExposure: 0.86 }}
       /*
        * Une seule toile pour les deux mondes. `far` doit porter jusqu'aux
        * montagnes du Seuil ; le brouillard de la bibliotheque se charge de

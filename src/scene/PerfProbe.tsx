@@ -24,7 +24,30 @@ export function PerfProbe(): null {
   // `performance.now()` au rendu est impur et donne des resultats instables.
   const depuis = useRef(0)
 
+  /*
+   * Avec un composeur d'effets, `gl.info` est remis a zero a chaque PASSE :
+   * lu tel quel, il ne rapporte que la derniere passe, soit « 1 appel ». On
+   * desactive donc la remise a zero automatique et on la fait nous-memes, une
+   * fois par image : le compteur totalise alors la scene ET le post-traitement,
+   * ce qui est le seul chiffre honnete.
+   */
+  useEffect(() => {
+    gl.info.autoReset = false
+    return () => {
+      gl.info.autoReset = true
+    }
+  }, [gl])
+
+  const derniersAppels = useRef(0)
+  const derniersTriangles = useRef(0)
+
   useFrame(() => {
+    // On lit le total de CETTE image, puis on remet le compteur a zero. Sans
+    // cela, `gl.info` cumulerait toutes les images depuis le dernier releve.
+    derniersAppels.current = gl.info.render.calls
+    derniersTriangles.current = gl.info.render.triangles
+    gl.info.reset()
+
     const maintenant = performance.now()
     if (depuis.current === 0) {
       depuis.current = maintenant
@@ -36,14 +59,14 @@ export function PerfProbe(): null {
 
     const releve = {
       fps: Math.round((images.current * 1000) / ecoule),
-      calls: gl.info.render.calls,
-      triangles: gl.info.render.triangles,
+      calls: derniersAppels.current,
+      triangles: derniersTriangles.current,
     }
     setPerf(releve)
     ;(window as unknown as { __babbel?: unknown }).__babbel = releve
     images.current = 0
     depuis.current = maintenant
-  })
+  }, 2)
 
   /*
    * Un banc d'essai appelable de l'exterieur.

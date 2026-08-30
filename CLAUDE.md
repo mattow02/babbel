@@ -81,6 +81,9 @@ livre est généré à la volée dans le navigateur du visiteur.
   `landscape.ts`, `sequence.ts`).
 - Pour dérégler un alignement, passer par `scene/hash.ts` — **jamais** par une
   simple multiplication, qui est affine et produit un motif périodique (D32).
+- Ce qui peut être une **fonction du temps** ne doit pas devenir un état : la
+  poussière est animée dans le shader, sans coût processeur (D37).
+- Rien n'est téléchargé : ni texture, ni police, ni son. Tout est calculé.
 - Zéro allocation et zéro `setState` React dans `useFrame`.
 - Le test `inverse(forward(x)) === x` est le test le plus important du projet.
   S'il casse, tout est faux. Il vit dans `src/core/__tests__/bijection.test.ts`.
@@ -179,4 +182,12 @@ film. La contrainte technique et l'intention esthétique coïncident.
   bibliothèque. 171 tests verts, 20-22 appels de rendu dehors, 6 dans le hall.
   Deux défauts visuels attrapés : hachage affine donnant des motifs périodiques
   (D32) et caissons saillants faute d'inclinaison (D33).
-  Prochaine étape : Phase 6, l'esthétique.
+- **2026-08-30 (suite)** — **Phase 6 terminée : l'esthétique.** Post-traitement
+  réglé par ambiance (vignettage, bloom, grain, aberration), faisceaux et halos
+  en volume par shader additif (D38), poussière animée entièrement dans le
+  shader (D37), **son d'ambiance synthétisé** — aucun fichier audio (D36) — et
+  écran d'entrée qui autorise le son et réveille le worker. 181 tests verts.
+  **39 appels de rendu dehors, 53 dans la bibliothèque, 5,69 ms par image**
+  effets compris. Deux défauts attrapés par les tests : le bourdon était un
+  accord (octave exacte), et le comptage d'appels était faux avec un composeur
+  (D35). Prochaine étape : Phase 7, la finition.

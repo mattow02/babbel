@@ -21,10 +21,14 @@ export type Mode = 'gallery' | 'reader'
 /**
  * Ou en est le visiteur dans le site.
  *
+ * `entry`     : l'ecran d'entree. Il existe pour une raison technique autant
+ *               qu'esthetique : aucun navigateur n'autorise le son avant un
+ *               geste du visiteur, et c'est aussi le moment ou l'on reveille
+ *               le worker de generation.
  * `threshold` : la sequence d'arrivee (le Seuil, decision D11).
  * `library`   : la bibliotheque infinie, ou l'on marche et l'on lit.
  */
-export type Stage = 'threshold' | 'library'
+export type Stage = 'entry' | 'threshold' | 'library'
 
 export interface Perf {
   readonly fps: number
@@ -34,7 +38,11 @@ export interface Perf {
 
 interface LibraryState {
   stage: Stage
+  begin: () => void
   enterLibrary: () => void
+
+  muted: boolean
+  toggleMuted: () => void
 
   mode: Mode
   setMode: (mode: Mode) => void
@@ -54,9 +62,17 @@ interface LibraryState {
 }
 
 export const useLibraryStore = create<LibraryState>((set) => ({
-  stage: 'threshold',
+  stage: 'entry',
+  begin: () => {
+    set({ stage: 'threshold' })
+  },
   enterLibrary: () => {
     set({ stage: 'library' })
+  },
+
+  muted: false,
+  toggleMuted: () => {
+    set((state) => ({ muted: !state.muted }))
   },
 
   mode: 'gallery',

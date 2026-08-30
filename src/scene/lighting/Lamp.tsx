@@ -31,9 +31,9 @@ export function Lamps({
           </mesh>
           <pointLight
             color={PALETTE.lampe}
-            intensity={15}
-            distance={9.5}
-            decay={2.15}
+            intensity={11}
+            distance={8.5}
+            decay={2.3}
             castShadow={index === shadowIndex}
             shadow-mapSize-width={1024}
             shadow-mapSize-height={1024}

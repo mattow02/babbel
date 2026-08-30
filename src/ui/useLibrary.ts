@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useState } from 'react'
 import { PageLibrary } from '../workers/index.ts'
 import type { Address } from '../core/index.ts'
 
@@ -11,9 +11,9 @@ import type { Address } from '../core/index.ts'
  * premiere page. C'est le point releve a la fin de la phase 2.
  */
 export function useLibrary(warmUpAt: Address): PageLibrary {
-  const ref = useRef<PageLibrary | null>(null)
-  ref.current ??= new PageLibrary()
-  const library = ref.current
+
+  // Creee une seule fois, hors du rendu.
+  const [library] = useState(() => new PageLibrary())
 
   useEffect(() => {
     library.prefetch([warmUpAt])

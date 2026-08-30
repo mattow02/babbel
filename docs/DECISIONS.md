@@ -320,6 +320,45 @@ succession de plans composes, pas un travelling continu. Cela evite aussi d'avoi
 a percer une demi-sphere de 46 metres de rayon, ce qui n'apporterait rien a
 l'image. Decide le 2026-08-30.
 
+
+### D35 — Compter les appels de rendu avec un composeur d'effets
+Avec un `EffectComposer`, `gl.info` est remis a zero A CHAQUE PASSE. Lu
+naivement, le releve ne rapporte que la derniere passe — « 1 appel » — et lu
+avec la remise a zero desactivee sans precaution, il cumule toutes les images
+depuis le dernier affichage — « 2 691 appels ». Les deux sont faux.
+
+La bonne facon : desactiver `info.autoReset`, lire le total a la fin de chaque
+image, remettre a zero soi-meme, et ne PUBLIER le chiffre que quatre fois par
+seconde. Le releve se place a une priorite superieure a celle du composeur pour
+passer apres lui. Corrige le 2026-08-30.
+
+### D36 — Le son est synthetise, jamais charge
+Comme les livres, l'ambiance est calculee dans le navigateur : quatre
+oscillateurs graves volontairement NON harmoniques les uns des autres, chacun
+avec sa propre respiration lente, plus un bruit brun filtre. Des rapports
+entiers donneraient un accord, donc de la musique ; on cherche la rumeur d'un
+tres grand volume de pierre. Un test verifie explicitement l'absence
+d'harmonique exact — il a d'ailleurs attrape une octave dans la premiere
+version.
+
+Aucun fichier audio a telecharger, et le son ne demarre qu'au geste d'entree,
+comme l'exigent les navigateurs. Decide le 2026-08-30.
+
+### D37 — La poussiere est animee dans le shader, pas sur le processeur
+Les grains ne sont pas simules : leur trajectoire est calculee dans le vertex
+shader a partir du temps. Il n'y a donc aucune ecriture de tampon par image, et
+le cout cote processeur est exactement nul — un seul appel de rendu pour tout
+le nuage. Meme discipline que pour le reste : ce qui peut etre une fonction du
+temps ne doit pas devenir un etat. Decide le 2026-08-30.
+
+### D38 — Le volumetrique est simule par un cone additif
+Le rendu temps reel ne fait pas de volumetrique gratuitement. Un cone en
+melange additif, dont l'opacite decroit vers le bas ET surtout vers les bords
+(la ou l'on voit la surface de biais), suffit a lire comme un rai de lumiere.
+Sans le terme de bord, le cone aurait une arete franche et paraitrait solide.
+Quelques lignes de shader, aucune texture, un appel de rendu.
+Decide le 2026-08-30.
+
 ## Ouvertes (à trancher avec l'utilisateur)
 
 _Aucune. Toutes les décisions de cadrage sont prises._

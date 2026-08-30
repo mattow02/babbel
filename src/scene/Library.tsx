@@ -6,6 +6,10 @@ import { Books } from './hexagon/Books.tsx'
 import { Slabs } from './hexagon/Slabs.tsx'
 import { stoneBoxes, woodBoxes } from './hexagon/parts.ts'
 import { stairBoxes } from './hexagon/stairs.ts'
+import { Dust } from './effects/Dust.tsx'
+import { Effects } from './effects/Effects.tsx'
+import { Halo } from './effects/LightShaft.tsx'
+import { LAMP_RADIUS, LAMP_Y, ROOM_HEIGHT } from './dimensions.ts'
 import { Lamps } from './lighting/Lamp.tsx'
 import { PALETTE } from './materials/palette.ts'
 
@@ -60,6 +64,32 @@ export function Library({
       <Boxes boxes={wood} color={PALETTE.bois} roughness={0.75} castShadow />
       <Boxes boxes={stairs} color={PALETTE.bois} roughness={0.6} metalness={0.25} castShadow />
       <Books origins={origins} hexagon={hexagon} depth={depth} onSelect={onSelectBook} />
+
+      {/*
+        L'aureole des lampes. Le bloom seul ne suffit pas quand la source est
+        petite : il faut lui donner du volume.
+      */}
+      {origins.map((origin, index) => (
+        <Halo
+          key={index}
+          position={[origin.x, LAMP_Y, origin.z]}
+          radius={LAMP_RADIUS * 5.5}
+          color={PALETTE.lampe}
+          strength={0.36}
+        />
+      ))}
+
+      {/* La poussiere qui tourne dans la lumiere de la galerie courante. */}
+      <Dust
+        count={520}
+        radius={2.2}
+        height={ROOM_HEIGHT}
+        color={PALETTE.lampe}
+        strength={0.16}
+        size={6}
+      />
+
+      <Effects ambiance="bibliotheque" />
     </>
   )
 }

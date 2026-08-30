@@ -1,6 +1,8 @@
 import { useEffect } from 'react'
 import type { Address } from './core/index.ts'
 import { Gallery } from './scene/Gallery.tsx'
+import { Entry } from './ui/Entry.tsx'
+import { useAmbience } from './ui/useAmbience.ts'
 import { useLibraryStore } from './store/useLibraryStore.ts'
 import { AddressBar } from './ui/AddressBar.tsx'
 import { PerfHud } from './ui/PerfHud.tsx'
@@ -24,7 +26,11 @@ export function App(): React.ReactElement {
   const state = usePageText(library, address)
 
   const stage = useLibraryStore((store) => store.stage)
+  const begin = useLibraryStore((store) => store.begin)
   const enterLibrary = useLibraryStore((store) => store.enterLibrary)
+  const muted = useLibraryStore((store) => store.muted)
+  const toggleMuted = useLibraryStore((store) => store.toggleMuted)
+  const ambience = useAmbience()
   const mode = useLibraryStore((store) => store.mode)
   const setMode = useLibraryStore((store) => store.setMode)
   const opened = useLibraryStore((store) => store.opened)
@@ -64,6 +70,20 @@ export function App(): React.ReactElement {
     }
   }, [address, goTo, mode, setMode])
 
+  if (stage === 'entry') {
+    return (
+      <Entry
+        onEnter={() => {
+          // Le geste d'entree fait trois choses d'un coup : il autorise le son,
+          // il reveille le worker, et il lance la sequence.
+          ambience.start()
+          library.prefetch([ORIGIN])
+          begin()
+        }}
+      />
+    )
+  }
+
   if (stage === 'threshold') {
     return (
       <div className="shell shell--gallery">
@@ -75,9 +95,14 @@ export function App(): React.ReactElement {
             <span>La Bibliothèque</span>
             <span>de Babel</span>
           </p>
-          <button type="button" className="seuil__passer" onClick={enterLibrary}>
-            entrer directement
-          </button>
+          <div className="seuil__actions">
+            <button type="button" className="seuil__passer" onClick={toggleMuted}>
+              {muted ? 'son coupé' : 'son'}
+            </button>
+            <button type="button" className="seuil__passer" onClick={enterLibrary}>
+              entrer directement
+            </button>
+          </div>
         </div>
       </div>
     )
@@ -95,6 +120,9 @@ export function App(): React.ReactElement {
           <p className="overlay__hint">
             maintenir le <kbd>clic</kbd> pour avancer · curseur vers les bords pour regarder ·
             cliquer un volume pour l’ouvrir
+            <button type="button" className="overlay__son" onClick={toggleMuted}>
+              {muted ? 'son coupé' : 'son'}
+            </button>
           </p>
         </div>
       </div>

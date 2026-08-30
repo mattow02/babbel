@@ -1,6 +1,6 @@
 # Roadmap — Babbel
 
-État : **Phase 5bis terminée. Prochaine étape : Phase 6 (esthétique).**
+État : **Phase 6 terminée. Prochaine étape : Phase 7 (finition).**
 Mise à jour : 2026-08-29
 
 Règle : une phase n'est close que si ses critères de sortie sont vérifiés.
@@ -215,15 +215,40 @@ L'extérieur n'en a pas besoin — il n'a qu'une source, le soleil. C'est
 l'intérieur du hall qui le réclame, et cela suppose une chaîne de cuisson hors
 ligne : c'est une optimisation de phase 6/7, pas un prérequis.
 
-## Phase 6 — Esthétique
-La phase où on a le droit d'être ambitieux, parce que le reste tient.
+## Phase 6 — Esthétique ✅ (2026-08-30)
 - [x] Direction artistique arrêtée (voir DIRECTION-ARTISTIQUE.md)
-- [ ] Lightmaps bakées du Seuil
-- [ ] Matériaux : calcaire mat, marbre veiné, or émissif, sol réfléchissant
-- [ ] Post-processing : bloom, grain, vignettage, aberration
-- [ ] Son d'ambiance
-- [ ] Écran d'entrée
-**Sortie :** ça a une identité, ça ne ressemble pas à une démo three.js.
+- [x] **Post-traitement** réglé par ambiance (extérieur / hall / bibliothèque) :
+      vignettage, bloom, grain, aberration chromatique, saturation, contraste
+- [x] **Faisceaux de lumière et halos** en volume, par shader additif
+- [x] **Poussière en suspension**, animée entièrement dans le shader — aucune
+      écriture de tampon par image, coût processeur nul
+- [x] **Son d'ambiance procédural** : bourdon de quatre voix non harmoniques +
+      bruit brun filtré, synthétisé dans le navigateur. **Aucun fichier audio.**
+- [x] **Écran d'entrée** : titre, le décompte réel des pages, et le geste qui
+      autorise le son et réveille le worker
+- [ ] Lightmaps bakées du hall — reporté, voir ci-dessous
+- [ ] Marbre veiné et sol réfléchissant — reportés en phase 7
+
+**Sortie atteinte.** Captures : `phase6-seuil.png`, `phase6-bibliotheque.png`.
+
+| Mesuré (Chromium, 2880×1575) | |
+|---|---|
+| Appels de rendu, extérieur | **39** (22 de scène + 17 de post-traitement) |
+| Appels de rendu, bibliothèque | **53** |
+| Coût d'une image, effets compris | **5,69 ms** (budget 16,6) |
+| Tests | 181 |
+
+**Deux défauts de conception attrapés par les tests :**
+- le bourdon était **un accord** : 77,3/38,5 tombait sur une octave exacte. Un
+  test vérifie qu'aucune voix n'est un harmonique d'une autre — on veut une
+  rumeur de pierre, pas de la musique. Fréquences reprises ;
+- le relevé de performance affichait « 1 appel » : avec un composeur, `gl.info`
+  est remis à zéro **à chaque passe**. Corrigé en désactivant la remise à zéro
+  automatique et en totalisant par image (D35).
+
+**Reste, honnêtement :** l'éclairage précalculé du hall (D16) demande une chaîne
+de cuisson hors ligne et n'est pas fait ; le marbre veiné et le sol réfléchissant
+non plus. Les montagnes gardent une silhouette un peu conique.
 
 ## Phase 7 — Finition
 - [ ] Mode dégradé mobile
