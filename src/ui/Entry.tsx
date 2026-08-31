@@ -12,8 +12,43 @@ import { PAGE_COUNT } from '../core/index.ts'
  * Le nombre affiche n'est pas une figure de style : c'est le decompte exact
  * des pages de la bibliotheque, calcule au chargement.
  */
-export function Entry({ onEnter }: { onEnter: () => void }): React.ReactElement {
+export function Entry({
+  onEnter,
+  onOpenShared,
+}: {
+  onEnter: () => void
+  /**
+   * Present quand l'URL porte deja une adresse : quelqu'un a partage une page.
+   *
+   * On lui donne alors la premiere place. C'est ce qu'il est venu chercher, et
+   * c'est aussi ce qui permet de ne pas telecharger la 3D pour rien.
+   */
+  onOpenShared?: (() => void) | undefined
+}): React.ReactElement {
   const chiffres = PAGE_COUNT.toString().length
+
+  if (onOpenShared) {
+    return (
+      <div className="entree">
+        <div className="entree__contenu">
+          <h1 className="entree__titre">
+            <span>La Bibliothèque</span>
+            <span>de Babel</span>
+          </h1>
+          <p className="entree__phrase">
+            Quelqu’un vous a envoyé une page. Elle n’est stockée nulle part&nbsp;: son adresse
+            suffit à la <em>recalculer</em>, ici, dans votre navigateur.
+          </p>
+          <button type="button" className="entree__bouton" onClick={onOpenShared} autoFocus>
+            ouvrir la page
+          </button>
+          <button type="button" className="entree__second" onClick={onEnter}>
+            ou visiter la bibliothèque
+          </button>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="entree">

@@ -13,6 +13,25 @@ import { useLibraryStore } from '../store/useLibraryStore.ts'
  * Le releve est ecrit dans le store QUATRE fois par seconde, jamais a chaque
  * image : c'est tout l'interet d'avoir sorti cet etat de React (D21).
  */
+/**
+ * La sonde est-elle demandee ?
+ *
+ * Les fonctions de mesure ne sont pas dangereuses — ce site ne sait rien de
+ * personne — mais elles n'ont rien a faire sur la page de tout le monde. Elles
+ * ne s'installent donc que sur demande explicite : `?sonde` dans l'URL, ou en
+ * developpement.
+ *
+ * On ne les supprime pas purement et simplement : ce sont elles qui permettent
+ * de mesurer le BUILD DE PRODUCTION dans un navigateur ou compter les images
+ * par seconde ne veut rien dire. Les retirer, c'est perdre le seul moyen de
+ * mesure honnete dont dispose ce projet.
+ */
+function sondeDemandee(): boolean {
+  if (import.meta.env.DEV) return true
+  if (typeof window === 'undefined') return false
+  return new URLSearchParams(window.location.search).has('sonde')
+}
+
 export function PerfProbe(): null {
   const gl = useThree((state) => state.gl)
   const scene = useThree((state) => state.scene)
@@ -67,7 +86,7 @@ export function PerfProbe(): null {
       triangles: derniersTriangles.current,
     }
     setPerf(releve)
-    ;(window as unknown as { __babbel?: unknown }).__babbel = releve
+    if (sondeDemandee()) window.__babbel = releve
     images.current = 0
     depuis.current = maintenant
   }, 2)
@@ -100,7 +119,8 @@ export function PerfProbe(): null {
         },
       }
     }
-    ;(window as unknown as { __babbelBench?: unknown }).__babbelBench = bench
+    if (!sondeDemandee()) return
+    window.__babbelBench = bench
 
     /*
      * Faire tourner la boucle a la demande.
@@ -118,7 +138,13 @@ export function PerfProbe(): null {
       }
       return frames
     }
-    ;(window as unknown as { __babbelStep?: unknown }).__babbelStep = step
+    window.__babbelStep = step
+
+    return () => {
+      delete window.__babbelBench
+      delete window.__babbelStep
+      delete window.__babbel
+    }
   }, [gl, scene, camera, advance])
 
   return null

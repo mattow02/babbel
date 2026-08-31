@@ -1,0 +1,30 @@
+# Ce que `npm run check` fait sur la machine du developpeur, mais pour tout le
+# monde et a chaque fois. Sans cela, rien n'arrete une regression poussee par
+# quelqu'un qui n'a pas pense a lancer les tests.
+name: vérification
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  verifier:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+
+      - run: npm ci
+
+      # Types, lint et les 227 tests. Le test qui compte vraiment est
+      # `inverse(forward(x)) === x` : s'il casse, tout le projet est faux.
+      - run: npm run check
+
+      # On verifie aussi que le site se construit : une erreur de build ne se
+      # voit pas dans les tests.
+      - run: npm run build

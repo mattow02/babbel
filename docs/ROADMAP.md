@@ -1,6 +1,6 @@
 # Roadmap — Babbel
 
-État : **Roadmap terminée, chantiers restants repris, audit fait.** Voir [`docs/AUDIT.md`](AUDIT.md).
+État : **Roadmap terminée, chantiers repris, audit fait ET corrigé.** Voir [`docs/AUDIT.md`](AUDIT.md).
 Mise à jour : 2026-08-29
 
 Règle : une phase n'est close que si ses critères de sortie sont vérifiés.
@@ -343,11 +343,30 @@ constats P1 et cinq P2 restent ouverts, avec un ordre de traitement recommandé.
 
 ---
 
+## Phase 10 — Correction de l'audit ✅ (2026-08-31)
+
+**Tous les constats P1 et P2 de l'audit sont corrigés**, chacun vérifié.
+
+- **Découpage de code** : 347 → **69 Ko gzippés** pour lire une page. Un lien
+  partagé ouvre désormais la page sans jamais télécharger la 3D.
+- **Intégration continue** : types, lint, 256 tests et build à chaque poussée.
+- **Accessibilité** : la modale tient le focus qu'elle annonce ; le lecteur ne
+  fait plus énoncer 3 200 caractères au hasard mais un résumé.
+- **`useSyncExternalStore`** pour lire le cache, et comparaison des adresses
+  **par valeur** — un défaut trouvé en écrivant le test.
+- **Sonde de mesure** derrière `?sonde`, **licence** MIT, conversions `as
+  unknown as` ramenées de 8 à 2.
+- **React est testé** : jsdom et Testing Library, 29 tests de composants.
+
+**256 tests**, zéro avertissement. Détail dans [`docs/AUDIT.md`](AUDIT.md).
+
+---
+
 ## Ce qui n'est pas fait
 
-Voir la section correspondante de [`docs/AUDIT.md`](AUDIT.md), qui remplace
-cette liste : elle est classée par gravité et chaque point y est argumenté.
+**Une seule chose :** aucun test sur un vrai appareil mobile. Le mode dégradé
+est décidé par une fonction testée et vérifié dans une fenêtre de 390 × 844,
+mais une fenêtre étroite n'est pas un téléphone.
 
-En deux lignes : **découpage de code** (on fait payer la 3D à qui vient lire),
-**intégration continue**, **accessibilité de la modale et du lecteur**, licence,
-et aucun test sur un vrai appareil mobile.
+Les quatre constats de l'audit (§ 5) restent vrais par nature : ce sont des
+propriétés à connaître, pas des défauts à corriger.

@@ -1,9 +1,9 @@
-import { useEffect, useState } from 'react'
+import { Suspense, lazy, useEffect, useState } from 'react'
 import type { Address } from './core/index.ts'
-import { Gallery } from './scene/Gallery.tsx'
 import { hasWebGL } from './scene/webgl.ts'
 import { Entry } from './ui/Entry.tsx'
 import { useAmbience } from './ui/useAmbience.ts'
+import { fromHash } from './ui/route.ts'
 import { useLibraryStore } from './store/useLibraryStore.ts'
 import { AddressBar } from './ui/AddressBar.tsx'
 import { PerfHud } from './ui/PerfHud.tsx'
@@ -22,6 +22,31 @@ import { usePageText } from './ui/usePageText.ts'
  */
 const ORIGIN: Address = { hexagon: 0n, wall: 0, shelf: 0, volume: 0, page: 1 }
 
+/**
+ * La 3D n'est chargee que si l'on entre.
+ *
+ * three.js et sa chaine d'effets pesent l'essentiel du site. Or le cas le plus
+ * probable de partage est une URL de LECTURE — c'est ce que produit la
+ * recherche — et il serait absurde de faire telecharger toute la machinerie a
+ * quelqu'un qui vient lire une page de texte.
+ *
+ * Le coeur, le worker et le lecteur pesent quelques kilo-octets. Tout le reste
+ * attend que le visiteur veuille entrer.
+ */
+const Gallery = lazy(async () => {
+  const module = await import('./scene/Gallery.tsx')
+  return { default: module.Gallery }
+})
+
+/** Ce qu'on montre pendant que la galerie se telecharge. */
+function Chargement(): React.ReactElement {
+  return (
+    <div className="chargement" role="status">
+      <span>la bibliothèque s’ouvre…</span>
+    </div>
+  )
+}
+
 export function App(): React.ReactElement {
   const library = useLibrary(ORIGIN)
   const [address, goTo] = useAddress(ORIGIN)
@@ -38,6 +63,11 @@ export function App(): React.ReactElement {
   // Sans WebGL, il n'y a ni Seuil ni galerie — mais la bibliotheque, elle,
   // reste entierement lisible. On ne prive personne des livres.
   const troisD = hasWebGL()
+  // L'URL portait-elle deja une adresse au chargement ? On ne le lit qu'une
+  // fois : ensuite, c'est la navigation qui decide.
+  const [lienPartage] = useState(() =>
+    typeof window === 'undefined' ? null : fromHash(window.location.hash),
+  )
   const mode = useLibraryStore((store) => store.mode)
   const setMode = useLibraryStore((store) => store.setMode)
   const opened = useLibraryStore((store) => store.opened)
@@ -107,6 +137,17 @@ export function App(): React.ReactElement {
   if (stage === 'entry') {
     return (
       <Entry
+        onOpenShared={
+          lienPartage
+            ? () => {
+                ambience.start()
+                goTo(lienPartage)
+                setHexagon(lienPartage.hexagon)
+                enterLibrary()
+                setMode('reader')
+              }
+            : undefined
+        }
         onEnter={() => {
           // Le geste d'entree fait trois choses d'un coup : il autorise le son,
           // il reveille le worker, et il lance la sequence.
@@ -128,7 +169,9 @@ export function App(): React.ReactElement {
     return (
       <div className="shell shell--gallery">
         <div className="canvas">
-          <Gallery />
+          <Suspense fallback={<Chargement />}>
+            <Gallery />
+          </Suspense>
         </div>
         <div className="overlay overlay--seuil">
           <p className="seuil__titre">
@@ -153,7 +196,9 @@ export function App(): React.ReactElement {
     return (
       <div className="shell shell--gallery">
         <div className="canvas">
-          <Gallery />
+          <Suspense fallback={<Chargement />}>
+            <Gallery />
+          </Suspense>
         </div>
         <div className="reticle" aria-hidden="true" />
         <div className="overlay">

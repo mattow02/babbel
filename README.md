@@ -22,9 +22,12 @@ et son contenu. Rien n'est stocké : 25^1 312 000 livres ne tiennent nulle part.
 ```sh
 npm install
 npm run dev       # développement
-npm run check     # types + lint + 207 tests
+npm run check     # types + lint + 256 tests
 npm run build     # produit dist/
 ```
+
+Ajouter `?sonde` à l'URL installe les fonctions de mesure
+(`__babbelBench`, `__babbelStep`) sur un build de production.
 
 ## Déployer
 
@@ -41,7 +44,15 @@ npm run build && npx vercel deploy --prod dist
 
 `vercel.json` ne fait qu'une chose : mettre en cache les fichiers versionnés.
 
-**État : phase 7.** Voir [`docs/ROADMAP.md`](docs/ROADMAP.md).
+La 3D est chargée en différé : **69 Ko gzippés** suffisent pour lire une page,
+les 292 Ko de moteur 3D n'arrivent que si l'on entre dans la bibliothèque.
+
+## Licence
+
+MIT — voir [`LICENSE`](LICENSE).
+
+**État :** roadmap terminée, chantiers restants faits, audit corrigé.
+Voir [`docs/AUDIT.md`](docs/AUDIT.md) puis [`docs/ROADMAP.md`](docs/ROADMAP.md).
 
 ## Documentation
 - [Recherche](docs/RECHERCHE.md) — les faits et leurs sources

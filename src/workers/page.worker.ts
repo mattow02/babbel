@@ -13,6 +13,12 @@
 import { locate, pageAt } from '../core/index.ts'
 import type { WorkerRequest, WorkerResponse } from './protocol.ts'
 
+/*
+ * Ce fichier est compile avec la bibliotheque DOM autant qu'avec celle des
+ * workers : `self` y est donc type comme une fenetre. La conversion dit ce que
+ * la directive `webworker` ci-dessus a deja etabli — c'est le seul endroit du
+ * projet ou elle est necessaire.
+ */
 const scope = self as unknown as DedicatedWorkerGlobalScope
 
 scope.addEventListener('message', (event: MessageEvent<WorkerRequest>) => {

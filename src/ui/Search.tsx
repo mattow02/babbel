@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { useFocusTrap } from './useFocusTrap.ts'
 import { CHARS_PER_PAGE, type Address } from '../core/index.ts'
 import type { PageLibrary } from '../workers/index.ts'
 import { transcribe } from './transcribe.ts'
@@ -27,6 +28,10 @@ export function Search({
   const [cherche, setCherche] = useState(false)
   const [echec, setEchec] = useState<string | null>(null)
   const champ = useRef<HTMLInputElement>(null)
+  const panneau = useRef<HTMLDivElement>(null)
+
+  // On annonce `aria-modal` : on doit donc vraiment tenir le focus.
+  useFocusTrap(panneau)
 
   useEffect(() => {
     champ.current?.focus()
@@ -50,6 +55,7 @@ export function Search({
 
   return (
     <div
+      ref={panneau}
       className="recherche"
       role="dialog"
       aria-modal="true"

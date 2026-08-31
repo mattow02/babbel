@@ -32,10 +32,17 @@ export interface PageEngine {
  */
 export function createWorkerEngine(): PageEngine {
   const worker = new Worker(new URL('./page.worker.ts', import.meta.url), { type: 'module' })
-  const pending = new Map<
-    number,
-    { resolve: (value: never) => void; reject: (error: Error) => void }
-  >()
+  /*
+   * Une demande en attente. Le worker rend soit un texte, soit une adresse ;
+   * on stocke donc un resolveur qui accepte les deux, et `ask` se charge de
+   * rendre le type precis a l'appelant. Une seule conversion, a un seul
+   * endroit, au lieu d'une a chaque reponse.
+   */
+  type EnAttente = {
+    resolve: (value: string | Address) => void
+    reject: (error: Error) => void
+  }
+  const pending = new Map<number, EnAttente>()
   let nextId = 0
   let disposed = false
 
@@ -47,9 +54,9 @@ export function createWorkerEngine(): PageEngine {
     if (isFailure(response)) {
       slot.reject(new Error(response.error))
     } else if (isPage(response)) {
-      ;(slot.resolve as unknown as (text: string) => void)(response.text)
+      slot.resolve(response.text)
     } else {
-      ;(slot.resolve as unknown as (address: Address) => void)(response.address)
+      slot.resolve(response.address)
     }
   })
 
@@ -65,7 +72,9 @@ export function createWorkerEngine(): PageEngine {
     const id = nextId
     nextId += 1
     return new Promise<T>((resolve, reject) => {
-      pending.set(id, { resolve: resolve as unknown as (value: never) => void, reject })
+      // L'unique conversion : le protocole garantit qu'une demande `page` rend
+      // un texte et une demande `locate` une adresse.
+      pending.set(id, { resolve: resolve as (value: string | Address) => void, reject })
       worker.postMessage(build(id))
     })
   }

@@ -74,6 +74,7 @@ export class PageLibrary {
   #inFlight = new Map<bigint, Promise<string>>()
   #generated = 0
   #disposed = false
+  #listeners = new Set<() => void>()
 
   constructor(options: PageLibraryOptions = {}) {
     this.#engine = options.engine ?? createDefaultEngine()
@@ -86,6 +87,27 @@ export class PageLibrary {
    */
   peek(address: Address): string | undefined {
     return this.#cache.peek(keyOf(address))
+  }
+
+  /**
+   * Prevenir quand le cache change.
+   *
+   * Le cache est un etat mutable exterieur a React. Le lire pendant le rendu
+   * « marche » tant que le rendu n'est pas interrompu — mais rien ne le
+   * garantit. Un abonnement permet a React de le lire correctement, via
+   * `useSyncExternalStore`, et de rester coherent s'il reprend un rendu.
+   *
+   * @returns de quoi se desabonner.
+   */
+  subscribe(listener: () => void): () => void {
+    this.#listeners.add(listener)
+    return () => {
+      this.#listeners.delete(listener)
+    }
+  }
+
+  #notifier(): void {
+    for (const listener of this.#listeners) listener()
   }
 
   /**
@@ -109,6 +131,7 @@ export class PageLibrary {
       .then((text) => {
         this.#cache.set(key, text)
         this.#generated += 1
+        this.#notifier()
         return text
       })
       .finally(() => {
@@ -154,6 +177,7 @@ export class PageLibrary {
   /** Vide le cache sans liberer le moteur. */
   clear(): void {
     this.#cache.clear()
+    this.#notifier()
   }
 
   dispose(): void {
@@ -161,6 +185,7 @@ export class PageLibrary {
     this.#disposed = true
     this.#inFlight.clear()
     this.#cache.clear()
+    this.#listeners.clear()
     this.#engine.dispose()
   }
 

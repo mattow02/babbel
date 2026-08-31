@@ -4,23 +4,29 @@
 > chantiers restants. Méthode : lecture du code, mesures dans un navigateur réel,
 > et vérification des propriétés par des tests écrits pour l'occasion.
 >
-> Les constats sont classés par gravité. **Ce qui a été corrigé pendant l'audit
-> est listé en premier, et honnêtement** : plusieurs de ces défauts ne sont pas
-> des découvertes de relecture, ce sont des bugs que j'avais écrits.
+> **Tous les constats P1 et P2 ont été corrigés**, et chaque correction est
+> vérifiée. Ce document garde leur trace plutôt que de les effacer : savoir ce
+> qui a cassé, et pourquoi, vaut mieux qu'une liste vide.
+>
+> Plusieurs de ces défauts ne sont pas des découvertes de relecture — ce sont
+> des bugs que j'avais écrits. Trois n'ont été trouvés qu'en écrivant le test
+> censé prouver que tout allait bien.
 
 ## 1. L'état, en chiffres
 
 | | |
 |---|---|
-| Fichiers source | 88 |
-| Lignes (hors tests) | ≈ 6 200 |
-| Lignes de tests | ≈ 2 000 |
-| Tests | **227**, répartis en 22 fichiers |
+| Fichiers source | 94 |
+| Lignes (hors tests) | ≈ 6 500 |
+| Lignes de tests | ≈ 2 350 |
+| Tests | **256**, répartis en 26 fichiers |
 | Avertissements de lint | **0** |
 | `TODO` / `FIXME` / `@ts-ignore` / `as any` / assertions `!` | **0** |
+| Conversions `as unknown as` | **2**, toutes deux justifiées |
 | Dépendances de production | 8 |
 | Vulnérabilités connues (`npm audit`) | **0** |
-| Poids livré | 1,24 Mo, dont **347 Ko de JavaScript gzippé** |
+| Poids livré, pour lire | **69 Ko gzip** (cœur + worker + lecteur) |
+| Poids livré, pour visiter | + 292 Ko gzip, chargés **seulement si l'on entre** |
 | Appels de rendu | 39 (extérieur) · 39 (hall) · 54-55 (bibliothèque) · 30 (mobile) |
 | Coût d'une image, effets compris | 3,4 ms dehors · **6,4 ms au point le plus chargé** — budget 16,6 ms |
 
@@ -102,79 +108,82 @@ dans le navigateur, il **ne peut pas** exister en version dégradée.
 
 ---
 
-## 3. P1 — à traiter
+## 3. P1 — corrigés
 
-### P1.1 — Une surface de débogage part en production
-`PerfProbe` expose `window.__babbel`, `__babbelBench` et `__babbelStep` sur le
-site livré. `__babbelStep` permet de piloter la boucle de rendu depuis la
-console.
+### P1.1 — La surface de débogage ne part plus d'office ✅
+`__babbel`, `__babbelBench` et `__babbelStep` ne s'installent plus que sur
+demande explicite — `?sonde` dans l'URL, ou en développement — et se retirent
+proprement au démontage.
 
-Ce n'est pas une faille — il n'y a ni donnée ni privilège à voler, le site ne
-sait rien de personne — mais c'est du code inutile en production et une surface
-sans raison d'être.
+On ne les a pas supprimées : ce sont elles qui permettent de mesurer le **build
+de production** dans un navigateur où compter les images par seconde ne veut
+rien dire. Les retirer, c'était perdre le seul moyen de mesure honnête du
+projet. Elles sont désormais opt-in, ce qui règle le vrai reproche : elles
+n'ont rien à faire sur la page de tout le monde.
 
-*Nuance à assumer :* ces fonctions sont ce qui a permis de vérifier le **build
-de production** tout au long du projet, dans un navigateur où compter les images
-par seconde ne veut rien dire. Les supprimer purement et simplement ferait
-perdre le seul moyen de mesure honnête dont dispose ce projet.
-**Recommandation :** les conserver mais les conditionner à un paramètre d'URL
-explicite plutôt que de les poser d'office.
+### P1.2 — La 3D n'est plus payée par qui vient lire ✅
+La galerie est chargée en différé. Le paquet initial tombe de **347 Ko à 69 Ko
+gzippés** ; les 292 Ko de three.js et de sa chaîne d'effets ne sont téléchargés
+que si le visiteur entre. **Cinq fois moins pour lire une page.**
 
-### P1.2 — Le premier chargement fait payer la 3D à qui vient lire
-347 Ko de JavaScript gzippé, dont l'essentiel est three.js et sa chaîne
-d'effets. Quelqu'un qui ouvre une **URL de lecture partagée** — le cas le plus
-probable de partage, puisque c'est ce que produit la recherche — télécharge
-toute la machinerie 3D pour afficher du texte.
+Et le bénéfice est réellement atteignable : quand l'URL porte déjà une adresse
+— ce que produit la recherche, donc le cas le plus probable de partage —
+l'écran d'entrée propose d'abord **« ouvrir la page »**, et cette voie ne
+télécharge jamais la galerie. Vérifié dans le navigateur : lecture affichée,
+aucun canvas, chunk `Gallery` absent des ressources chargées.
 
-**Recommandation :** charger la galerie en différé (`React.lazy`). Le cœur, le
-worker et le lecteur pèsent quelques kilo-octets ; tout le reste peut attendre
-que le visiteur veuille entrer.
+### P1.3 — Intégration continue ✅
+`.github/workflows/verification.yml` : types, lint, les 256 tests et le build,
+à chaque poussée et à chaque demande de fusion.
 
-### P1.3 — Aucune intégration continue
-`npm run check` (types + lint + 227 tests) n'existe que sur cette machine et
-n'est lancé qu'à la main. Le jour où un tiers touche au dépôt, rien ne l'arrête.
+### P1.4 — Le cache n'est plus lu pendant le rendu ✅
+`PageLibrary` expose un abonnement, et `usePageText` passe par
+`useSyncExternalStore` — l'API prévue exactement pour lire un état mutable
+extérieur à React sans risquer l'incohérence si un rendu est interrompu puis
+repris.
 
-### P1.4 — Un état mutable est lu pendant le rendu
-`usePageText` appelle `library.peek()` pendant le rendu pour afficher une page
-déjà en cache sans clignotement (décision assumée et commentée). C'est
-volontaire et cela évite un rendu en cascade, mais cela lit un état extérieur
-mutable pendant une phase que React se réserve le droit d'interrompre.
-Aujourd'hui sans conséquence ; à surveiller si le rendu concurrent est activé.
+**Un second défaut est apparu en écrivant le test :** les adresses étaient
+comparées **par référence**. Un parent qui reconstruit l'objet à chaque rendu
+aurait vu les erreurs disparaître — et, plus grave, aurait relancé l'effet en
+boucle, donc la génération. La comparaison se fait désormais sur le numéro
+d'emplacement, qui identifie une page par valeur.
 
 ---
 
-## 4. P2 — à corriger quand l'occasion se présente
+## 4. P2 — corrigés
 
-### P2.1 — La modale de recherche annonce une modalité qu'elle ne tient pas
-Elle porte `aria-modal="true"` et met le focus dans le champ, mais **ne piège
-pas le focus** : la tabulation s'échappe vers l'arrière-plan. Soit on pose un
-piège de focus, soit on retire l'attribut. Annoncer une modalité qu'on n'assure
-pas est pire que ne rien annoncer.
+### P2.1 — La modale tient enfin le focus qu'elle annonce ✅
+`useFocusTrap` retient la tabulation dans la modale, boucle aux extrémités et
+rend le focus à l'élément qui l'avait. La logique de bouclage est isolée dans
+`ui/focus.ts` et testée à part.
 
-### P2.2 — 3 200 caractères aléatoires exposés aux lecteurs d'écran
-Le `<pre>` de la page porte un `aria-label` mais son contenu reste lu. Faire
-énoncer trois mille caractères sans signification n'aide personne.
-**Recommandation :** `aria-hidden` sur le bloc, et un résumé textuel à côté
-(adresse, nombre de lignes, extrait de la première ligne).
+**Défaut trouvé en le testant :** la première version filtrait les éléments
+focalisables sur leur visibilité calculée (`offsetParent`). Cela dépend du
+moteur de rendu, ne veut rien dire hors d'un navigateur, et se serait cassé sur
+n'importe quel changement de mise en page. Le sélecteur écarte déjà ce qui est
+désactivé : c'est suffisant, et c'est vérifiable.
 
-### P2.3 — Rien de ce qui est React n'est testé
-Les 227 tests portent tous sur des modules purs. Les composants, les hooks
-(`usePlayer`, `usePageText`, `useAddress`) et le moteur worker n'ont aucun test.
-C'est un choix cohérent — la logique a été systématiquement extraite en modules
-purs, précisément pour être testable — mais le câblage, lui, n'est vérifié qu'à
-la main dans un navigateur.
+### P2.2 — Le lecteur ne fait plus énoncer 3 200 caractères au hasard ✅
+Le bloc est `aria-hidden`, et un résumé lisible le remplace :
+*« Page de 40 lignes de 80 caractères. Elle commence par : … »*. C'est ce qu'un
+lecteur voyant perçoit en un coup d'œil.
 
-Modules sans test direct : `engine.ts`, `page.worker.ts`, `usePlayer.ts`,
-`ambience.ts`, `useLibraryStore.ts`, les hooks d'interface.
+### P2.3 — React est testé ✅
+`jsdom` et Testing Library ajoutés. **29 tests** couvrent désormais le lecteur,
+la recherche, le piège à focus et `usePageText` — y compris le clignotement
+qu'on cherchait à éviter, l'attribution d'une erreur à la bonne page, et le
+préchargement des voisines.
 
-### P2.4 — Pas de licence
-Aucun fichier `LICENSE`. À trancher avant toute mise en ligne publique.
+### P2.4 — Licence ✅
+MIT. **À confirmer** : c'est le choix par défaut le plus permissif, pas une
+décision réfléchie sur ce que ce projet doit permettre.
 
-### P2.5 — Huit conversions `as unknown as`
-Toutes concentrées aux frontières avec three.js et l'API Web Audio, là où les
-types publics ne décrivent pas ce que l'API permet réellement. Aucune ne masque
-une erreur de conception, mais chacune est un endroit où le compilateur ne
-protège plus.
+### P2.5 — Conversions ramenées de 8 à 2 ✅
+Un fichier de déclarations (`src/globals.d.ts`) informe le compilateur de la
+surface ajoutée par la sonde au lieu de la contourner, et le protocole du
+worker est typé par une union. Les deux restantes sont irréductibles : la
+bibliothèque DOM masque le type de `self` dans un worker, et
+`webkitAudioContext` n'est typé nulle part.
 
 ---
 
@@ -213,7 +222,7 @@ Un audit qui ne relève que des défauts ment par omission.
 - **Le cœur est isolé et prouvé.** `src/core/` ne dépend de rien, et le test
   `inverse(forward(x)) === x` couvre 2 000 tirages plus les bornes du domaine.
   Si le rendu était entièrement réécrit, ce dossier ne bougerait pas d'une ligne.
-- **Les décisions sont écrites.** 46 décisions datées, chacune avec son
+- **Les décisions sont écrites.** 50 décisions datées, chacune avec son
   pourquoi, y compris celles qui ont annulé une décision antérieure.
 - **Les mesures sont réelles.** Aucun chiffre de ce document n'est estimé : tous
   viennent d'une exécution dans un navigateur, sur le build de production.
@@ -227,12 +236,26 @@ Un audit qui ne relève que des défauts ment par omission.
 
 ---
 
-## 7. Ordre recommandé
+## 7. Ce qui reste ouvert
 
-1. **P1.2** — découpage de code : c'est ce qui se voit le plus, et pour tout le
-   monde.
-2. **P1.3** — intégration continue : c'est ce qui protège tout le reste.
-3. **P2.1 et P2.2** — accessibilité : peu de travail, et ce sont des promesses
-   actuellement non tenues.
-4. **P1.1** — refermer la surface de débogage.
-5. **P2.4** — licence, avant toute publication.
+Une seule chose, et elle n'est pas corrigeable ici :
+
+**Aucun test sur un vrai appareil mobile.** Le mode dégradé est décidé par une
+fonction testée, et le rendu a été vérifié dans une fenêtre de 390 × 844 —
+profil réduit appliqué, aucun débordement, page lisible et défilante. Mais une
+fenêtre étroite n'est pas un téléphone : ni le même processeur graphique, ni la
+même chauffe, ni le même pointeur. **À vérifier sur un appareil réel.**
+
+Les quatre constats de la section 5 restent vrais par nature — ce ne sont pas
+des défauts à corriger, mais des propriétés à connaître.
+
+## 8. Ce qu'il faudra surveiller
+
+- **Le coût par pixel.** Le constat A6 l'a montré : un shader peut ruiner le
+  budget d'image sans jamais toucher au nombre d'appels de rendu ni de
+  triangles. Mesurer le **temps d'une image**, pas seulement les compteurs.
+- **Les seuils de temps dans les tests.** Un test qui compare une durée à un
+  budget d'image mesure autant la machine que le code. Il en reste un ; sa
+  marge a été élargie et la raison est écrite à côté.
+- **La comparaison des adresses.** Toujours par valeur — le numéro
+  d'emplacement — jamais par référence de l'objet.

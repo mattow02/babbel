@@ -490,6 +490,47 @@ Meme principe pour le worker : sa construction est protegee, avec repli sur le
 calcul direct. Un site qui calcule tout dans le navigateur doit savoir se passer
 de ce que le navigateur ne lui donne pas. Decide le 2026-08-31.
 
+
+### D47 — La 3D est chargee en differe
+three.js et sa chaine d'effets pesent 292 Ko gzippes, contre 69 Ko pour le coeur,
+le worker et le lecteur reunis. Or le cas le plus probable de partage est une URL
+de LECTURE — c'est ce que produit la recherche — et il serait absurde de faire
+telecharger toute la machinerie a quelqu'un qui vient lire une page de texte.
+
+La galerie passe donc par un import differe. Et pour que le benefice soit
+reellement atteignable, l'ecran d'entree change de proposition quand l'URL porte
+deja une adresse : « ouvrir la page » d'abord, « ou visiter la bibliotheque »
+ensuite. Cette premiere voie ne telecharge jamais la 3D.
+Decide le 2026-08-31.
+
+### D48 — Les adresses se comparent par VALEUR, jamais par reference
+`usePageText` comparait l'adresse d'un echec a l'adresse courante par identite
+d'objet. Un parent qui reconstruit l'adresse a chaque rendu aurait vu les
+erreurs disparaitre — et, plus grave, aurait relance l'effet en boucle, donc la
+generation.
+
+La comparaison se fait desormais sur le numero d'emplacement, qui identifie une
+page sans ambiguite et dont deux BigInt egaux le sont pour `===`. Regle
+generale : la correction d'un composant ne doit jamais dependre de la discipline
+de son appelant. Trouve en ecrivant le test, le 2026-08-31.
+
+### D49 — La sonde de mesure est opt-in
+`__babbel`, `__babbelBench` et `__babbelStep` ne s'installent que sur demande
+(`?sonde` dans l'URL, ou en developpement). On ne les supprime pas : ce sont
+elles qui permettent de mesurer le BUILD DE PRODUCTION dans un navigateur ou
+compter les images par seconde ne veut rien dire. Mais elles n'ont rien a faire
+sur la page de tout le monde. Decide le 2026-08-31.
+
+### D50 — Un piege a focus ne se fie pas a la mise en page
+La premiere version filtrait les elements focalisables sur leur visibilite
+CALCULEE (`offsetParent`). Cela depend du moteur de rendu, ne veut rien dire
+hors d'un navigateur, et se serait casse au premier changement de mise en page.
+Le selecteur ecarte deja ce qui est desactive, et une modale ne contient que ses
+propres commandes : c'est suffisant, et c'est verifiable.
+Trouve en ecrivant le test, le 2026-08-31.
+
 ## Ouvertes (à trancher avec l'utilisateur)
 
-_Aucune. Toutes les décisions de cadrage sont prises._
+- **La licence.** MIT a été posée par défaut, comme choix le plus permissif.
+  C'est une décision à confirmer : elle autorise n'importe qui à reprendre,
+  modifier et vendre ce travail.

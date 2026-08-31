@@ -614,3 +614,53 @@ kbd {
   border-color: var(--or);
   color: var(--soleil);
 }
+
+/*
+ * Visible pour les technologies d'assistance, invisible a l'oeil.
+ *
+ * `display: none` la retirerait de l'arbre d'accessibilite : il faut donc la
+ * reduire a un pixel plutot que la cacher.
+ */
+.visuellement-cache {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Pendant que la galerie se telecharge. */
+.chargement {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: var(--ombre-chaude);
+  font-size: 0.9rem;
+  letter-spacing: 0.06em;
+}
+
+/* Le choix secondaire de l'ecran d'entree. */
+.entree__second {
+  display: block;
+  margin-top: 1.1rem;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--ombre-chaude);
+  font: inherit;
+  font-size: 0.85rem;
+  text-decoration: underline;
+  text-underline-offset: 0.25em;
+  cursor: pointer;
+}
+
+.entree__second:hover,
+.entree__second:focus-visible {
+  color: var(--soleil);
+  outline: none;
+}

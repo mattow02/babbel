@@ -73,6 +73,11 @@ des chantiers restants, par ordre d'importance.
   et **jamais** `read()` en `await`. Une frame ne peut pas attendre.
 - Toute conversion d'un grand entier vers du texte est chère (0,14 ms) : jamais
   sur un chemin chaud (D19).
+- Les adresses se comparent **par valeur** (le numéro d'emplacement), jamais par
+  référence de l'objet : sinon la correction dépend de la discipline de
+  l'appelant.
+- Ajouter `?sonde` à l'URL pour installer les fonctions de mesure sur un build
+  de production.
 - Le placement 3D s'écrit en maths pures dans `scene/**/layout3d.ts` et
   `parts.ts`, sans three.js : c'est la seule façon de vérifier 640 objets (D24).
 - L'interaction ne passe **pas** par les événements du moteur de rendu : on
@@ -221,4 +226,12 @@ film. La contrainte technique et l'intention esthétique coïncident.
   et worker résilient (D46). **227 tests.**
   **L'audit est dans `docs/AUDIT.md`** : 7 défauts corrigés — dont une
   **régression de performance à 19,45 ms/image**, invisible au compte des
-  appels de rendu et rattrapée à 6,44 ms — et 9 constats P1/P2 ouverts.
+  appels de rendu et rattrapée à 6,44 ms — et 9 constats P1/P2.
+- **2026-08-31 (suite)** — **Tous les constats de l'audit sont corrigés.**
+  Découpage de code (**347 → 69 Ko gzip** pour lire ; un lien partagé ouvre la
+  page sans charger la 3D), intégration continue, piège à focus, lecteur
+  audible, `useSyncExternalStore`, sonde derrière `?sonde`, licence MIT,
+  conversions 8 → 2, et **React enfin testé** (jsdom, 29 tests). **256 tests.**
+  Trois défauts trouvés *en écrivant les tests* : adresses comparées par
+  référence, filtre de focus dépendant de la mise en page, seuil de test au
+  millième d'une image.
