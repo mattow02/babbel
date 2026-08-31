@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import type { Address } from './core/index.ts'
 import { Gallery } from './scene/Gallery.tsx'
+import { hasWebGL } from './scene/webgl.ts'
 import { Entry } from './ui/Entry.tsx'
 import { useAmbience } from './ui/useAmbience.ts'
 import { useLibraryStore } from './store/useLibraryStore.ts'
@@ -34,6 +35,9 @@ export function App(): React.ReactElement {
   const ambience = useAmbience()
   const profile = useLibraryStore((store) => store.profile)
   const [recherche, setRecherche] = useState(false)
+  // Sans WebGL, il n'y a ni Seuil ni galerie — mais la bibliotheque, elle,
+  // reste entierement lisible. On ne prive personne des livres.
+  const troisD = hasWebGL()
   const mode = useLibraryStore((store) => store.mode)
   const setMode = useLibraryStore((store) => store.setMode)
   const opened = useLibraryStore((store) => store.opened)
@@ -113,14 +117,14 @@ export function App(): React.ReactElement {
            * trente secondes de travelling : on le pose directement dans la
            * bibliotheque. Le Seuil reste accessible, mais il ne s'impose plus.
            */
-          if (profile.sequence) begin()
+          if (profile.sequence && troisD) begin()
           else enterLibrary()
         }}
       />
     )
   }
 
-  if (stage === 'threshold') {
+  if (stage === 'threshold' && troisD) {
     return (
       <div className="shell shell--gallery">
         <div className="canvas">
@@ -145,7 +149,7 @@ export function App(): React.ReactElement {
     )
   }
 
-  if (mode === 'gallery') {
+  if (mode === 'gallery' && troisD) {
     return (
       <div className="shell shell--gallery">
         <div className="canvas">

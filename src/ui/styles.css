@@ -64,6 +64,7 @@ body::after {
   z-index: 1;
   display: grid;
   grid-template-rows: auto 1fr auto;
+  min-width: 0;
   min-height: 100vh;
   padding: var(--gouttiere);
   gap: clamp(1rem, 2.5vh, 2rem);
@@ -141,7 +142,14 @@ body::after {
 
 .stage {
   display: grid;
+  /*
+   * `minmax(0, 1fr)` et non `auto` : sans cela la colonne se dimensionne sur
+   * son contenu, le `max-width: 100%` de la page ne mord sur rien, et le bloc
+   * pousse toute la mise en page au lieu de defiler dans sa propre boite.
+   */
+  grid-template-columns: minmax(0, 1fr);
   place-items: center;
+  min-width: 0;
   min-height: 0;
 }
 
@@ -166,7 +174,15 @@ body::after {
   max-width: 100%;
   margin: 0;
   font-family: ui-monospace, 'SF Mono', 'Cascadia Mono', Menlo, Consolas, monospace;
-  font-size: clamp(5.5px, min(var(--par-largeur), var(--par-hauteur)), 14px);
+  /*
+   * Plancher a 9 px.
+   *
+   * Sur un telephone, quatre-vingts colonnes tiennent a 7,5 px — mais ne se
+   * lisent plus. Mieux vaut laisser le bloc deborder et defiler dans sa propre
+   * boite (`overflow-x: auto`) que d'imposer une taille illisible : on lit ici
+   * des caracteres au hasard, la lisibilite prime sur la vue d'ensemble.
+   */
+  font-size: clamp(9px, min(var(--par-largeur), var(--par-hauteur)), 14px);
   line-height: 1.55;
   letter-spacing: 0.02em;
   color: var(--creme);

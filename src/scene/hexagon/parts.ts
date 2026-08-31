@@ -194,8 +194,14 @@ export function stoneBoxes(origin: Origin = ZERO): Box[] {
     for (const sens of [-1, 1]) {
       const yPuits = sens > 0 ? VESTIBULE_HEIGHT + SHAFT_DEPTH / 2 : -SHAFT_DEPTH / 2
       for (const cote of [-1, 1]) {
-        poser(STAIRWELL_RADIUS * cote, yPuits, 0, WALL_THICKNESS, SHAFT_DEPTH, STAIRWELL_RADIUS * 2)
-        poser(0, yPuits, STAIRWELL_RADIUS * cote, STAIRWELL_RADIUS * 2, SHAFT_DEPTH, WALL_THICKNESS)
+        /*
+         * Attention a l'orientation : dans `poser`, `sx` est l'extension
+         * LATERALE et `sz` l'extension le long de l'axe. Une paroi placee en
+         * u = +R doit donc etre large en v et mince en u — et non l'inverse,
+         * sous peine de reboucher a moitie la tremie qu'elle est censee border.
+         */
+        poser(STAIRWELL_RADIUS * cote, yPuits, 0, STAIRWELL_RADIUS * 2, SHAFT_DEPTH, WALL_THICKNESS)
+        poser(0, yPuits, STAIRWELL_RADIUS * cote, WALL_THICKNESS, SHAFT_DEPTH, STAIRWELL_RADIUS * 2)
       }
     }
   }
