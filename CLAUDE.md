@@ -235,3 +235,20 @@ film. La contrainte technique et l'intention esthétique coïncident.
   Trois défauts trouvés *en écrivant les tests* : adresses comparées par
   référence, filtre de focus dépendant de la mise en page, seuil de test au
   millième d'une image.
+- **2026-08-31 (retours sur le rendu)** — **Le site cesse d'être une
+  cinématique.** Sur les remarques de l'utilisateur : (1) **l'arrivée s'arrête
+  DEVANT l'entrée** (D51) — plus de traversée des murs, le visiteur marche sur
+  le parvis et franchit le portail lui-même ; (2) **le hall devient une nef**
+  (D52) où l'on marche : grande allée, deux files de piliers, bas-côtés,
+  **escaliers latéraux** vers les tribunes, cube d'or au bout de l'axe ;
+  `usePlayer` reçoit désormais un **monde** (collisions, sols, origine
+  flottante) au lieu de connaître la seule bibliothèque, et deux sols peuvent
+  se superposer (D53) ; (3) **la matière** : pierre de taille calculée avec
+  assises, patine et grain (D54), montagnes à silhouette brisée dans le vertex
+  shader (D55), ciel avec soleil, cirrus, brume dissymétrique et tramage (D56) ;
+  (4) **le lecteur est un livre** (D57) : il quitte l'étagère, vient flotter
+  devant nous, s'ouvre, et se tourne au clic — droite pour avancer ;
+  (5) **tout le HUD a disparu** (D58) : il ne reste qu'une croix pour refermer.
+  Deux pièges trouvés dans le navigateur : **un objet accroché à la caméra n'est
+  jamais rendu** (D59), et un tir de réticule pile au centre d'une galerie passe
+  dans l'interstice entre deux volumes. **293 tests**, zéro avertissement.

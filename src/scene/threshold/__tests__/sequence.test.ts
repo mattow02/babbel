@@ -1,11 +1,17 @@
 import { describe, expect, it } from 'vitest'
-import { CUBE_Y, PORTAL_Z } from '../dimensions.ts'
-import { INSIDE_AT, OPENING, SHOTS, THRESHOLD_DURATION, cameraAt, isInside } from '../sequence.ts'
+import { PORTAL_HEIGHT, PORTAL_Z } from '../dimensions.ts'
+import { STAIR_TOP_Y } from '../landscape.ts'
+import { ARRIVAL, ARRIVAL_STEP, OPENING, SHOTS, THRESHOLD_DURATION, cameraAt } from '../sequence.ts'
 
 describe('la sequence darrivee', () => {
   it('dure moins de trente secondes', () => {
-    // Le critere de sortie de la phase parle des trente premieres secondes.
-    expect(THRESHOLD_DURATION).toBeGreaterThan(20)
+    /*
+     * Le critere de sortie de la phase parle des trente premieres secondes.
+     * La borne basse a baisse le jour ou la sequence a cesse de traverser le
+     * batiment : elle amene devant l'entree, et rend la main. Ce qui suit
+     * n'est plus du montage, c'est de la marche.
+     */
+    expect(THRESHOLD_DURATION).toBeGreaterThan(12)
     expect(THRESHOLD_DURATION).toBeLessThanOrEqual(30)
   })
 
@@ -39,24 +45,29 @@ describe('la sequence darrivee', () => {
     }
   })
 
-  it('franchit l entree, puis se retrouve dans le hall', () => {
-    expect(isInside(0)).toBe(false)
-    expect(isInside(INSIDE_AT - 0.1)).toBe(false)
-    expect(isInside(INSIDE_AT)).toBe(true)
-    expect(isInside(THRESHOLD_DURATION)).toBe(true)
+  it('s arrete DEVANT l entree, sans jamais la franchir', () => {
+    // Tout le sens du lieu tient la : c'est le visiteur qui entre, pas le film.
+    for (let t = 0; t <= THRESHOLD_DURATION + 30; t += 0.1) {
+      expect(cameraAt(t).position.z).toBeGreaterThan(PORTAL_Z)
+    }
   })
 
-  it('est bien passe derriere le portail au moment ou lon entre', () => {
-    expect(cameraAt(INSIDE_AT).position.z).toBeLessThan(PORTAL_Z)
-  })
-
-  it('finit face au cube', () => {
+  it('finit face au portail, a hauteur d homme, a quelques pas du seuil', () => {
     const fin = cameraAt(THRESHOLD_DURATION)
-    // A hauteur du cube, a un metre pres : le cadrage vise legerement sous son
-    // centre pour qu'il ne soit pas colle au bord haut de l'image.
-    expect(Math.abs(fin.lookAt.y - CUBE_Y)).toBeLessThan(1.5)
+    expect(fin.position.x).toBe(0)
     expect(fin.lookAt.x).toBe(0)
-    expect(fin.position.z).toBeGreaterThan(0)
+    expect(fin.position.z - PORTAL_Z).toBeCloseTo(ARRIVAL_STEP, 6)
+    expect(fin.position.y - STAIR_TOP_Y).toBeLessThan(2)
+    // Le regard porte dans le portail, entre le sol et le linteau.
+    expect(fin.lookAt.y - STAIR_TOP_Y).toBeGreaterThan(0)
+    expect(fin.lookAt.y - STAIR_TOP_Y).toBeLessThan(PORTAL_HEIGHT)
+  })
+
+  it('rend la main exactement la ou le dernier plan s arrete', () => {
+    const fin = cameraAt(THRESHOLD_DURATION)
+    expect(ARRIVAL.position2.x).toBe(fin.position.x)
+    expect(ARRIVAL.position2.z).toBe(fin.position.z)
+    expect(ARRIVAL.position.y).toBe(STAIR_TOP_Y)
   })
 
   it('reste toujours au-dessus du sol', () => {

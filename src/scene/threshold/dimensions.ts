@@ -16,20 +16,43 @@ export const DOME_RADIUS = 46
 export const DOME_BASE_Y = 18
 
 /** Le bassin qui la recoit, evase vers le haut. */
-export const BASIN_TOP_RADIUS = 61
+export const BASIN_TOP_RADIUS = 76
 export const BASIN_BOTTOM_RADIUS = 44
 export const BASIN_HEIGHT = 26
 
-/** Les deux terrasses annulaires plantees de cypres. */
-export const TERRACE_RADII = [52, 60] as const
+/**
+ * L'esplanade : le sol du parvis, devant l'entree.
+ *
+ * C'est une PLEINE terrasse, et non plus un anneau, parce qu'on y marche
+ * desormais. Elle porte le dome, elle recoit le sommet de l'escalier, et elle
+ * est assez large pour qu'on puisse s'y retourner et regarder la plaine.
+ */
+export const ESPLANADE_RADIUS = 76
+
+/** Les deux anneaux de cypres, l'un sur l'esplanade, l'autre en contrebas. */
+export const TERRACE_RADII = [70, 80] as const
 export const TERRACE_HEIGHTS = [18, 14.28] as const
-export const CYPRESS_PER_RING = [70, 84] as const
+export const CYPRESS_PER_RING = [88, 104] as const
+
+/**
+ * L'ouverture laissee dans les cypres, dans l'axe de l'entree.
+ *
+ * Sans elle, on arriverait au sommet des marches nez a nez avec un arbre. Le
+ * demi-angle est genereux : c'est une allee d'honneur, pas un passage.
+ */
+export const CYPRESS_GAP = 0.34
 export const CYPRESS_HEIGHT = 5.2
 export const CYPRESS_RADIUS = 0.95
 
 /** L'escalier unique qui monte a l'entree. */
-export const STAIR_COUNT = 34
-export const STAIR_RISE = 0.42
+/*
+ * La volee tombe JUSTE sur la terrasse haute : 36 x 0,5 m = 18 m, soit
+ * exactement la base du dome. Ce n'est pas de la coquetterie — c'est desormais
+ * le visiteur lui-meme qui monte ces marches, et un demi-metre d'ecart entre
+ * le sommet de l'escalier et le parvis se verrait immediatement.
+ */
+export const STAIR_COUNT = 36
+export const STAIR_RISE = 0.5
 export const STAIR_RUN = 0.9
 export const STAIR_WIDTH = 26
 
@@ -38,13 +61,12 @@ export const PORTAL_WIDTH = 9
 export const PORTAL_HEIGHT = 14
 export const PORTAL_Z = 45
 
-/** Le grand hall, derriere l'entree. */
-export const ATRIUM_RADIUS = 34
-export const ATRIUM_WALL_HEIGHT = 19
-export const ATRIUM_COLUMNS = 28
+/**
+ * Les caissons de la coupole.
+ *
+ * Le hall lui-meme a demenage dans `scene/hall/` le jour ou l'on a cesse de le
+ * traverser en cinematique pour y marcher (D52). Il n'en reste ici que le
+ * motif des caissons, qui sert encore a coiffer la nef.
+ */
 export const COFFER_RINGS = 7
 export const COFFERS_PER_RING = 30
-
-/** Le cube d'or, en levitation au centre du hall. */
-export const CUBE_SIZE = 5.4
-export const CUBE_Y = 11

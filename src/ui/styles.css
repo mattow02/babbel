@@ -202,37 +202,6 @@ body::after {
   white-space: pre-wrap;
 }
 
-/* ------------------------------------------------------------- indications */
-
-.hints {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem 2rem;
-  padding-top: 0.9rem;
-  border-top: 1px solid var(--brun-sourd);
-  font-size: 0.78rem;
-  color: var(--ombre-chaude);
-}
-
-kbd {
-  display: inline-block;
-  min-width: 1.6em;
-  margin-right: 0.25rem;
-  padding: 0.1em 0.4em;
-  border: 1px solid var(--brun-sourd);
-  border-radius: 2px;
-  color: var(--sable);
-  font-family: inherit;
-  font-size: 0.9em;
-  text-align: center;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  * {
-    transition-duration: 1ms !important;
-  }
-}
-
 /* ---------------------------------------------------------------- galerie */
 
 .shell--gallery {
@@ -244,82 +213,6 @@ kbd {
   position: fixed;
   inset: 0;
   z-index: 0;
-}
-
-.overlay {
-  position: fixed;
-  inset: auto 0 0 0;
-  z-index: 2;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 1rem 2rem;
-  padding: var(--gouttiere);
-  pointer-events: none;
-}
-
-.overlay__hint {
-  margin: 0;
-  font-size: 0.78rem;
-  color: var(--ombre-chaude);
-}
-
-.perf {
-  display: flex;
-  gap: 0.4rem 2rem;
-  margin: 0;
-}
-
-.perf div {
-  display: flex;
-  flex-direction: column;
-  gap: 0.15rem;
-}
-
-.perf dt {
-  font-size: 0.62rem;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--ombre-chaude);
-}
-
-.perf dd {
-  margin: 0;
-  font-variant-numeric: tabular-nums;
-  font-size: 1rem;
-  color: var(--creme);
-}
-
-.perf--bon {
-  color: var(--soleil);
-}
-
-.perf--faible {
-  color: #b4553f;
-}
-
-/*
- * Le reticule : le curseur reste visible et sert a viser, mais un repere
- * central aide a comprendre qu'on ne tourne la tete qu'en allant vers les
- * bords (voir scene/navigation/steering.ts).
- */
-.reticle {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  z-index: 1;
-  width: 5px;
-  height: 5px;
-  margin: -2.5px 0 0 -2.5px;
-  border-radius: 50%;
-  background: var(--soleil);
-  opacity: 0.35;
-  pointer-events: none;
-}
-
-.shell--gallery {
-  cursor: crosshair;
 }
 
 /* ------------------------------------------------------------------ seuil */
@@ -663,4 +556,44 @@ kbd {
 .entree__second:focus-visible {
   color: var(--soleil);
   outline: none;
+}
+
+/* -------------------------------------------------------- fermer le livre */
+
+/*
+ * La seule chose qui flotte au-dessus du monde.
+ *
+ * Elle ne s'affiche que lorsqu'un volume est ouvert, elle n'a ni cadre ni
+ * fond : dans un lieu, on ne pose pas de barre d'outils.
+ */
+.fermer {
+  position: fixed;
+  top: var(--gouttiere);
+  right: var(--gouttiere);
+  z-index: 3;
+  display: grid;
+  place-items: center;
+  width: 2.6rem;
+  height: 2.6rem;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--creme);
+  opacity: 0.42;
+  cursor: pointer;
+  transition: opacity 220ms ease;
+}
+
+.fermer:hover,
+.fermer:focus-visible {
+  opacity: 0.9;
+}
+
+.fermer svg {
+  width: 1.15rem;
+  height: 1.15rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.4;
+  stroke-linecap: round;
 }

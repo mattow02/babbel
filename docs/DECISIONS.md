@@ -529,6 +529,92 @@ Le selecteur ecarte deja ce qui est desactive, et une modale ne contient que ses
 propres commandes : c'est suffisant, et c'est verifiable.
 Trouve en ecrivant le test, le 2026-08-31.
 
+### D51 — Le film s'arrete DEVANT l'entree
+La sequence d'arrivee traversait le portail, franchissait les murs et deposait
+le visiteur au milieu du hall. C'est ce qui donnait l'impression d'une
+cinematique dans laquelle on passe a travers les objets, et c'est exactement ce
+qu'un lieu ne doit pas faire.
+
+Elle s'arrete desormais a quelques pas du seuil, a hauteur d'homme, face au
+portail, et rend la main. Le visiteur marche sur le parvis et franchit l'entree
+lui-meme. Un test verifie que la camera ne passe JAMAIS derriere le plan du
+portail. Decide le 2026-08-31.
+
+### D52 — Le hall d'accueil est une nef, et l'on y marche
+La rotonde ne servait que de decor a un plan de cinema. Le lieu devient une nef
+parcourue : une allee centrale bordee de deux files de piliers, deux bas-cotes,
+deux escaliers lateraux qui montent aux tribunes, et le cube d'or au bout de
+l'axe. S'approcher du cube fait entrer dans la bibliotheque.
+
+Consequence technique : le marcheur ne connait plus un seul lieu. `usePlayer`
+recoit desormais un MONDE (collisions, sols, origine flottante), et la
+bibliotheque n'est que l'un d'eux. Decide le 2026-08-31.
+
+### D53 — Deux sols au-dessus d'un meme point, et un pas maximal
+Le bas-cote passe SOUS la tribune : au-dessus d'un meme point du plan, il y a
+deux planchers, et une fonction `hauteur(x, z)` ne peut pas repondre. On rend
+donc la LISTE des sols, et le marcheur choisit celui qui est a portee de son
+pas.
+
+Cette seule regle fait tout le travail : elle laisse monter une marche, elle
+interdit de franchir la balustrade d'une tribune pour tomber dans la nef, et
+elle n'a besoin d'aucun etat supplementaire. Decide le 2026-08-31.
+
+### D54 — La pierre est calculee, comme le reste
+Le monument etait un aplat de calcaire : sans assises, un dome de quarante-six
+metres n'a aucune echelle, il pourrait aussi bien en faire trois. Un shader
+greffe sur le materiau standard ajoute les trois choses qui font une facade :
+les lits horizontaux entre blocs, la variation de bloc a bloc, et la patine
+(dessus poussiereux, pieds de mur salis).
+
+Meme raison qu'au D-marbre : une image de pierre pese des mega-octets, se
+repete visiblement, et trahit sa grille. Decide le 2026-08-31.
+
+### D55 — Une silhouette se corrige dans le vertex, pas dans la couleur
+Les montagnes de l'horizon se lisaient comme des pyramides. Aucun reglage de
+couleur n'y pouvait rien : le defaut etait dans la SILHOUETTE. Quelques lignes
+greffees sur le vertex shader repoussent chaque sommet le long de sa normale
+selon un bruit fractal, ce qui donne des aretes, des epaules et des ravines
+pour quelques instructions par sommet — et rien du tout par pixel.
+Decide le 2026-08-31.
+
+### D56 — Le ciel a un soleil, des nuages et du bruit
+Un degrade vertical seul EST un fond lineaire : l'oeil suit la rampe et n'a
+rien d'autre a regarder. Le ciel recoit donc un disque solaire et son halo (qui
+expliquent la lumiere rasante du reste de la scene), des cirrus etires, une
+brume d'horizon plus haute du cote du soleil, et un demi-niveau de bruit de
+tramage. Ce dernier point n'est pas cosmetique : un degrade code sur huit bits
+par canal montre des bandes, et ces bandes sont precisement ce qu'on voit quand
+on trouve un ciel « trop lineaire ». Decide le 2026-08-31.
+
+### D57 — Le lecteur est un livre, pas une interface
+Lire ne fait plus apparaitre un panneau par-dessus la scene. Le volume quitte
+son etagere, vient flotter devant le lecteur, s'ouvre, et se laisse tourner :
+c'est un objet du monde, eclaire par la lampe de la galerie comme le reste.
+Cliquer du cote droit avance, du cote gauche revient.
+
+Le tournage n'utilise pas les evenements du moteur de rendu mais le meme geste
+maison que le reste du site (ecouter le relachement du pointeur et regarder de
+quel cote il tombe) : trois lignes, aucune plomberie, et cela reste verifiable
+depuis l'exterieur. Decide le 2026-08-31.
+
+### D58 — Plus aucun tableau de bord
+Le releve de performance, les indications de touches, la barre d'adresse et le
+reticule ont disparu de l'ecran. Il ne reste, et seulement quand un volume est
+ouvert, qu'une croix pour le refermer. On ne met pas de barre d'outils dans une
+bibliotheque. La mesure, elle, n'est pas perdue : elle vit dans la sonde (D49).
+Decide le 2026-08-31.
+
+### D59 — Un objet accroche a la camera n'est pas rendu
+three ne dessine que ce qui pend de la SCENE. La camera, elle, n'y est pas : un
+objet accroche a une camera hors scene n'est jamais rendu, et aucune erreur ne
+le signale. Le livre etait donc ouvert dans l'etat, la croix s'affichait, l'URL
+changeait — et l'on ne voyait rien.
+
+On rattache la camera a la scene le temps de la lecture. Elle n'a aucune
+apparence : cela ne change rien a l'image, seulement au parcours du graphe.
+Trouve dans le navigateur, le 2026-08-31.
+
 ## Ouvertes (à trancher avec l'utilisateur)
 
 - **La licence.** MIT a été posée par défaut, comme choix le plus permissif.

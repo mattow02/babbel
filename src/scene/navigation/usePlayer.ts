@@ -68,19 +68,65 @@ export interface PlayerHandle {
    * d'emprunter, et l'on ne comprend plus ou l'on est.
    */
   placeAt: (position: Point2, yaw?: number) => void
+  /**
+   * Fige ou relache le visiteur.
+   *
+   * On ne marche pas en lisant : tant qu'un volume est ouvert, le regard et
+   * les pas sont suspendus, et le clic ne designe plus rien.
+   */
+  setFrozen: (frozen: boolean) => void
 }
+
+/**
+ * Le LIEU que le visiteur parcourt.
+ *
+ * Il y en a deux, et ils n'ont rien de commun : la bibliotheque est infinie,
+ * plate, et se replie sur elle-meme par origine flottante ; le grand hall est
+ * fini, a etages, et l'on y monte des escaliers. Plutot que d'ecrire deux fois
+ * la marche, on lui passe le monde ou elle se deroule.
+ */
+export interface World {
+  /** Le deplacement effectif, sans traverser la matiere. */
+  readonly slide: (from: Point2, to: Point2, margin: number, height: number) => Point2
+  /**
+   * La hauteur du sol sous ce point, pour quelqu'un qui se tient deja a
+   * `height`. Rend `null` quand il n'y a la que du vide : le pas est refuse.
+   */
+  readonly floorAt: (point: Point2, height: number) => number | null
+  /** L'origine flottante, si le lieu est trop grand pour un flottant. */
+  readonly rebase?: (point: Point2) => { position: Point2; shift: number }
+  /** Ou l'on se tient en arrivant. */
+  readonly start?: { position: Point2; yaw: number }
+}
+
+/**
+ * La bibliotheque : un seul niveau, et une origine qui se recentre.
+ *
+ * C'est le monde par defaut, celui de tout le reste du site.
+ */
+export const LIBRARY_WORLD: World = {
+  slide: (from, to, margin) => slide(from, to, margin),
+  floorAt: () => 0,
+  rebase,
+}
+
+/** Vitesse a laquelle les yeux rattrapent le sol en montant une marche. */
+const CLIMB_RATE = 9
 
 /** Adoucit le depart et l'arrivee d'un travelling. */
 function easeInOut(t: number): number {
   return t < 0.5 ? 2 * t * t : 1 - (-2 * t + 2) ** 2 / 2
 }
 
-export function usePlayer(): PlayerHandle {
+export function usePlayer(world: World = LIBRARY_WORLD): PlayerHandle {
   const camera = useThree((state) => state.camera)
   const size = useThree((state) => state.size)
   const shiftHexagon = useLibraryStore((state) => state.shiftHexagon)
 
-  const position = useRef<Point2>({ x: 0, z: 0 })
+  const position = useRef<Point2>(world.start?.position ?? { x: 0, z: 0 })
+  /** Le sol sous les pieds, et la hauteur des yeux qui le rattrape. */
+  const sol = useRef(0)
+  const oeil = useRef(0)
   /*
    * Cap initial : face au couloir.
    *
@@ -89,7 +135,7 @@ export function usePlayer(): PlayerHandle {
    * et surtout pas une valeur choisie a vue, sous peine de demarrer nez au mur
    * et de ne pas pouvoir avancer d'un pas.
    */
-  const yaw = useRef(Math.atan2(-AXIS.x, -AXIS.z))
+  const yaw = useRef(world.start?.yaw ?? Math.atan2(-AXIS.x, -AXIS.z))
   const pitch = useRef(0)
   /*
    * `null` tant que le visiteur n'a pas bouge la souris.
@@ -103,6 +149,7 @@ export function usePlayer(): PlayerHandle {
   const walking = useRef(false)
   const keys = useRef(new Set<string>())
   const travel = useRef<Traveling | null>(null)
+  const fige = useRef(false)
   // Les ecouteurs sont poses une seule fois ; ils appellent toujours la
   // derniere version du gestionnaire, via cette reference.
   const interact = useRef<() => void>(() => {})
@@ -116,7 +163,7 @@ export function usePlayer(): PlayerHandle {
       cursor.current = { x: event.clientX, y: event.clientY }
     }
     const onPointerDown = (event: PointerEvent): void => {
-      if (event.button !== 0) return
+      if (event.button !== 0 || fige.current) return
       pressedAt.current = performance.now()
       walking.current = true
     }
@@ -133,7 +180,7 @@ export function usePlayer(): PlayerHandle {
       // clic bref, pour ceux qui preferent le clavier — et le seul chemin qui
       // ne depende d'aucun systeme d'evenements de rendu.
       if (touche === 'e') {
-        interact.current()
+        if (!fige.current) interact.current()
         return
       }
       keys.current.add(touche)
@@ -166,6 +213,27 @@ export function usePlayer(): PlayerHandle {
     }
   }, [])
 
+  /*
+   * En mode sonde uniquement : de quoi se rendre a un endroit precis du lieu.
+   * Voir scene/PerfProbe.tsx pour la raison — un navigateur pilote ne rend
+   * qu'une image par seconde, on ne peut pas « marcher jusque la-bas ».
+   */
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    const demandee =
+      import.meta.env.DEV || new URLSearchParams(window.location.search).has('sonde')
+    if (!demandee) return
+    window.__babbelPlace = (x, z, cap) => {
+      position.current = { x, z }
+      sol.current = world.floorAt({ x, z }, sol.current) ?? sol.current
+      oeil.current = sol.current
+      if (cap !== undefined) yaw.current = cap
+    }
+    return () => {
+      delete window.__babbelPlace
+    }
+  }, [world])
+
   useFrame((_, delta) => {
     const step = Math.min(delta, 0.05) // on encaisse un a-coup sans teleporter
 
@@ -181,6 +249,19 @@ export function usePlayer(): PlayerHandle {
         position.current = { x: camera.position.x, z: camera.position.z }
         trip.onArrival()
       }
+      return
+    }
+
+    // Un livre ouvert immobilise le lecteur : ni marche, ni regard.
+    if (fige.current) {
+      camera.position.set(position.current.x, oeil.current + EYE_HEIGHT, position.current.z)
+      forward.current.set(
+        -Math.sin(yaw.current) * Math.cos(pitch.current),
+        Math.sin(pitch.current),
+        -Math.cos(yaw.current) * Math.cos(pitch.current),
+      )
+      scratch.current.copy(camera.position).add(forward.current)
+      camera.lookAt(scratch.current)
       return
     }
 
@@ -210,18 +291,31 @@ export function usePlayer(): PlayerHandle {
       const dx = (-sin * advance + cos * strafe) * WALK_SPEED * step
       const dz = (-cos * advance - sin * strafe) * WALK_SPEED * step
       const cible: Point2 = { x: position.current.x + dx, z: position.current.z + dz }
-      position.current = slide(position.current, cible, CLEARANCE)
+      position.current = world.slide(position.current, cible, CLEARANCE, sol.current)
+
+      // Le sol suit les pieds : une marche gravie, une tribune atteinte.
+      const dessous = world.floorAt(position.current, sol.current)
+      if (dessous !== null) sol.current = dessous
 
       // Origine flottante : si l'on a change de galerie, on remet le compteur
       // a zero et on incremente le numero d'hexagone.
-      const recentre = rebase(position.current)
-      if (recentre.shift !== 0) {
+      const recentre = world.rebase?.(position.current)
+      if (recentre && recentre.shift !== 0) {
         position.current = recentre.position
         shiftHexagon(recentre.shift)
       }
     }
 
-    camera.position.set(position.current.x, EYE_HEIGHT, position.current.z)
+    /*
+     * Les yeux rattrapent le sol au lieu de le suivre au pixel pres.
+     *
+     * Sans cela, chaque marche d'escalier serait un a-coup vertical de la
+     * hauteur exacte de la marche, et monter deviendrait desagreable a
+     * regarder. Le rattrapage exponentiel donne le balancement d'une montee.
+     */
+    oeil.current += (sol.current - oeil.current) * Math.min(1, CLIMB_RATE * step)
+
+    camera.position.set(position.current.x, oeil.current + EYE_HEIGHT, position.current.z)
     forward.current.set(
       -Math.sin(yaw.current) * Math.cos(pitch.current),
       Math.sin(pitch.current),
@@ -242,8 +336,18 @@ export function usePlayer(): PlayerHandle {
       }
     },
     isTravelling: () => travel.current !== null,
+    setFrozen: (frozen) => {
+      fige.current = frozen
+      if (frozen) {
+        keys.current.clear()
+        walking.current = false
+        pressedAt.current = null
+      }
+    },
     placeAt: (next, cap) => {
       position.current = next
+      sol.current = world.floorAt(next, sol.current) ?? sol.current
+      oeil.current = sol.current
       if (cap !== undefined) {
         yaw.current = cap
         pitch.current = 0

@@ -12,6 +12,7 @@ import {
   CYPRESS_RADIUS,
   DOME_BASE_Y,
   DOME_RADIUS,
+  ESPLANADE_RADIUS,
   PORTAL_HEIGHT,
   PORTAL_WIDTH,
   PORTAL_Z,
@@ -19,6 +20,8 @@ import {
   TERRACE_RADII,
 } from './dimensions.ts'
 import { cypressRing, stairSteps } from './landscape.ts'
+import { useRidge } from '../materials/Ridge.tsx'
+import { useStone } from '../materials/Stone.tsx'
 import { SEUIL } from './palette.ts'
 
 /**
@@ -31,6 +34,21 @@ import { SEUIL } from './palette.ts'
  * question ne se posera que pour l'interieur du hall.
  */
 export function Exterior(): React.ReactElement {
+  /*
+   * La pierre du monument. Trois reglages differents seulement, parce que
+   * chaque variante compile son propre programme :
+   *  - le dome, dont les assises sont hautes et l'appareil enorme ;
+   *  - le sol, sans assises mais poussiereux ;
+   *  - le reste des maconneries, a l'echelle du corps.
+   */
+  const pierreDome = useStone({ base: SEUIL.calcaire, patine: SEUIL.calcaireOmbre, assise: 2.6, grain: 6, pied: 18 })
+  // Le sable de la plaine : de larges ondulations de couleur, sans assises.
+  const sable = useStone({ base: SEUIL.plaine, patine: '#9d7f57', assise: 0, grain: 34, pied: -400, force: 1 })
+  const pierreSol = useStone({ base: SEUIL.calcaire, patine: SEUIL.calcaireOmbre, assise: 0, grain: 4.5, pied: -40, force: 0.75 })
+  // Les montagnes : une silhouette brisee, pas des cones.
+  const roche = useRidge({ amount: 0.34, scale: 0.3 })
+  const pierreMur = useStone({ base: SEUIL.calcaire, patine: SEUIL.calcaireOmbre, assise: 1.35, grain: 3.2, pied: 14 })
+
   const cypres = useMemo<Box[]>(() => {
     const arbres: Box[] = []
     for (const ring of [0, 1]) {
@@ -50,7 +68,7 @@ export function Exterior(): React.ReactElement {
     return arbres
   }, [])
 
-  const marches = useMemo(() => stairSteps(96), [])
+  const marches = useMemo(() => stairSteps(108), [])
 
   /** Les montagnes de l'horizon, en silhouette. */
   const montagnes = useMemo<Box[]>(() => {
@@ -96,36 +114,45 @@ export function Exterior(): React.ReactElement {
     <>
       {/* La plaine. */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.02, 0]} receiveShadow>
-        <circleGeometry args={[900, 64]} />
-        <meshStandardMaterial color={SEUIL.plaine} roughness={1} />
+        <circleGeometry args={[900, 96]} />
+        <meshStandardMaterial ref={sable} roughness={1} />
       </mesh>
 
       {/* Les montagnes, loin, sans ombres : elles ne sont qu'une silhouette. */}
       <InstancedShapes items={montagnes} receiveShadow={false}>
-        <coneGeometry args={[0.5, 1, 9]} />
-        <meshStandardMaterial color={SEUIL.montagne} roughness={1} flatShading />
+        <coneGeometry args={[0.5, 1, 13, 4]} />
+        <meshStandardMaterial ref={roche} color={SEUIL.montagne} roughness={1} flatShading />
       </InstancedShapes>
 
       {/* Le bassin evase qui recoit le dome. */}
       <mesh position={[0, DOME_BASE_Y - BASIN_HEIGHT / 2, 0]} receiveShadow castShadow>
         <cylinderGeometry args={[BASIN_TOP_RADIUS, BASIN_BOTTOM_RADIUS, BASIN_HEIGHT, 72, 1, true]} />
-        <meshStandardMaterial color={SEUIL.calcaire} roughness={0.95} side={DoubleSide} />
+        <meshStandardMaterial ref={pierreMur} roughness={0.95} side={DoubleSide} />
       </mesh>
 
-      {/* Les deux terrasses annulaires. */}
-      {[0, 1].map((ring) => (
-        <mesh
-          key={ring}
-          position={[0, (TERRACE_HEIGHTS[ring] ?? 0) - 2.2, 0]}
-          receiveShadow
-          castShadow
-        >
-          <cylinderGeometry
-            args={[(TERRACE_RADII[ring] ?? 0) + 1.5, (TERRACE_RADII[ring] ?? 0) - 1, 4.4, 72]}
-          />
-          <meshStandardMaterial color={SEUIL.calcaire} roughness={0.92} />
-        </mesh>
-      ))}
+      {/*
+        L'esplanade : le parvis, en pleine dalle.
+        C'est desormais un SOL, pas un decor : le visiteur y marche, du sommet
+        des marches jusqu'au portail. Un anneau n'aurait plus suffi.
+      */}
+      <mesh position={[0, DOME_BASE_Y - 2.2, 0]} receiveShadow castShadow>
+        <cylinderGeometry args={[ESPLANADE_RADIUS, ESPLANADE_RADIUS - 2, 4.4, 96]} />
+        <meshStandardMaterial ref={pierreSol} roughness={0.94} />
+      </mesh>
+
+      {/* Le parapet qui la borde : sans lui, l'esplanade finit dans le vide. */}
+      <mesh position={[0, DOME_BASE_Y + 0.55, 0]} receiveShadow castShadow>
+        <cylinderGeometry args={[ESPLANADE_RADIUS, ESPLANADE_RADIUS, 1.1, 96, 1, true]} />
+        <meshStandardMaterial ref={pierreMur} roughness={0.9} side={DoubleSide} />
+      </mesh>
+
+      {/* La terrasse basse, en contrebas, qui porte le second anneau. */}
+      <mesh position={[0, (TERRACE_HEIGHTS[1] ?? 0) - 2.2, 0]} receiveShadow castShadow>
+        <cylinderGeometry
+          args={[(TERRACE_RADII[1] ?? 0) + 4, (TERRACE_RADII[1] ?? 0) + 1, 4.4, 96]}
+        />
+        <meshStandardMaterial ref={pierreSol} roughness={0.92} />
+      </mesh>
 
       {/* Les cypres : deux anneaux, en un seul appel de rendu. */}
       <InstancedShapes items={cypres} castShadow>
@@ -136,11 +163,11 @@ export function Exterior(): React.ReactElement {
       {/* Le dome : une demi-sphere posee dans le bassin. */}
       <mesh position={[0, DOME_BASE_Y, 0]} castShadow receiveShadow>
         <sphereGeometry args={[DOME_RADIUS, 96, 48, 0, Math.PI * 2, 0, Math.PI / 2]} />
-        <meshStandardMaterial color={SEUIL.calcaire} roughness={0.9} />
+        <meshStandardMaterial ref={pierreDome} roughness={0.9} />
       </mesh>
 
       {/* L'escalier d'honneur, unique, dans l'axe. */}
-      <Boxes boxes={marches} color={SEUIL.calcaire} roughness={0.93} castShadow />
+      <Boxes boxes={marches} color={SEUIL.calcaire} roughness={0.93} castShadow materialRef={pierreSol} />
 
       {/* L'entree unique : deux jambages, un linteau, et du noir derriere. */}
       <group position={[0, DOME_BASE_Y, PORTAL_Z]}>
@@ -148,15 +175,15 @@ export function Exterior(): React.ReactElement {
             completement contre une demi-sphere de 46 metres de rayon. */}
         <mesh position={[-(PORTAL_WIDTH / 2 + 2), PORTAL_HEIGHT / 2, 3]} castShadow receiveShadow>
           <boxGeometry args={[4, PORTAL_HEIGHT + 2.5, 9]} />
-          <meshStandardMaterial color={SEUIL.calcaire} roughness={0.9} />
+          <meshStandardMaterial ref={pierreMur} roughness={0.9} />
         </mesh>
         <mesh position={[PORTAL_WIDTH / 2 + 2, PORTAL_HEIGHT / 2, 3]} castShadow receiveShadow>
           <boxGeometry args={[4, PORTAL_HEIGHT + 2.5, 9]} />
-          <meshStandardMaterial color={SEUIL.calcaire} roughness={0.9} />
+          <meshStandardMaterial ref={pierreMur} roughness={0.9} />
         </mesh>
         <mesh position={[0, PORTAL_HEIGHT + 1.9, 3]} castShadow receiveShadow>
           <boxGeometry args={[PORTAL_WIDTH + 8, 3.2, 9]} />
-          <meshStandardMaterial color={SEUIL.calcaire} roughness={0.9} />
+          <meshStandardMaterial ref={pierreMur} roughness={0.9} />
         </mesh>
         {/* Le noir de l'entree : on ne voit pas ce qu'il y a dedans. */}
         <mesh position={[0, PORTAL_HEIGHT / 2, -1]}>

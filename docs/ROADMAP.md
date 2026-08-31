@@ -362,6 +362,32 @@ constats P1 et cinq P2 restent ouverts, avec un ordre de traitement recommandé.
 
 ---
 
+## Phase 11 — Le lieu, sur retours (2026-08-31)
+
+Cinq reproches, cinq chantiers. Le fil commun : **le site se regardait au lieu
+de se visiter.**
+
+- **L'arrivée s'arrête devant l'entrée.** Le film ne traverse plus le portail
+  ni les murs : il s'interrompt à quelques pas du seuil, à hauteur d'homme, et
+  rend la main. Un test vérifie que la caméra ne passe **jamais** derrière le
+  plan du portail. Le parvis, lui, se marche.
+- **Le hall est une nef.** Allée centrale, deux files de piliers, bas-côtés,
+  deux escaliers latéraux vers les tribunes, cube d'or au bout de l'axe.
+  On y entre à pied, on en sort en s'approchant du cube.
+- **Le marcheur connaît plusieurs mondes.** `usePlayer` reçoit collisions,
+  sols et origine flottante ; la bibliothèque n'est qu'un monde parmi d'autres.
+  Deux sols peuvent se superposer (bas-côté sous tribune) : le pas maximal
+  tranche, et interdit du même coup de tomber par-dessus une balustrade.
+- **La matière.** Pierre de taille calculée (assises, patine, grain), montagnes
+  brisées dans le vertex shader, ciel avec soleil, cirrus, brume dissymétrique
+  et tramage anti-bandes.
+- **Le lecteur est un livre.** Il vole jusqu'à nous, s'ouvre, se tourne au clic.
+  Plus aucun tableau de bord : une croix, et rien d'autre.
+
+**293 tests**, zéro avertissement.
+
+---
+
 ## Ce qui n'est pas fait
 
 **Une seule chose :** aucun test sur un vrai appareil mobile. Le mode dégradé

@@ -1,98 +1,35 @@
 import { useFrame, useThree } from '@react-three/fiber'
-import { useRef, useState } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 import { Vector3 } from 'three'
-import { DOME_BASE_Y, DOME_RADIUS } from './dimensions.ts'
-import { Atrium } from './Atrium.tsx'
+import { DOME_BASE_Y, DOME_RADIUS, PORTAL_WIDTH, PORTAL_Z } from './dimensions.ts'
 import { Exterior } from './Exterior.tsx'
 import { SEUIL } from './palette.ts'
 import { Sky } from './Sky.tsx'
-import { INSIDE_AT, THRESHOLD_DURATION, cameraAt } from './sequence.ts'
+import { ARRIVAL, THRESHOLD_DURATION, cameraAt } from './sequence.ts'
 import { useLibraryStore } from '../../store/useLibraryStore.ts'
-import { Dust } from '../effects/Dust.tsx'
 import { Effects } from '../effects/Effects.tsx'
-import { Halo, LightShaft } from '../effects/LightShaft.tsx'
-import { ATRIUM_RADIUS, ATRIUM_WALL_HEIGHT, CUBE_SIZE, CUBE_Y } from './dimensions.ts'
+import type { Point2 } from '../navigation/geometry.ts'
+import { usePlayer, type World } from '../navigation/usePlayer.ts'
+import { STAIR_TOP_Y } from './landscape.ts'
 
 /**
- * Le Seuil : la sequence d'arrivee.
+ * Le Seuil : l'arrivee, puis le parvis.
  *
- * On arrive de la plaine, on voit le dome, on monte les marches, on franchit
- * l'entree unique, et l'on debouche dans le grand hall ou flotte le cube. Puis
- * la bibliotheque commence.
- *
- * La camera est sur des rails (voir sequence.ts) : ce sont des plans composes,
- * pas une camera libre. C'est ce que demande la direction artistique, et c'est
- * ce qui garantit que la premiere impression est la meme pour tout le monde.
+ * La sequence n'est plus un film qui traverse le batiment. Elle amene le
+ * visiteur DEVANT l'entree, a hauteur d'homme, et s'arrete la. C'est ensuite
+ * lui qui avance, et c'est lui qui franchit le portail. Un lieu ou l'on entre
+ * malgre soi n'est pas un lieu : c'est une video.
  */
-export function Threshold({ onFinish }: { onFinish: () => void }): React.ReactElement {
+export function Threshold(): React.ReactElement {
+  const stage = useLibraryStore((state) => state.stage)
   const profile = useLibraryStore((state) => state.profile)
-  const camera = useThree((state) => state.camera)
-  const elapsed = useRef(0)
-  const done = useRef(false)
-  const [inside, setInside] = useState(false)
-
-  // Vecteur de travail, alloue une seule fois.
-  const cible = useRef(new Vector3())
-
-  useFrame((_, delta) => {
-    elapsed.current += Math.min(delta, 0.05)
-    const time = elapsed.current
-
-    const shot = cameraAt(time)
-    camera.position.set(shot.position.x, shot.position.y, shot.position.z)
-    cible.current.set(shot.lookAt.x, shot.lookAt.y, shot.lookAt.z)
-    camera.lookAt(cible.current)
-
-    // Le passage dehors -> dedans est une COUPE, pas un fondu : on ne modelise
-    // pas le tunnel de l'entree, on change de plan. C'est du montage.
-    const dedans = time >= INSIDE_AT
-    if (dedans !== inside) setInside(dedans)
-
-    if (!done.current && time >= THRESHOLD_DURATION) {
-      done.current = true
-      onFinish()
-    }
-  })
-
-  if (inside) {
-    return (
-      <>
-        <color attach="background" args={['#0f0c09']} />
-        <fogExp2 attach="fog" args={['#0f0c09', 0.012]} />
-        <Atrium />
-
-        {/*
-          Le rai de l'oculus, tombant sur le cube. C'est le plan de la
-          capture 4 : une seule colonne de lumiere dans une salle noire.
-        */}
-        <LightShaft
-          position={[0, ATRIUM_WALL_HEIGHT * 0.72, 0]}
-          radius={ATRIUM_RADIUS * 0.17}
-          height={ATRIUM_WALL_HEIGHT * 1.7}
-          color={SEUIL.soleil}
-          strength={0.5}
-        />
-        <Halo position={[0, CUBE_Y, 0]} radius={CUBE_SIZE * 2.6} color={SEUIL.or} strength={0.4} />
-        <Dust
-          count={Math.round(profile.dust * 2.7)}
-          radius={ATRIUM_RADIUS * 0.42}
-          height={ATRIUM_WALL_HEIGHT * 1.2}
-          color={SEUIL.soleil}
-          strength={0.3}
-          size={9}
-        />
-        <Effects ambiance="hall" complet={profile.fullEffects} />
-      </>
-    )
-  }
 
   return (
     <>
       <Sky />
       {/*
         Brouillard leger seulement : trop dense, il laverait les montagnes vers
-        l'or de l'horizon alors qu'elles doivent rester en silhouette SOMBRE,
-        comme sur la capture 3.
+        l'or de l'horizon alors qu'elles doivent rester en silhouette SOMBRE.
       */}
       <fogExp2 attach="fog" args={[SEUIL.brume, 0.00055]} />
 
@@ -119,7 +56,6 @@ export function Threshold({ onFinish }: { onFinish: () => void }): React.ReactEl
       <hemisphereLight color={SEUIL.cielBas} groundColor={SEUIL.plaine} intensity={0.55} />
 
       <Exterior />
-
       <Effects ambiance="exterieur" complet={profile.fullEffects} />
 
       {/* Un halo chaud pose sur le dome, cote soleil : le liseré des captures. */}
@@ -130,6 +66,95 @@ export function Threshold({ onFinish }: { onFinish: () => void }): React.ReactEl
         distance={220}
         decay={2}
       />
+
+      {stage === 'threshold' ? <Sequence /> : <Parvis />}
     </>
   )
+}
+
+/** Les plans composes de l'arrivee, jusqu'a l'entree. */
+function Sequence(): React.ReactElement | null {
+  const camera = useThree((state) => state.camera)
+  const arrive = useLibraryStore((state) => state.arrive)
+  const elapsed = useRef(0)
+  const done = useRef(false)
+  const cible = useRef(new Vector3())
+
+  useFrame((_, delta) => {
+    elapsed.current += Math.min(delta, 0.05)
+    const shot = cameraAt(elapsed.current)
+    camera.position.set(shot.position.x, shot.position.y, shot.position.z)
+    cible.current.set(shot.lookAt.x, shot.lookAt.y, shot.lookAt.z)
+    camera.lookAt(cible.current)
+
+    if (!done.current && elapsed.current >= THRESHOLD_DURATION) {
+      done.current = true
+      arrive()
+    }
+  })
+
+  return null
+}
+
+/**
+ * Le parvis : quelques metres de terrasse, devant le portail.
+ *
+ * Le sol y est plat — la volee tombe pile sur la base du dome — et l'espace est
+ * volontairement etroit : il n'y a rien a explorer dehors, il y a une entree a
+ * franchir. Le seul evenement possible est de passer le seuil.
+ */
+function Parvis(): null {
+  const enterHall = useLibraryStore((state) => state.enterHall)
+  const monde = useMemo<World>(() => mondeDuParvis(), [])
+  const player = usePlayer(monde)
+  const entre = useRef(false)
+  const camera = useThree((state) => state.camera)
+
+  useEffect(() => {
+    player.placeAt(ARRIVAL.position2, ARRIVAL.yaw)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  useFrame(() => {
+    if (entre.current) return
+    if (camera.position.z <= PORTAL_Z + 0.4) {
+      entre.current = true
+      enterHall()
+    }
+  })
+
+  return null
+}
+
+/**
+ * Ou l'on a le droit de marcher dehors.
+ *
+ * Un rectangle devant le portail, pose sur la terrasse haute. On ne peut ni
+ * redescendre l'escalier ni faire le tour du dome : ce n'est pas un monde
+ * ouvert, c'est un seuil.
+ */
+function mondeDuParvis(): World {
+  const demiLargeur = PORTAL_WIDTH / 2 + 11
+  const fond = PORTAL_Z - 1
+  const arriere = PORTAL_Z + 29
+
+  const dedans = (point: Point2, margin: number): boolean =>
+    Math.abs(point.x) <= demiLargeur - margin &&
+    point.z >= fond + margin &&
+    point.z <= arriere - margin
+
+  return {
+    slide: (from, to, margin) => {
+      if (dedans(to, margin)) return to
+      // Un seul essai par composante suffit : le parvis n'a que des murs
+      // droits, et aucun obstacle rond.
+      const axe = { x: from.x, z: to.z }
+      if (dedans(axe, margin)) return axe
+      const lateral = { x: to.x, z: from.z }
+      if (dedans(lateral, margin)) return lateral
+      return from
+    },
+    floorAt: () => STAIR_TOP_Y,
+    start: { position: { x: 0, z: PORTAL_Z + 26 }, yaw: 0 },
+  }
 }

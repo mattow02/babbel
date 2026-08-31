@@ -7,3 +7,5 @@ dist/
 .vite/
 coverage/
 .playwright-mcp/
+.serveur.log
+.lien-exemple.txt

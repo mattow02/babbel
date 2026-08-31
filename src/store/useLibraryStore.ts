@@ -45,10 +45,14 @@ export type Mode = 'gallery' | 'reader'
  *               qu'esthetique : aucun navigateur n'autorise le son avant un
  *               geste du visiteur, et c'est aussi le moment ou l'on reveille
  *               le worker de generation.
- * `threshold` : la sequence d'arrivee (le Seuil, decision D11).
+ * `threshold` : la sequence d'arrivee (le Seuil, decision D11). Elle
+ *               s'interrompt DEVANT l'entree, elle ne la franchit pas.
+ * `parvis`    : le visiteur a repris la main, dehors, face au portail. C'est
+ *               lui qui decide d'entrer, et c'est tout le sujet du lieu.
+ * `hall`      : la nef d'accueil, ou l'on marche jusqu'au cube.
  * `library`   : la bibliotheque infinie, ou l'on marche et l'on lit.
  */
-export type Stage = 'entry' | 'threshold' | 'library'
+export type Stage = 'entry' | 'threshold' | 'parvis' | 'hall' | 'library'
 
 export interface Perf {
   readonly fps: number
@@ -62,6 +66,9 @@ interface LibraryState {
 
   stage: Stage
   begin: () => void
+  /** Le film rend la main : on se tient devant l'entree. */
+  arrive: () => void
+  enterHall: () => void
   enterLibrary: () => void
 
   muted: boolean
@@ -76,9 +83,10 @@ interface LibraryState {
   shiftHexagon: (delta: number) => void
   setHexagon: (hexagon: bigint) => void
 
-  /** Le volume que le visiteur vient d'ouvrir, s'il y en a un. */
+  /** Le volume que le visiteur tient en main, s'il y en a un. */
   opened: Address | null
   open: (address: Address) => void
+  close: () => void
 
   perf: Perf
   setPerf: (perf: Perf) => void
@@ -90,6 +98,12 @@ export const useLibraryStore = create<LibraryState>((set) => ({
   stage: 'entry',
   begin: () => {
     set({ stage: 'threshold' })
+  },
+  arrive: () => {
+    set({ stage: 'parvis' })
+  },
+  enterHall: () => {
+    set({ stage: 'hall' })
   },
   enterLibrary: () => {
     set({ stage: 'library' })
@@ -122,7 +136,10 @@ export const useLibraryStore = create<LibraryState>((set) => ({
 
   opened: null,
   open: (address) => {
-    set({ opened: address, mode: 'reader' })
+    set({ opened: address })
+  },
+  close: () => {
+    set({ opened: null })
   },
 
   perf: { fps: 0, calls: 0, triangles: 0 },

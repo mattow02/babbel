@@ -13,7 +13,7 @@
  * Fonction pure : la trajectoire se verifie sans rien afficher.
  */
 
-import { CUBE_Y, DOME_BASE_Y, DOME_RADIUS, PORTAL_Z } from './dimensions.ts'
+import { DOME_BASE_Y, DOME_RADIUS, PORTAL_HEIGHT, PORTAL_Z } from './dimensions.ts'
 import { STAIR_TOP_Y } from './landscape.ts'
 
 export interface Vec3 {
@@ -29,8 +29,6 @@ export interface Shot {
   readonly position: Vec3
   /** Ce qu'elle regarde a la fin du plan. */
   readonly lookAt: Vec3
-  /** Vrai quand ce plan se deroule DANS le grand hall. */
-  readonly inside?: boolean
 }
 
 /**
@@ -44,6 +42,18 @@ export const OPENING: Shot = {
   lookAt: { x: 0, y: DOME_BASE_Y + DOME_RADIUS * 0.45, z: 0 },
 }
 
+/** Hauteur du regard, la meme que celle du visiteur qui prend la suite. */
+const EYE_LEVEL = 1.55
+
+/**
+ * A quelle distance du seuil la camera s'arrete et rend la main.
+ *
+ * Mesuree depuis le plan du portail, porche NON compris : celui-ci avance de
+ * neuf metres. De trop pres, le porche remplit l'image et l'on ne voit plus
+ * l'entree — seulement un mur.
+ */
+export const ARRIVAL_STEP = 26
+
 export const SHOTS: readonly Shot[] = [
   // 1. On avance vers le monument, qui grandit.
   {
@@ -54,46 +64,27 @@ export const SHOTS: readonly Shot[] = [
   // 2. On arrive au pied de l'escalier, en contre-plongee.
   {
     duration: 5,
-    position: { x: 0, y: 3.2, z: 96 },
+    position: { x: 0, y: 3.2, z: 112 },
     lookAt: { x: 0, y: DOME_BASE_Y + DOME_RADIUS * 0.3, z: 0 },
   },
-  // 3. On monte les marches. Le regard descend vers l'entree.
+  /*
+   * 3. On monte les marches, et l'on s'arrete DEVANT L'ENTREE.
+   *
+   * C'est ici que le film s'interrompt et que le visiteur reprend la main. Il
+   * ne franchit pas le portail malgre lui : il le voit, il est devant, il
+   * entre s'il le veut. Le dernier plan cadre donc l'entree de face, a hauteur
+   * d'homme, a quelques pas du seuil.
+   */
   {
-    duration: 5.5,
-    position: { x: 0, y: STAIR_TOP_Y + 1.7, z: 66 },
-    lookAt: { x: 0, y: DOME_BASE_Y + 5, z: PORTAL_Z },
-  },
-  // 4. On franchit l'entree unique. Tout s'assombrit.
-  {
-    duration: 3.5,
-    position: { x: 0, y: DOME_BASE_Y + 1.7, z: PORTAL_Z - 2 },
-    lookAt: { x: 0, y: DOME_BASE_Y + 5, z: 0 },
-  },
-  // 5. Dans le hall : le cube flotte au centre.
-  {
-    duration: 5,
-    position: { x: 0, y: 5.5, z: 31 },
-    lookAt: { x: 0, y: CUBE_Y - 1, z: 0 },
-    inside: true,
-  },
-  // 6. On s'approche du cube, qui est la porte vers la bibliotheque.
-  {
-    duration: 4.5,
-    position: { x: 0, y: 7, z: 17 },
-    lookAt: { x: 0, y: CUBE_Y - 0.5, z: 0 },
-    inside: true,
+    duration: 6,
+    position: { x: 0, y: STAIR_TOP_Y + EYE_LEVEL, z: PORTAL_Z + ARRIVAL_STEP },
+    lookAt: { x: 0, y: STAIR_TOP_Y + PORTAL_HEIGHT * 0.45, z: PORTAL_Z },
   },
 ]
 
 /** Duree totale de la sequence, en secondes. */
 export const THRESHOLD_DURATION = SHOTS.reduce((total, shot) => total + shot.duration, 0)
 
-/** Instant ou l'on passe de l'exterieur a l'interieur du hall. */
-export const INSIDE_AT = SHOTS.reduce(
-  (accumulator, shot) =>
-    accumulator.found ? accumulator : { time: accumulator.time + shot.duration, found: shot.inside === true },
-  { time: 0, found: false },
-).time
 
 function ease(t: number): number {
   return t < 0.5 ? 2 * t * t : 1 - (-2 * t + 2) ** 2 / 2
@@ -118,7 +109,10 @@ export function cameraAt(time: number): { position: Vec3; lookAt: Vec3 } {
   return { position: from.position, lookAt: from.lookAt }
 }
 
-/** Vrai si, a cet instant, la camera est deja dans le grand hall. */
-export function isInside(time: number): boolean {
-  return time >= INSIDE_AT
+/** Ou se tient le visiteur quand le film lui rend la main : devant l'entree. */
+export const ARRIVAL: { position: Vec3; position2: { x: number; z: number }; yaw: number } = {
+  position: { x: 0, y: STAIR_TOP_Y, z: PORTAL_Z + ARRIVAL_STEP },
+  position2: { x: 0, z: PORTAL_Z + ARRIVAL_STEP },
+  // Face au portail, c'est-a-dire vers les z decroissants.
+  yaw: 0,
 }

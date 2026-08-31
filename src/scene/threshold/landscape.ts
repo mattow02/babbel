@@ -9,9 +9,7 @@
 import { jitterOf } from '../hash.ts'
 import type { Box } from '../instancing.ts'
 import {
-  ATRIUM_COLUMNS,
-  ATRIUM_RADIUS,
-  ATRIUM_WALL_HEIGHT,
+  CYPRESS_GAP,
   COFFERS_PER_RING,
   COFFER_RINGS,
   CYPRESS_PER_RING,
@@ -47,6 +45,11 @@ export function cypressRing(ring: number): Placed[] {
   for (let index = 0; index < count; index += 1) {
     const jitter = jitterOf(index)
     const angle = ((index + jitter * 0.35) / count) * Math.PI * 2
+    /*
+     * L'allee d'honneur : on laisse le champ libre dans l'axe de l'entree.
+     * L'axe pointe vers les z positifs, c'est-a-dire l'angle pi/2.
+     */
+    if (Math.abs(angle - Math.PI / 2) < CYPRESS_GAP) continue
     trees.push({
       x: Math.cos(angle) * radius,
       y: height,
@@ -78,21 +81,6 @@ export function stairSteps(baseZ: number): Box[] {
 
 /** Hauteur atteinte au sommet de l'escalier. */
 export const STAIR_TOP_Y = STAIR_COUNT * STAIR_RISE
-
-/** La colonnade qui ceinture le grand hall. */
-export function atriumColumns(): Placed[] {
-  const columns: Placed[] = []
-  for (let index = 0; index < ATRIUM_COLUMNS; index += 1) {
-    const angle = (index / ATRIUM_COLUMNS) * Math.PI * 2
-    columns.push({
-      x: Math.cos(angle) * (ATRIUM_RADIUS - 1.6),
-      y: ATRIUM_WALL_HEIGHT / 2,
-      z: Math.sin(angle) * (ATRIUM_RADIUS - 1.6),
-      rotY: -angle,
-    })
-  }
-  return columns
-}
 
 /**
  * Les caissons de la coupole.

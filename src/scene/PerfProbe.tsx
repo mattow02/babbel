@@ -1,5 +1,6 @@
 import { useFrame, useThree } from '@react-three/fiber'
-import { useEffect, useRef } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
+import { Raycaster, Vector2 } from 'three'
 import { useLibraryStore } from '../store/useLibraryStore.ts'
 
 /**
@@ -33,6 +34,9 @@ function sondeDemandee(): boolean {
 }
 
 export function PerfProbe(): null {
+  // Alloues une fois : la sonde ne doit rien couter quand on ne s'en sert pas.
+  const viseur = useMemo(() => new Raycaster(), [])
+  const centreEcran = useMemo(() => new Vector2(0, 0), [])
   const gl = useThree((state) => state.gl)
   const scene = useThree((state) => state.scene)
   const camera = useThree((state) => state.camera)
@@ -121,6 +125,42 @@ export function PerfProbe(): null {
     }
     if (!sondeDemandee()) return
     window.__babbelBench = bench
+    // La scene elle-meme : de quoi lancer un rayon a la main depuis la console
+    // et verifier ce que le reticule designe reellement.
+    window.__babbelScene = { scene, camera }
+    /*
+     * Ce que le reticule designe VRAIMENT.
+     *
+     * Le meme tir que celui de la scene, mais lance depuis la console : c'est
+     * le seul moyen de distinguer « le rayon ne touche rien » de « la scene ne
+     * fait rien du rayon », et cette distinction a deja coute une soiree.
+     */
+    window.__babbelViser = (x = 0, y = 0) => {
+      centreEcran.set(x, y)
+      viseur.setFromCamera(centreEcran, camera)
+      const rayon = {
+        origine: viseur.ray.origin.toArray().map((n) => Number(n.toFixed(3))),
+        direction: viseur.ray.direction.toArray().map((n) => Number(n.toFixed(3))),
+      }
+      const touches = viseur.intersectObjects(scene.children, true).slice(0, 4).map((touche) => ({
+        distance: Number(touche.distance.toFixed(3)),
+        instance: touche.instanceId ?? -1,
+        instances: (touche.object as { count?: number }).count ?? -1,
+        type: touche.object.type,
+      }))
+      return { rayon, touches }
+    }
+    window.__babbelEtat = () => {
+      const { stage, opened, hexagon } = useLibraryStore.getState()
+      return { stage, opened, hexagon: hexagon.toString() }
+    }
+    window.__babbelStage = (stage) => {
+      const store = useLibraryStore.getState()
+      if (stage === 'threshold') store.begin()
+      else if (stage === 'parvis') store.arrive()
+      else if (stage === 'hall') store.enterHall()
+      else if (stage === 'library') store.enterLibrary()
+    }
 
     /*
      * Faire tourner la boucle a la demande.
@@ -142,10 +182,14 @@ export function PerfProbe(): null {
 
     return () => {
       delete window.__babbelBench
+      delete window.__babbelViser
+      delete window.__babbelScene
+      delete window.__babbelEtat
+      delete window.__babbelStage
       delete window.__babbelStep
       delete window.__babbel
     }
-  }, [gl, scene, camera, advance])
+  }, [gl, scene, camera, advance, viseur, centreEcran])
 
   return null
 }

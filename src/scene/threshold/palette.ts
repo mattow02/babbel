@@ -16,7 +16,7 @@ export const SEUIL = {
   /** Soleil rasant. */
   soleil: '#ffd9a0',
   /** Ciel, du zenith a l'horizon. */
-  cielHaut: '#24424c',
+  cielHaut: '#3a6a78',
   cielBas: '#9fb6b2',
   /** Brume doree de l'horizon. */
   brume: '#e0b98a',

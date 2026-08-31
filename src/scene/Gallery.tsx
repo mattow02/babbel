@@ -1,7 +1,11 @@
 import { Canvas, useThree } from '@react-three/fiber'
-import { useCallback, useEffect, useRef } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { ACESFilmicToneMapping, Raycaster, Vector2, Vector3, type InstancedMesh } from 'three'
 import { useLibraryStore } from '../store/useLibraryStore.ts'
+import { PAGES_PER_BOOK, type Address } from '../core/index.ts'
+import type { PageLibrary } from '../workers/index.ts'
+import { Book } from './book/Book.tsx'
+import { useSpread } from './book/useSpread.ts'
 import { approachFor } from './hexagon/approach.ts'
 import { CORRIDOR_SIDES, sideAngle } from './hexagon/layout3d.ts'
 import { STAIRWELL_RADIUS } from './dimensions.ts'
@@ -9,6 +13,7 @@ import { stairwellCentre } from './hexagon/stairs.ts'
 import { above, below } from './navigation/floors.ts'
 import { Library } from './Library.tsx'
 import { PerfProbe } from './PerfProbe.tsx'
+import { HallScene } from './hall/HallScene.tsx'
 import { Threshold } from './threshold/Threshold.tsx'
 import { PALETTE } from './materials/palette.ts'
 import { EYE_HEIGHT, usePlayer } from './navigation/usePlayer.ts'
@@ -53,11 +58,21 @@ function stairFoot(): { position: { x: number; z: number }; yaw: number } {
   return { position, yaw: Math.atan2(-nx, -nz) }
 }
 
-function Scene({ depth }: { depth: number }): React.ReactElement {
+function Scene({
+  depth,
+  library,
+}: {
+  depth: number
+  library: PageLibrary
+}): React.ReactElement {
   const hexagon = useLibraryStore((state) => state.hexagon)
   const setHexagon = useLibraryStore((state) => state.setHexagon)
   const open = useLibraryStore((state) => state.open)
+  const opened = useLibraryStore((state) => state.opened)
   const camera = useThree((state) => state.camera)
+
+  /** D'ou le volume s'est envole. Sert au depart de son vol. */
+  const [depuis, setDepuis] = useState<Vector3 | null>(null)
 
   const books = useRef<InstancedMesh>(null)
   const stairs = useRef<InstancedMesh>(null)
@@ -82,7 +97,7 @@ function Scene({ depth }: { depth: number }): React.ReactElement {
   const player = usePlayer()
 
   const interagir = useCallback(() => {
-    if (player.isTravelling()) return
+    if (player.isTravelling() || opened) return
     raycaster.current.setFromCamera(centre.current, camera)
 
     /*
@@ -123,6 +138,13 @@ function Scene({ depth }: { depth: number }): React.ReactElement {
     if (!mesh) return
     const touches = raycaster.current.intersectObject(mesh, false)
     const premier = touches[0]
+    // En mode sonde : de quoi savoir ce que le reticule a designe, et pourquoi
+    // rien ne s'est ouvert. Voir scene/PerfProbe.tsx.
+    if (typeof window !== 'undefined' && window.__babbelEtat) {
+      window.__babbelVise = premier
+        ? { distance: premier.distance, instance: premier.instanceId ?? -1, portee: REACH, cibles: mesh.count }
+        : { distance: -1, instance: -1, portee: REACH, cibles: mesh.count }
+    }
     if (!premier || premier.instanceId === undefined) return
     if (premier.distance > REACH) return
 
@@ -130,21 +152,56 @@ function Scene({ depth }: { depth: number }): React.ReactElement {
     if (!approach) return
 
     /*
-     * On se place DEVANT le volume avant de l'ouvrir : la lecture ne surgit
-     * pas, on s'en approche. C'est le travelling cadre promis par D13.
+     * Ce n'est plus le visiteur qui va au livre, c'est le livre qui vient a
+     * lui : on retient l'endroit exact d'ou il part, sur l'etagere, et le
+     * volume s'en detache pour venir flotter devant les yeux.
+     *
+     * L'ancien travelling entrait dans le rayonnage, donc dans la matiere, et
+     * c'est precisement ce qui donnait l'impression d'une cinematique.
      */
-    player.travelTo(
-      new Vector3(approach.destination.x, approach.destination.y, approach.destination.z),
-      new Vector3(approach.lookAt.x, approach.lookAt.y, approach.lookAt.z),
-      () => {
-        open(approach.address)
-      },
-    )
-  }, [camera, depth, hexagon, open, player, setHexagon])
+    setDepuis(new Vector3(approach.lookAt.x, approach.lookAt.y, approach.lookAt.z))
+    open(approach.address)
+  }, [camera, depth, hexagon, open, player, setHexagon, opened])
+
+  // On ne marche pas en lisant.
+  useEffect(() => {
+    player.setFrozen(opened !== null)
+  }, [player, opened])
 
   useEffect(() => player.setInteract(interagir), [player, interagir])
 
-  return <Library depth={depth} booksRef={books} stairsRef={stairs} />
+  return (
+    <>
+      <Library depth={depth} booksRef={books} stairsRef={stairs} />
+      {opened && depuis ? <LivreOuvert library={library} address={opened} from={depuis} /> : null}
+    </>
+  )
+}
+
+/** Le livre qu'on tient, et les deux pages qu'il montre. */
+function LivreOuvert({
+  library,
+  address,
+  from,
+}: {
+  library: PageLibrary
+  address: Address
+  from: Vector3
+}): React.ReactElement {
+  const open = useLibraryStore((state) => state.open)
+  const pages = useSpread(library, address)
+
+  return (
+    <Book
+      from={from}
+      pages={pages}
+      onTurn={(direction) => {
+        // Une double se tourne par deux : recto et verso.
+        const page = Math.min(PAGES_PER_BOOK, Math.max(1, address.page + direction * 2))
+        if (page !== address.page) open({ ...address, page })
+      }}
+    />
+  )
 }
 
 /**
@@ -156,9 +213,8 @@ function Scene({ depth }: { depth: number }): React.ReactElement {
  *     les galeries lointaines au lieu de les couper net ;
  *   - `dpr` plafonne a 1,5 : au-dela on paye des pixels que personne ne voit.
  */
-export function Gallery(): React.ReactElement {
+export function Gallery({ library }: { library: PageLibrary }): React.ReactElement {
   const stage = useLibraryStore((state) => state.stage)
-  const enterLibrary = useLibraryStore((state) => state.enterLibrary)
   const profile = useLibraryStore((state) => state.profile)
 
   return (
@@ -174,13 +230,15 @@ export function Gallery(): React.ReactElement {
       camera={{ position: [0, 6, 250], fov: 58, near: 0.08, far: 1600 }}
     >
       <PerfProbe />
-      {stage === 'threshold' ? (
-        <Threshold onFinish={enterLibrary} />
+      {stage === 'threshold' || stage === 'parvis' ? (
+        <Threshold />
+      ) : stage === 'hall' ? (
+        <HallScene />
       ) : (
         <>
           <color attach="background" args={[PALETTE.nuit]} />
           <fogExp2 attach="fog" args={[PALETTE.nuit, 0.085]} />
-          <Scene depth={profile.depth} />
+          <Scene depth={profile.depth} library={library} />
         </>
       )}
     </Canvas>

@@ -1,7 +1,5 @@
 import { describe, expect, it } from 'vitest'
 import {
-  ATRIUM_COLUMNS,
-  ATRIUM_RADIUS,
   CYPRESS_PER_RING,
   DOME_BASE_Y,
   DOME_RADIUS,
@@ -10,12 +8,31 @@ import {
   TERRACE_HEIGHTS,
   TERRACE_RADII,
 } from '../dimensions.ts'
-import { STAIR_TOP_Y, atriumColumns, cypressRing, domeCoffers, stairSteps } from '../landscape.ts'
+import { STAIR_TOP_Y, cypressRing, domeCoffers, stairSteps } from '../landscape.ts'
 
 describe('les cypres', () => {
-  it('forment deux anneaux complets', () => {
+  it('forment deux anneaux, ouverts dans l axe de l entree', () => {
     for (const ring of [0, 1]) {
-      expect(cypressRing(ring)).toHaveLength(CYPRESS_PER_RING[ring] as number)
+      const arbres = cypressRing(ring)
+      const nominal = CYPRESS_PER_RING[ring] as number
+      // Il en manque : c'est l'allee d'honneur. Mais il n'en manque pas la
+      // moitie non plus, sinon ce ne serait plus un anneau.
+      expect(arbres.length).toBeLessThan(nominal)
+      expect(arbres.length).toBeGreaterThan(nominal * 0.8)
+    }
+  })
+
+  it('laissent le champ libre devant le portail', () => {
+    /*
+     * On arrive au sommet des marches par les z positifs. Aucun cypres ne doit
+     * s'y trouver : sinon on debouche nez a nez avec un arbre, ce qui est
+     * exactement ce qu'on a vu la premiere fois.
+     */
+    for (const ring of [0, 1]) {
+      for (const tree of cypressRing(ring)) {
+        const dansLAxe = tree.z > 0 && Math.abs(tree.x) < 12
+        expect(dansLAxe).toBe(false)
+      }
     }
   })
 
@@ -61,8 +78,13 @@ describe('lescalier dhonneur', () => {
     expect(STAIR_TOP_Y).toBeCloseTo(STAIR_COUNT * STAIR_RISE, 10)
   })
 
-  it('arrive a la hauteur de la terrasse basse', () => {
-    expect(STAIR_TOP_Y).toBeCloseTo(TERRACE_HEIGHTS[1] as number, 1)
+  it('tombe pile sur la terrasse du portail, sans marche residuelle', () => {
+    /*
+     * Le visiteur monte lui-meme ces marches, puis marche sur le parvis. Un
+     * ecart entre le sommet de la volee et le sol de la terrasse se verrait
+     * aussitot : on flotterait, ou l'on marcherait enterre.
+     */
+    expect(STAIR_TOP_Y).toBeCloseTo(DOME_BASE_Y, 6)
   })
 
   it('avance vers le monument a chaque marche', () => {
@@ -74,13 +96,6 @@ describe('lescalier dhonneur', () => {
 })
 
 describe('le grand hall', () => {
-  it('ceinture le hall de colonnes regulierement espacees', () => {
-    const columns = atriumColumns()
-    expect(columns).toHaveLength(ATRIUM_COLUMNS)
-    for (const column of columns) {
-      expect(Math.hypot(column.x, column.z)).toBeCloseTo(ATRIUM_RADIUS - 1.6, 6)
-    }
-  })
 
   it('habille la coupole de caissons sans jamais boucher loculus', () => {
     const coffers = domeCoffers(DOME_RADIUS * 0.55, DOME_BASE_Y)
