@@ -45,7 +45,8 @@ livre est généré à la volée dans le navigateur du visiteur.
 | `docs/RECHERCHE.md` | Faits sourcés : Borges, l'algorithme, les limites techniques |
 | `docs/ARCHITECTURE.md` | Stack, arborescence, modèle de données, budget perf |
 | `docs/ROADMAP.md` | Les 7 phases et l'état d'avancement |
-| `docs/DECISIONS.md` | Chaque choix structurant + son pourquoi (ADR) |
+| `docs/DECISIONS.md` | Chaque choix structurant + son pourquoi (46 ADR) |
+| `docs/AUDIT.md` | **Revue complète, classée par gravité. À lire en premier.** |
 | `docs/DIRECTION-ARTISTIQUE.md` | Palette, formes, matériaux, post-process, motifs |
 | `design/` | Les 10 captures de référence — **la vérité visuelle** |
 | `docs/captures/` | Captures de l'état du projet, phase par phase |
@@ -93,7 +94,9 @@ des chantiers restants, par ordre d'importance.
 - Le test `inverse(forward(x)) === x` est le test le plus important du projet.
   S'il casse, tout est faux. Il vit dans `src/core/__tests__/bijection.test.ts`.
 - `npm run check` (typecheck + lint + tests) doit être vert avant tout commit.
-- Mesurer avant d'optimiser : `<Perf>` de drei actif en dev.
+- Mesurer avant d'optimiser, et mesurer le **temps d'une image**, pas seulement
+  les appels de rendu : un shader peut ruiner le budget sans toucher au nombre
+  d'appels ni de triangles (constat A6 de `docs/AUDIT.md`).
 
 ## Décisions actées (2026-08-29)
 - **Alphabet : 25 symboles**, fidèle à Borges (22 lettres + espace + virgule + point).
@@ -212,3 +215,10 @@ film. La contrainte technique et l'intention esthétique coïncident.
   a des étages** (D43) : `galerie = étage × 25^800 + colonne` — le même entier
   lu dans deux dimensions, sans toucher à la bijection ni aux URL déjà
   partagées. Étages 0 → 1 → 2 → 0 vérifiés. 216 tests, zéro avertissement.
+- **2026-08-31** — **Tous les chantiers restants repris, puis AUDIT.**
+  Le **zaguán** avec sa trémie (D44) donne enfin le vertige ; marbre veiné
+  calculé, sol miroir et éclairage d'environnement (D45) ; secours sans WebGL
+  et worker résilient (D46). **227 tests.**
+  **L'audit est dans `docs/AUDIT.md`** : 7 défauts corrigés — dont une
+  **régression de performance à 19,45 ms/image**, invisible au compte des
+  appels de rendu et rattrapée à 6,44 ms — et 9 constats P1/P2 ouverts.

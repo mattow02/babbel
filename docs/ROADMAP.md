@@ -1,6 +1,6 @@
 # Roadmap — Babbel
 
-État : **Sept phases + une reprise.** Reste ouvert : voir « Ce qui n'est pas fait » en fin de document.
+État : **Roadmap terminée, chantiers restants repris, audit fait.** Voir [`docs/AUDIT.md`](AUDIT.md).
 Mise à jour : 2026-08-29
 
 Règle : une phase n'est close que si ses critères de sortie sont vérifiés.
@@ -312,18 +312,42 @@ monte bien à la verticale.
 
 ---
 
+## Phase 9 — Les chantiers restants, et l'audit ✅ (2026-08-31)
+
+Toute la liste « ce qui n'est pas fait » a été reprise.
+
+### Le zaguán : la bibliothèque a enfin le vertige (D44)
+L'escalier ne pouvait pas tenir dans un couloir sans le boucher — les cotes le
+disaient. La bonne réponse était celle de Borges lui-même : le **zaguán**, un
+vestibule carré entre deux galeries, percé en son centre d'une **trémie**. On
+marche sur un anneau autour du puits, et l'on voit l'escalier s'abîmer et
+s'élever au-delà de ce que la lampe éclaire.
+
+### Matériaux (D45)
+Marbre veiné **calculé** — aucune texture — greffé sur le matériau standard pour
+conserver éclairage, ombres et brouillard. Sol du hall réellement réfléchissant.
+Éclairage d'environnement rendu **une fois** au démarrage : l'équivalent le plus
+proche de lightmaps disponible dans un navigateur.
+
+### Reste
+Faisceau volumétrique corrigé (il se voit de biais, pas de face), massifs à
+silhouette brisée, lisibilité mobile, secours sans WebGL, worker résilient.
+
+**227 tests**, zéro avertissement.
+
+### Audit
+Voir **[`docs/AUDIT.md`](AUDIT.md)**. Sept défauts corrigés pendant l'audit —
+dont une **régression de performance qui faisait passer la bibliothèque
+au-dessus du budget d'image**, invisible au compte des appels de rendu. Quatre
+constats P1 et cinq P2 restent ouverts, avec un ordre de traitement recommandé.
+
+---
+
 ## Ce qui n'est pas fait
 
-Honnêtement, et par ordre d'importance :
+Voir la section correspondante de [`docs/AUDIT.md`](AUDIT.md), qui remplace
+cette liste : elle est classée par gravité et chaque point y est argumenté.
 
-1. **L'éclairage précalculé du hall** (D16). L'extérieur n'en a pas besoin — il
-   n'a qu'une source. Le hall le réclame, et cela suppose une chaîne de cuisson
-   hors ligne : un chantier, pas une itération.
-2. **Marbre veiné et sol réfléchissant** (DIRECTION-ARTISTIQUE § 5). Le sol poli
-   est en place mais ne réfléchit pas encore.
-3. **Pas de cage d'escalier.** On change d'étage par un court travelling, mais
-   le couloir n'a pas de trémie : on ne voit ni au-dessus ni en dessous. C'est
-   ce qui donnerait vraiment le vertige.
-4. **La silhouette des montagnes** reste un peu trop conique.
-5. **Aucun test sur un vrai appareil mobile.** Le mode dégradé est décidé par
-   une fonction testée, mais son rendu n'a été vu que sur ordinateur.
+En deux lignes : **découpage de code** (on fait payer la 3D à qui vient lire),
+**intégration continue**, **accessibilité de la modale et du lecteur**, licence,
+et aucun test sur un vrai appareil mobile.

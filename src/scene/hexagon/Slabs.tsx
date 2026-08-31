@@ -14,7 +14,14 @@ import type { Origin } from './parts.ts'
 export function Slabs({ origins }: { origins: readonly Origin[] }): React.ReactElement {
   // Le sol des galeries est du marbre sombre et poli : c'est lui qui double la
   // lumiere de la lampe et creuse la profondeur (DIRECTION-ARTISTIQUE § 5).
-  const marbreDalle = useMarble({ base: PALETTE.dalle, vein: '#3a2f26', scale: 2.4, sharpness: 3 })
+  const marbreDalle = useMarble({
+    base: PALETTE.dalle,
+    vein: '#3a2f26',
+    scale: 2.4,
+    sharpness: 3,
+    octaves: 3,
+    warp: false,
+  })
   // Un cylindre a six cotes EST un prisme hexagonal. On lui fait faire un
   // sixieme de tour pour que ses aretes tombent sur celles de la piece.
   const args = useMemo(

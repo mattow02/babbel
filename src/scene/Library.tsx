@@ -56,7 +56,16 @@ export function Library({
    * micro-relief » — et c'est ce qui empeche les grandes surfaces claires de
    * ressembler a du carton.
    */
-  const calcaire = useMarble({ base: PALETTE.calcaire, vein: '#a89073', scale: 2.8, sharpness: 2.6 })
+  const calcaire = useMarble({
+    base: PALETTE.calcaire,
+    vein: '#a89073',
+    scale: 2.8,
+    sharpness: 2.6,
+    // Le calcaire couvre d'immenses surfaces vues de pres : c'est le materiau
+    // le plus cher du site s'il est traite comme du marbre de premier plan.
+    octaves: 2,
+    warp: false,
+  })
 
   const origins = useMemo(() => galleryOrigins(depth), [depth])
   const stone = useMemo(() => origins.flatMap((origin) => stoneBoxes(origin)), [origins])

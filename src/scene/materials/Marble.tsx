@@ -58,10 +58,19 @@ const NOISE = /* glsl */ `
       f.z);
   }
 
+  /*
+   * Le nombre d'octaves est fixe a la COMPILATION, pas lu dans un uniforme :
+   * une boucle a borne variable empeche le pilote de la derouler, et ce bruit
+   * s'execute pour chaque pixel de chaque mur.
+   */
+  #ifndef BABBEL_OCTAVES
+  #define BABBEL_OCTAVES 4
+  #endif
+
   float babbelFbm(vec3 p) {
     float somme = 0.0;
     float amplitude = 0.5;
-    for (int octave = 0; octave < 5; octave += 1) {
+    for (int octave = 0; octave < BABBEL_OCTAVES; octave += 1) {
       somme += babbelNoise(p) * amplitude;
       p *= 2.03;          // pas tout a fait 2 : evite que les octaves s'alignent
       amplitude *= 0.5;
@@ -79,6 +88,17 @@ export interface MarbleOptions {
   readonly scale?: number
   /** Nettete des veines, de 1 (diffuses) a 8 (tranchantes). */
   readonly sharpness?: number
+  /**
+   * Nombre d'octaves de bruit, de 2 a 5.
+   *
+   * C'est le curseur de COUT : ce shader tourne pour chaque pixel de chaque
+   * surface qui le porte. Quatre octaves et une deformation prealable donnent
+   * un marbre de premier plan ; deux octaves sans deformation suffisent
+   * largement a une paroi de couloir, et coutent trois fois moins cher.
+   */
+  readonly octaves?: number
+  /** Deformer les coordonnees avant de reprendre le bruit. Double le cout. */
+  readonly warp?: boolean
 }
 
 /** Greffe le motif de marbre sur un materiau standard. */
@@ -87,6 +107,8 @@ export function patchMarble(material: Material, options: MarbleOptions): void {
   const vein = new Color(options.vein)
   const scale = options.scale ?? 3.2
   const sharpness = options.sharpness ?? 3.5
+  const octaves = Math.min(5, Math.max(2, options.octaves ?? 4))
+  const warp = options.warp ?? true
 
   material.onBeforeCompile = (shader: ShaderHook) => {
     shader.uniforms['marbreBase'] = { value: base }
@@ -110,6 +132,7 @@ export function patchMarble(material: Material, options: MarbleOptions): void {
          uniform vec3 marbreVeine;
          uniform float marbreEchelle;
          uniform float marbreNettete;
+         #define BABBEL_OCTAVES ${octaves}
          ${NOISE}`,
       )
       .replace(
@@ -117,10 +140,14 @@ export function patchMarble(material: Material, options: MarbleOptions): void {
         `#include <color_fragment>
          {
            vec3 p = vBabbelMonde / marbreEchelle;
-           // On deforme les coordonnees avec du bruit avant d'en reprendre :
+           ${
+             warp
+               ? `// On deforme les coordonnees avec du bruit avant d'en reprendre :
            // c'est ce qui donne aux veines leur allure tourmentee.
            float trouble = babbelFbm(p * 0.6);
-           float n = babbelFbm(p + vec3(trouble * 1.7));
+           float n = babbelFbm(p + vec3(trouble * 1.7));`
+               : `float n = babbelFbm(p);`
+           }
            // Le pliage : c'est lui qui fait une VEINE et non une tache.
            float veine = pow(1.0 - abs(n - 0.5) * 2.0, marbreNettete);
            diffuseColor.rgb *= mix(marbreBase, marbreVeine, clamp(veine, 0.0, 1.0));
@@ -129,7 +156,7 @@ export function patchMarble(material: Material, options: MarbleOptions): void {
   }
   // Trois materiaux greffes differemment ne doivent pas partager un programme.
   material.customProgramCacheKey = () =>
-    `marbre-${options.base}-${options.vein}-${scale}-${sharpness}`
+    `marbre-${options.base}-${options.vein}-${scale}-${sharpness}-${octaves}-${String(warp)}`
   material.needsUpdate = true
 }
 
@@ -145,6 +172,6 @@ export function useMarble(options: MarbleOptions): (material: Material | null) =
       if (material) patchMarble(material, options)
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [options.base, options.vein, options.scale, options.sharpness],
+    [options.base, options.vein, options.scale, options.sharpness, options.octaves, options.warp],
   )
 }

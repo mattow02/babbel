@@ -439,6 +439,57 @@ On atterrit toujours FACE a l'escalier apres un changement d'etage : sans cela
 on se retrouve dos a ce qu'on vient d'emprunter, et l'on ne comprend plus ou
 l'on est. Decide le 2026-08-30.
 
+
+### D44 — Le zaguan, et non un escalier dans le couloir
+Les cotes sont formelles : un escalier en colimacon ne tient pas dans un couloir
+de 1,62 m sans le boucher, et le couloir ne peut pas s'elargir au-dela du mur
+qu'il perce. Toutes les variantes essayees laissaient un passage de moins de
+30 cm.
+
+La bonne reponse etait dans la nouvelle : « dans le zaguan il y a un miroir...
+une escalier spirale, qui s'abime et s'eleve vers le lointain ». On construit
+donc un VESTIBULE carre entre deux galeries, plus large et plus haut que les
+passages qui y menent, perce en son centre d'une tremie. On marche sur un
+anneau autour du puits ; le passage n'est jamais bouche.
+
+Consequence sur les collisions : un lieu de plus, avec sa regle propre — dans le
+carre, hors du puits, plus les deux embrasures par lesquelles on y entre. Sans
+ce dernier cas, la garde au mur fermait la porte de l'interieur.
+
+Consequence sur le deplacement : `slide` a du apprendre a CONTOURNER. Ses deux
+essais d'origine — avancee seule, ecart seul — suffisent le long d'un mur droit
+mais pas contre un obstacle rond : en marchant droit sur la tremie, on restait
+plante devant le vide. On tente desormais des directions deviees, de plus en
+plus franches. Piege au passage : quand on marche pile dans l'axe, l'ecart
+lateral vaut zero et le candidat « lateral seul » EST la position actuelle —
+valide, donc on repondait « je ne bouge pas » sans avoir rien tente.
+Decide le 2026-08-31.
+
+### D45 — Le marbre est calcule, et son cout est reglable
+Une image de marbre pese quelques mega-octets, se repete visiblement sur une
+colonne de vingt metres, et trahit sa grille. Tout le reste du site est calcule :
+le marbre n'a pas de raison de faire exception.
+
+On ne remplace pas le materiau standard, on lui greffe quelques lignes qui
+modifient sa seule couleur de base (`onBeforeCompile`). Eclairage, ombres,
+brouillard et tone mapping continuent de fonctionner. Le motif est un bruit
+fractal PLIE — `abs(bruit - 0.5)` eleve a une puissance — ce pliage etant ce qui
+distingue une veine d'une tache.
+
+Le nombre d'octaves et la deformation prealable sont des reglages du materiau,
+fixes a la compilation du shader. Ce n'est pas un detail : applique avec les
+reglages d'une surface de premier plan sur les immenses parois d'un couloir, ce
+shader a fait passer la bibliotheque a 19,45 ms par image — au-dessus du budget.
+Voir le constat A6 de l'audit. Decide le 2026-08-31.
+
+### D46 — On ne prive personne des livres pour une carte graphique
+Sans WebGL, la toile levait une exception au montage et emportait toute la page.
+Or le lecteur n'a besoin d'aucune 3D. On teste donc la disponibilite AVANT de
+monter quoi que ce soit, et l'application se replie sur la lecture seule.
+Meme principe pour le worker : sa construction est protegee, avec repli sur le
+calcul direct. Un site qui calcule tout dans le navigateur doit savoir se passer
+de ce que le navigateur ne lui donne pas. Decide le 2026-08-31.
+
 ## Ouvertes (à trancher avec l'utilisateur)
 
 _Aucune. Toutes les décisions de cadrage sont prises._
