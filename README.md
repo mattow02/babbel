@@ -106,6 +106,7 @@ l'audit qui a suivi est corrigé, y compris une régression de performance à
 | [`docs/DECISIONS.md`](docs/DECISIONS.md) | Chaque choix structurant et sa raison, 59 décisions |
 | [`docs/AUDIT.md`](docs/AUDIT.md) | La revue complète, classée par gravité |
 | [`docs/ROADMAP.md`](docs/ROADMAP.md) | Les phases et ce qui reste |
+| [`docs/PLAN-ESTHETIQUE.md`](docs/PLAN-ESTHETIQUE.md) | La reprise du rendu : le constat mesuré, les phases et leurs critères |
 | [`docs/DIRECTION-ARTISTIQUE.md`](docs/DIRECTION-ARTISTIQUE.md) | Palette, formes, matériaux, post-traitement |
 
 ## Licence
