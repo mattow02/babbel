@@ -1,0 +1,137 @@
+{
+  "date": "2026-09-02T17:55:46.433Z",
+  "largeur": 1600,
+  "hauteur": 900,
+  "vues": {
+    "parvis": {
+      "pourquoi": "La bibliotheque vue du dehors, en plein soleil. La vue d ouverture du site.",
+      "bench": {
+        "msParImage": 0.19499999955296515,
+        "fpsEquivalent": 5128,
+        "calls": 24,
+        "triangles": 37906,
+        "camera": {
+          "position": [
+            0,
+            19.55,
+            71
+          ],
+          "pitchDeg": 0
+        }
+      },
+      "mesure": {
+        "p5": 0.028673791888725462,
+        "mediane": 0.2160380881782426,
+        "p95": 0.5927246973449848,
+        "contraste": 8.169489253219687,
+        "partNoirs": 0.012207425343018564,
+        "partBrulees": 0,
+        "variationLocale": 0.041291477264999155,
+        "largeur": 420,
+        "hauteur": 236
+      },
+      "manques": [
+        "hautes lumieres 0.593 sous 0.650",
+        "surfaces plates : variation 0.041 sous 0.050"
+      ]
+    },
+    "nef": {
+      "pourquoi": "La nef d accueil et le cube d or au bout de l axe.",
+      "bench": {
+        "msParImage": 0.11000000014901161,
+        "fpsEquivalent": 9091,
+        "calls": 17,
+        "triangles": 11624,
+        "camera": {
+          "position": [
+            0,
+            1.55,
+            38.5
+          ],
+          "pitchDeg": 0
+        }
+      },
+      "mesure": {
+        "p5": 0.0038422501820642475,
+        "mediane": 0.02355996348971254,
+        "p95": 0.22133460181597825,
+        "contraste": 5.03943651869075,
+        "partNoirs": 0.3328087167070218,
+        "partBrulees": 0,
+        "variationLocale": 0.02165036597293691,
+        "largeur": 420,
+        "hauteur": 236
+      },
+      "manques": []
+    },
+    "galerie": {
+      "pourquoi": "Le couloir de la galerie, dos de livres et lampe. Le cadrage de l illustration.",
+      "bench": {
+        "msParImage": 0.5199999995529652,
+        "fpsEquivalent": 1923,
+        "calls": 38,
+        "triangles": 197556,
+        "camera": {
+          "position": [
+            0,
+            1.55,
+            0
+          ],
+          "pitchDeg": 180
+        }
+      },
+      "mesure": {
+        "p5": 0.0023669468921680634,
+        "mediane": 0.0446922256635135,
+        "p95": 0.12987038115132946,
+        "contraste": 3.4348074849907024,
+        "partNoirs": 0.31169289749798224,
+        "partBrulees": 0,
+        "variationLocale": 0.012565210222130033,
+        "largeur": 420,
+        "hauteur": 236
+      },
+      "manques": [
+        "contraste 3.4:1 sous 3.5:1",
+        "surfaces plates : variation 0.013 sous 0.024"
+      ]
+    },
+    "zaguan": {
+      "pourquoi": "La tremie et l escalier qui s abime : le vertige de la nouvelle.",
+      "echec": "page.evaluate: Target page, context or browser has been closed"
+    },
+    "livre": {
+      "pourquoi": "Une page ouverte. C est le sujet du projet, et le plus grand ecart mesure.",
+      "bench": {
+        "msParImage": 1.2149999998509884,
+        "fpsEquivalent": 823,
+        "calls": 38,
+        "triangles": 197556,
+        "camera": {
+          "position": [
+            0,
+            1.55,
+            0
+          ],
+          "pitchDeg": 180
+        }
+      },
+      "mesure": {
+        "p5": 0.0023669468921680634,
+        "mediane": 0.0446922256635135,
+        "p95": 0.12987038115132946,
+        "contraste": 3.4348074849907024,
+        "partNoirs": 0.31175343018563356,
+        "partBrulees": 0,
+        "variationLocale": 0.012559091196759754,
+        "largeur": 420,
+        "hauteur": 236
+      },
+      "manques": [
+        "hautes lumieres 0.130 sous 0.600",
+        "contraste 3.4:1 sous 10:1",
+        "surfaces plates : variation 0.013 sous 0.050"
+      ]
+    }
+  }
+}

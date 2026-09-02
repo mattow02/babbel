@@ -12,7 +12,8 @@
     "typecheck": "tsc -b --noEmit",
     "test": "vitest run --config vitest.config.ts",
     "test:watch": "vitest --config vitest.config.ts",
-    "check": "npm run typecheck && npm run lint && npm run test"
+    "check": "npm run typecheck && npm run lint && npm run test",
+    "captures": "node outils/captures.mjs"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.8",
@@ -35,6 +36,7 @@
     "@vitejs/plugin-react": "^6.1.0",
     "jsdom": "^29.1.1",
     "oxlint": "^1.79.0",
+    "playwright-core": "^1.62.1",
     "typescript": "~6.0.2",
     "vite": "^8.2.2",
     "vitest": "^3.2.4"

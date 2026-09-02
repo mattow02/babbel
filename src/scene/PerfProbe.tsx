@@ -1,7 +1,9 @@
 import { useFrame, useThree } from '@react-three/fiber'
 import { useEffect, useMemo, useRef } from 'react'
 import { Raycaster, Vector2 } from 'three'
+import { ecarts, mesurerPhotometrie } from '../mesure/photometrie.ts'
 import { useLibraryStore } from '../store/useLibraryStore.ts'
+import { VUES, vuePar } from './vues.ts'
 
 /**
  * Le releve de performance, maison.
@@ -112,6 +114,20 @@ export function PerfProbe(): null {
         gl.render(scene, camera)
       }
       const msParImage = (performance.now() - depart) / frames
+
+      /*
+       * Le compte d'appels se lit sur UNE image, pas sur la serie.
+       *
+       * Fiber desarme la remise a zero automatique de `gl.info` pour la
+       * piloter lui-meme a chaque image. Une boucle de rendu comme celle
+       * ci-dessus fait donc s'additionner les compteurs, et l'on relevait
+       * 2 318 appels la ou il y en a une quarantaine. Un outil de mesure qui
+       * se trompe d'un facteur soixante est pire que pas d'outil du tout : on
+       * remet a zero, on rend une image, on lit.
+       */
+      gl.info.reset()
+      gl.render(scene, camera)
+
       return {
         msParImage,
         fpsEquivalent: Math.round(1000 / msParImage),
@@ -180,6 +196,80 @@ export function PerfProbe(): null {
     }
     window.__babbelStep = step
 
+    /*
+     * Les points de vue de reference, tels que le module les definit.
+     *
+     * Le script de captures les lit ICI plutot que de tenir sa propre liste :
+     * deux listes finissent toujours par diverger, et c'est alors le script
+     * qui a raison contre le code.
+     */
+    window.__babbelVues = () => VUES.map((vue) => ({ ...vue }))
+
+    /*
+     * La photometrie de l'image affichee.
+     *
+     * On mesure dans la page plutot qu'en dehors : le navigateur sait deja
+     * lire son propre canevas, et le faire ailleurs demanderait de decoder un
+     * PNG, donc une dependance de plus pour la meme reponse. Le calcul, lui,
+     * vit dans un module pur et teste.
+     */
+    /*
+     * Recopie l'image rendue dans un canevas ordinaire.
+     *
+     * Le rendu est refait juste avant : un canevas WebGL ne conserve pas son
+     * tampon d'une image a l'autre, et le lire sans le redessiner rend du
+     * noir. C'est aussi ce qui garantit que la mesure et l'image enregistree
+     * portent exactement sur la meme image.
+     */
+    const recopier = (cote: number): { plan: HTMLCanvasElement; largeur: number; hauteur: number } => {
+      gl.render(scene, camera)
+      const source = gl.domElement
+      const largeur = Math.min(cote, source.width)
+      const hauteur = Math.max(1, Math.round((largeur * source.height) / source.width))
+      const plan = document.createElement('canvas')
+      plan.width = largeur
+      plan.height = hauteur
+      const ctx = plan.getContext('2d')
+      if (!ctx) throw new Error('photometrie : pas de contexte 2d')
+      ctx.drawImage(source, 0, 0, largeur, hauteur)
+      return { plan, largeur, hauteur }
+    }
+
+    window.__babbelPhoto = (cote = 420) => {
+      const { plan, largeur, hauteur } = recopier(cote)
+      const { data } = plan.getContext('2d')!.getImageData(0, 0, largeur, hauteur)
+      return { ...mesurerPhotometrie(data, largeur, hauteur), largeur, hauteur }
+    }
+
+    /*
+     * L'image rendue, en PNG.
+     *
+     * La capture d'ecran du pilote attend que la page se stabilise, ce qu'une
+     * scene animee ne fait jamais : elle expire. On rend donc l'image
+     * nous-memes, ce qui a l'avantage de livrer exactement celle qui est
+     * mesuree juste a cote.
+     */
+    window.__babbelImage = (cote = 1600) => recopier(cote).plan.toDataURL('image/png')
+
+    /*
+     * Le verdict d'une vue : sa mesure, et ce qui lui manque.
+     *
+     * La comparaison a l'objectif vit dans le module teste, pas dans le
+     * script de captures : c'est la seule facon qu'un critere de sortie ne
+     * puisse pas etre assoupli par inadvertance depuis l'outillage.
+     */
+    window.__babbelControle = (nom, cote = 420) => {
+      const vue = vuePar(nom)
+      const mesure = window.__babbelPhoto?.(cote)
+      if (!vue || !mesure) return null
+      return { mesure, manques: vue.objectif ? ecarts(mesure, vue.objectif) : [] }
+    }
+
+    /** Ouvre le volume d'origine, pour la vue du livre. */
+    window.__babbelOuvrir = () => {
+      useLibraryStore.getState().open({ hexagon: 0n, wall: 0, shelf: 0, volume: 0, page: 1 })
+    }
+
     return () => {
       delete window.__babbelBench
       delete window.__babbelViser
@@ -187,6 +277,11 @@ export function PerfProbe(): null {
       delete window.__babbelEtat
       delete window.__babbelStage
       delete window.__babbelStep
+      delete window.__babbelVues
+      delete window.__babbelPhoto
+      delete window.__babbelControle
+      delete window.__babbelImage
+      delete window.__babbelOuvrir
       delete window.__babbel
     }
   }, [gl, scene, camera, advance, viseur, centreEcran])

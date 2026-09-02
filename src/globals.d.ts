@@ -45,4 +45,19 @@ interface Window {
   __babbelVise?: { distance: number; instance: number; portee: number; cibles: number }
   /** Repose le visiteur a un endroit donne du lieu courant. */
   __babbelPlace?: (x: number, z: number, yaw?: number) => void
+  /** Les points de vue de reference, lus depuis le module qui les definit. */
+  __babbelVues?: () => import('./scene/vues.ts').Vue[]
+  /** La photometrie de l'image affichee. Voir mesure/photometrie.ts. */
+  __babbelPhoto?: (
+    cote?: number,
+  ) => import('./mesure/photometrie.ts').Photometrie & { largeur: number; hauteur: number }
+  /** L'image rendue, en PNG encode. Voir scene/PerfProbe.tsx. */
+  __babbelImage?: (cote?: number) => string
+  /** Le verdict d'une vue : sa mesure, et ce qui lui manque pour etre aboutie. */
+  __babbelControle?: (
+    nom: string,
+    cote?: number,
+  ) => { mesure: import('./mesure/photometrie.ts').Photometrie; manques: string[] } | null
+  /** Ouvre le volume d'origine, pour la vue du livre. */
+  __babbelOuvrir?: () => void
 }
