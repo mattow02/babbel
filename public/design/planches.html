@@ -821,25 +821,77 @@
       <path d="M578.5 196.7 L516.3 234.2" stroke="#0c0906" stroke-width="1.2" fill="none"/>
   </g>
 
-  <!-- Le puits d aeration au milieu, ceint d une balustrade tres basse -->
+  <!-- Le puits d aeration : « de n importe quel hexagone on voit les etages
+       inferieurs et superieurs, interminablement ». Ce qui donne la profondeur
+       n est pas la repetition des anneaux, c est ce que le bord cache. -->
   <g>
-    <ellipse cx="480.0" cy="436" rx="176" ry="54" fill="url(#puitsG)"/>
-    <ellipse cx="480.0" cy="436" rx="176" ry="54" fill="none" stroke="#0a0705" stroke-width="4"/>
-    <ellipse cx="480.0" cy="428" rx="120" ry="34" fill="#000" opacity=".8"/>
-    <g stroke="#0e0a07" stroke-width="7" fill="none" stroke-linecap="round">
-      <ellipse cx="480.0" cy="418" rx="192" ry="60"/>
+    <ellipse cx="480.0" cy="440" rx="184" ry="58" fill="#040302"/>
+    <clipPath id="dansLePuits">
+      <ellipse cx="480.0" cy="440" rx="184" ry="58"/>
+    </clipPath>
+    <g clip-path="url(#dansLePuits)">
+    <g opacity="0.850">
+      <ellipse cx="480.0" cy="490" rx="112.8" ry="34.7" fill="#0b0806"/>
+      <ellipse cx="480.0" cy="486" rx="112.8" ry="34.7"
+               fill="none" stroke="#8a6f47" stroke-width="1.61" opacity=".7"/>
+      <circle cx="480.0" cy="474" r="3.1" fill="#ffe6b0" opacity=".9"/>
+      <ellipse cx="480.0" cy="474" rx="33.5" ry="21.1"
+               fill="#ffc072" opacity="0.186"/>
     </g>
-    <g stroke="#6b5334" stroke-width="4.5" fill="none" stroke-linecap="round">
-      <ellipse cx="480.0" cy="418" rx="192" ry="60"/>
+    <g opacity="0.468">
+      <ellipse cx="480.0" cy="519" rx="70.0" ry="21.5" fill="#0b0806"/>
+      <ellipse cx="480.0" cy="516" rx="70.0" ry="21.5"
+               fill="none" stroke="#8a6f47" stroke-width="1.00" opacity=".7"/>
+      <circle cx="480.0" cy="509" r="1.9" fill="#ffe6b0" opacity=".9"/>
+      <ellipse cx="480.0" cy="509" rx="20.8" ry="13.1"
+               fill="#ffc072" opacity="0.115"/>
     </g>
-    <g fill="#4a3a2a" stroke="#0e0a07" stroke-width="1.5">
-      <rect x="284.0" y="418" width="7" height="26" rx="2"/>
-      <rect x="340.0" y="394" width="7" height="28" rx="2"/>
-      <rect x="408.0" y="380" width="7" height="30" rx="2"/>
-      <rect x="476.0" y="376" width="8" height="31" rx="2"/>
-      <rect x="545.0" y="380" width="7" height="30" rx="2"/>
-      <rect x="613.0" y="394" width="7" height="28" rx="2"/>
-      <rect x="669.0" y="418" width="7" height="26" rx="2"/>
+    <g opacity="0.257">
+      <ellipse cx="480.0" cy="536" rx="43.4" ry="13.3" fill="#0b0806"/>
+      <ellipse cx="480.0" cy="535" rx="43.4" ry="13.3"
+               fill="none" stroke="#8a6f47" stroke-width="0.62" opacity=".7"/>
+      <circle cx="480.0" cy="530" r="1.2" fill="#ffe6b0" opacity=".9"/>
+      <ellipse cx="480.0" cy="530" rx="12.9" ry="8.1"
+               fill="#ffc072" opacity="0.071"/>
+    </g>
+    <g opacity="0.141">
+      <ellipse cx="480.0" cy="547" rx="26.9" ry="8.3" fill="#0b0806"/>
+      <ellipse cx="480.0" cy="546" rx="26.9" ry="8.3"
+               fill="none" stroke="#8a6f47" stroke-width="0.38" opacity=".7"/>
+      <circle cx="480.0" cy="543" r="0.7" fill="#ffe6b0" opacity=".9"/>
+      <ellipse cx="480.0" cy="543" rx="8.0" ry="5.0"
+               fill="#ffc072" opacity="0.044"/>
+    </g>
+    </g>
+    <ellipse cx="480.0" cy="440" rx="184" ry="58" fill="none" stroke="#0a0705" stroke-width="6"/>
+    <path d="M296.0 440 A184 58 0 0 0 664.0 440" fill="none"
+          stroke="#3a2e21" stroke-width="3" opacity=".8"/>
+  </g>
+
+  <!-- La balustrade tres basse : on ne s y appuie pas, on l enjambe -->
+  <g>
+    <g stroke="#0e0a07" stroke-width="9" fill="none" stroke-linecap="round">
+      <ellipse cx="480.0" cy="414" rx="198" ry="63"/>
+    </g>
+    <g stroke="#96784f" stroke-width="5" fill="none" stroke-linecap="round">
+      <ellipse cx="480.0" cy="414" rx="198" ry="63"/>
+    </g>
+    <g fill="#6b5334" stroke="#0e0a07" stroke-width="1.4">
+      <rect x="674.5" y="414.0" width="7" height="17" rx="2.5"/>
+      <rect x="669.5" y="428.0" width="7" height="19" rx="2.5"/>
+      <rect x="654.9" y="441.3" width="7" height="22" rx="2.5"/>
+      <rect x="631.3" y="453.3" width="7" height="24" rx="2.5"/>
+      <rect x="600.0" y="463.3" width="7" height="26" rx="2.5"/>
+      <rect x="562.4" y="470.8" width="7" height="27" rx="2.5"/>
+      <rect x="520.6" y="475.4" width="7" height="28" rx="2.5"/>
+      <rect x="476.5" y="477.0" width="7" height="28" rx="2.5"/>
+      <rect x="432.4" y="475.4" width="7" height="28" rx="2.5"/>
+      <rect x="390.6" y="470.8" width="7" height="27" rx="2.5"/>
+      <rect x="353.0" y="463.3" width="7" height="26" rx="2.5"/>
+      <rect x="321.7" y="453.3" width="7" height="24" rx="2.5"/>
+      <rect x="298.1" y="441.3" width="7" height="22" rx="2.5"/>
+      <rect x="283.5" y="428.0" width="7" height="19" rx="2.5"/>
+      <rect x="278.5" y="414.0" width="7" height="17" rx="2.5"/>
     </g>
   </g>
 
@@ -858,6 +910,8 @@
   <!-- La chute vers les bords : le noir n est pas un manque, c est le sujet -->
   <rect width="960" height="600" fill="url(#chute)"/>
 </svg>
+
+
 
 
 <figcaption><span class="titre">A · La galerie, corrigée</span><br>
@@ -938,64 +992,99 @@ supérieurs, interminablement ». On est penché sur la balustrade très basse, 
 
 
 <figure>
-<svg viewBox="0 0 800 500" role="img" aria-label="La bibliotheque vue du dehors, au couchant">
+<svg viewBox="0 0 960 620" role="img" aria-label="La bibliotheque vue du dehors, au soleil rasant">
   <defs>
     <linearGradient id="ciel" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#1d3a4a"/><stop offset=".55" stop-color="#7d8a7a"/>
-      <stop offset=".8" stop-color="#e0b177"/><stop offset="1" stop-color="#f2c98d"/>
+      <stop offset="0" stop-color="#12303f"/><stop offset=".38" stop-color="#4e7079"/>
+      <stop offset=".68" stop-color="#b09068"/><stop offset="1" stop-color="#f0c78e"/>
     </linearGradient>
-    <linearGradient id="pierre" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0" stop-color="#f4e3c0"/><stop offset=".5" stop-color="#e2cda3"/>
-      <stop offset="1" stop-color="#b99f76"/>
+    <radialGradient id="soleil" cx="50%" cy="50%">
+      <stop offset="0" stop-color="#fff3d6" stop-opacity=".95"/>
+      <stop offset=".3" stop-color="#ffd79a" stop-opacity=".5"/>
+      <stop offset="1" stop-color="#ffb968" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="dome" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#8f7a56"/><stop offset=".3" stop-color="#f6e8c6"/>
+      <stop offset=".62" stop-color="#e0caa2"/><stop offset="1" stop-color="#9c8461"/>
     </linearGradient>
-    <linearGradient id="eau" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#c8b48f" stop-opacity=".55"/>
-      <stop offset="1" stop-color="#6d6350" stop-opacity=".15"/>
+    <linearGradient id="fut" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#a68d66"/><stop offset=".4" stop-color="#f4e6c6"/>
+      <stop offset="1" stop-color="#b09a74"/>
+    </linearGradient>
+    <linearGradient id="bassin" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#c7b48f" stop-opacity=".62"/>
+      <stop offset=".45" stop-color="#8a7d63" stop-opacity=".3"/>
+      <stop offset="1" stop-color="#3d3529" stop-opacity=".05"/>
+    </linearGradient>
+    <linearGradient id="brume" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#e8c9a0" stop-opacity="0"/>
+      <stop offset="1" stop-color="#e8c9a0" stop-opacity=".55"/>
     </linearGradient>
   </defs>
-  <rect width="800" height="500" fill="url(#ciel)"/>
-  <circle cx="400" cy="250" r="52" fill="#fff2d0" opacity=".55"/>
-  <!-- Montagnes en plans successifs : la perspective atmospherique -->
-  <polygon points="-20,330 120,236 250,330" fill="#9aa294" opacity=".55"/>
-  <polygon points="560,330 700,228 830,330" fill="#9aa294" opacity=".55"/>
-  <polygon points="120,340 260,262 400,340" fill="#8d9384" opacity=".7"/>
-  <polygon points="420,340 560,254 700,340" fill="#8d9384" opacity=".7"/>
-  <!-- Le monument : dome, colonnade, volee de marches -->
-  <ellipse cx="400" cy="330" rx="230" ry="26" fill="#c9b48d"/>
-  <path d="M270 300 A130 118 0 0 1 530 300 Z" fill="url(#pierre)"/>
-  <path d="M270 300 A130 118 0 0 1 530 300" fill="none" stroke="#8f7a56" stroke-width="2"/>
-  <g fill="#efdfbc" stroke="#a68d66" stroke-width="1.5">
-    <rect x="286" y="248" width="17" height="82"/><rect x="318" y="240" width="17" height="90"/>
-    <rect x="350" y="235" width="17" height="95"/><rect x="433" y="235" width="17" height="95"/>
-    <rect x="465" y="240" width="17" height="90"/><rect x="497" y="248" width="17" height="82"/>
+
+  <rect width="960" height="620" fill="url(#ciel)"/>
+  <ellipse cx="480.0" cy="352" rx="300" ry="215" fill="url(#soleil)"/>
+
+  <!-- Les montagnes, en plans qui s effacent -->
+  <polygon points="-30,430 130,300 300,430" fill="#7f8f92" opacity=".38"/>
+  <polygon points="660,430 830,286 1000,430" fill="#7f8f92" opacity=".38"/>
+  <polygon points="90,430 270,326 450,430" fill="#77858a" opacity=".55"/>
+  <polygon points="520,430 700,318 880,430" fill="#77858a" opacity=".55"/>
+  <rect y="330" width="960" height="100" fill="url(#brume)"/>
+
+  <!-- Le sol -->
+  <rect y="430" width="960" height="190" fill="#c9ae86"/>
+
+  <!-- Le dome, derriere la colonnade -->
+  <path d="M294.0 300 A186 168 0 0 1 666.0 300 Z" fill="url(#dome)"/>
+  <path d="M294.0 300 A186 168 0 0 1 666.0 300" fill="none" stroke="#8f7a56" stroke-width="2"/>
+  <ellipse cx="480.0" cy="134" rx="16" ry="10" fill="#f6e8c6" stroke="#8f7a56"/>
+
+  <!-- L entablement et la colonnade -->
+  <rect x="188.0" y="276" width="584" height="18" fill="#f2e2bf" stroke="#a68d66"/>
+  <rect x="180.0" y="262" width="600" height="14" fill="#e2cda3" stroke="#a68d66"/>
+  <rect x="204" y="292" width="30" height="8" fill="#efdfbc" stroke="#a68d66" stroke-width="1"/><rect x="207" y="300" width="24" height="86" fill="url(#fut)"/><rect x="203" y="386" width="32" height="10" fill="#e8d6b0" stroke="#a68d66" stroke-width="1"/><rect x="246" y="292" width="30" height="8" fill="#efdfbc" stroke="#a68d66" stroke-width="1"/><rect x="249" y="300" width="24" height="86" fill="url(#fut)"/><rect x="245" y="386" width="32" height="10" fill="#e8d6b0" stroke="#a68d66" stroke-width="1"/><rect x="288" y="292" width="30" height="8" fill="#efdfbc" stroke="#a68d66" stroke-width="1"/><rect x="291" y="300" width="24" height="86" fill="url(#fut)"/><rect x="287" y="386" width="32" height="10" fill="#e8d6b0" stroke="#a68d66" stroke-width="1"/><rect x="330" y="292" width="30" height="8" fill="#efdfbc" stroke="#a68d66" stroke-width="1"/><rect x="333" y="300" width="24" height="86" fill="url(#fut)"/><rect x="329" y="386" width="32" height="10" fill="#e8d6b0" stroke="#a68d66" stroke-width="1"/><rect x="372" y="292" width="30" height="8" fill="#efdfbc" stroke="#a68d66" stroke-width="1"/><rect x="375" y="300" width="24" height="86" fill="url(#fut)"/><rect x="371" y="386" width="32" height="10" fill="#e8d6b0" stroke="#a68d66" stroke-width="1"/><rect x="582" y="292" width="30" height="8" fill="#efdfbc" stroke="#a68d66" stroke-width="1"/><rect x="585" y="300" width="24" height="86" fill="url(#fut)"/><rect x="581" y="386" width="32" height="10" fill="#e8d6b0" stroke="#a68d66" stroke-width="1"/><rect x="624" y="292" width="30" height="8" fill="#efdfbc" stroke="#a68d66" stroke-width="1"/><rect x="627" y="300" width="24" height="86" fill="url(#fut)"/><rect x="623" y="386" width="32" height="10" fill="#e8d6b0" stroke="#a68d66" stroke-width="1"/><rect x="666" y="292" width="30" height="8" fill="#efdfbc" stroke="#a68d66" stroke-width="1"/><rect x="669" y="300" width="24" height="86" fill="url(#fut)"/><rect x="665" y="386" width="32" height="10" fill="#e8d6b0" stroke="#a68d66" stroke-width="1"/><rect x="708" y="292" width="30" height="8" fill="#efdfbc" stroke="#a68d66" stroke-width="1"/><rect x="711" y="300" width="24" height="86" fill="url(#fut)"/><rect x="707" y="386" width="32" height="10" fill="#e8d6b0" stroke="#a68d66" stroke-width="1"/><rect x="750" y="292" width="30" height="8" fill="#efdfbc" stroke="#a68d66" stroke-width="1"/><rect x="753" y="300" width="24" height="86" fill="url(#fut)"/><rect x="749" y="386" width="32" height="10" fill="#e8d6b0" stroke="#a68d66" stroke-width="1"/>
+
+  <!-- L entree unique, en ombre franche -->
+  <rect x="428.0" y="296" width="104" height="100" fill="#1a1209"/>
+  <path d="M428.0 316 A52 46 0 0 1 532.0 316" fill="#1a1209"/>
+  <ellipse cx="480.0" cy="380" rx="30" ry="26" fill="#ffc072" opacity=".12"/>
+
+  <!-- Le socle et les marches -->
+  <rect x="180.0" y="386" width="600" height="12" fill="#d8c49e" stroke="#a68d66"/>
+  <rect x="362" y="396" width="236" height="9" fill="#e6d3ac" stroke="#b39a70" stroke-width="1"/><rect x="339" y="405" width="282" height="9" fill="#dcc79c" stroke="#b39a70" stroke-width="1"/><rect x="316" y="414" width="328" height="9" fill="#e6d3ac" stroke="#b39a70" stroke-width="1"/><rect x="293" y="423" width="374" height="9" fill="#dcc79c" stroke="#b39a70" stroke-width="1"/><rect x="270" y="432" width="420" height="9" fill="#e6d3ac" stroke="#b39a70" stroke-width="1"/><rect x="247" y="441" width="466" height="9" fill="#dcc79c" stroke="#b39a70" stroke-width="1"/><rect x="224" y="450" width="512" height="9" fill="#e6d3ac" stroke="#b39a70" stroke-width="1"/>
+
+  <!-- Les cypres -->
+  <ellipse cx="28.0" cy="365.0" rx="8.5" ry="37.0" fill="#263428"/><rect x="26.8" y="398.0" width="2.4" height="5" fill="#263428"/><ellipse cx="932.0" cy="365.0" rx="8.5" ry="37.0" fill="#263428"/><rect x="930.8" y="398.0" width="2.4" height="5" fill="#263428"/><ellipse cx="46.6" cy="364.4" rx="7.8" ry="33.9" fill="#29382c"/><rect x="45.4" y="394.3" width="2.4" height="5" fill="#29382c"/><ellipse cx="913.4" cy="364.4" rx="7.8" ry="33.9" fill="#29382c"/><rect x="912.2" y="394.3" width="2.4" height="5" fill="#29382c"/><ellipse cx="65.1" cy="363.9" rx="7.1" ry="30.7" fill="#2d3d30"/><rect x="63.9" y="390.6" width="2.4" height="5" fill="#2d3d30"/><ellipse cx="894.9" cy="363.9" rx="7.1" ry="30.7" fill="#2d3d30"/><rect x="893.7" y="390.6" width="2.4" height="5" fill="#2d3d30"/><ellipse cx="83.7" cy="363.3" rx="6.3" ry="27.6" fill="#314234"/><rect x="82.5" y="386.9" width="2.4" height="5" fill="#314234"/><ellipse cx="876.3" cy="363.3" rx="6.3" ry="27.6" fill="#314234"/><rect x="875.1" y="386.9" width="2.4" height="5" fill="#314234"/><ellipse cx="102.3" cy="362.7" rx="5.6" ry="24.4" fill="#344739"/><rect x="101.1" y="383.1" width="2.4" height="5" fill="#344739"/><ellipse cx="857.7" cy="362.7" rx="5.6" ry="24.4" fill="#344739"/><rect x="856.5" y="383.1" width="2.4" height="5" fill="#344739"/><ellipse cx="120.9" cy="362.1" rx="4.9" ry="21.3" fill="#384c3d"/><rect x="119.7" y="379.4" width="2.4" height="5" fill="#384c3d"/><ellipse cx="839.1" cy="362.1" rx="4.9" ry="21.3" fill="#384c3d"/><rect x="837.9" y="379.4" width="2.4" height="5" fill="#384c3d"/><ellipse cx="139.4" cy="361.6" rx="4.2" ry="18.1" fill="#3c5141"/><rect x="138.2" y="375.7" width="2.4" height="5" fill="#3c5141"/><ellipse cx="820.6" cy="361.6" rx="4.2" ry="18.1" fill="#3c5141"/><rect x="819.4" y="375.7" width="2.4" height="5" fill="#3c5141"/><ellipse cx="158.0" cy="361.0" rx="3.5" ry="15.0" fill="#405646"/><rect x="156.8" y="372.0" width="2.4" height="5" fill="#405646"/><ellipse cx="802.0" cy="361.0" rx="3.5" ry="15.0" fill="#405646"/><rect x="800.8" y="372.0" width="2.4" height="5" fill="#405646"/>
+
+  <!-- Une silhouette au pied des marches : l echelle ne se lit que par elle -->
+  <g fill="#2b1f12" opacity=".9">
+    <ellipse cx="576.0" cy="444" rx="4.5" ry="5.5"/>
+    <path d="M571.5 450 h9 l2 30 h-4 l-1.5 -16 -1.5 16 h-4 z"/>
   </g>
-  <rect x="278" y="224" width="244" height="16" fill="#e8d6b0" stroke="#a68d66"/>
-  <rect x="374" y="248" width="52" height="82" fill="#1c150e"/>
-  <path d="M374 258 A26 26 0 0 1 426 258" fill="#1c150e"/>
-  <!-- Les cypres, en repetition serielle -->
-  <g fill="#33402f">
-    <ellipse cx="250" cy="316" rx="6" ry="24"/><ellipse cx="268" cy="318" rx="6" ry="21"/>
-    <ellipse cx="286" cy="320" rx="5" ry="18"/><ellipse cx="514" cy="320" rx="5" ry="18"/>
-    <ellipse cx="532" cy="318" rx="6" ry="21"/><ellipse cx="550" cy="316" rx="6" ry="24"/>
+
+  <!-- Le bassin : c est lui qui double le monument -->
+  <rect y="470" width="960" height="150" fill="#6d6250"/>
+  <g opacity=".32" transform="translate(0,714.4) scale(1,-0.52)">
+    <path d="M294.0 300 A186 168 0 0 1 666.0 300 Z" fill="#e0caa2"/>
+    <rect x="188.0" y="276" width="584" height="18" fill="#f2e2bf"/>
+    <rect x="204" y="292" width="30" height="8" fill="#efdfbc" stroke="#a68d66" stroke-width="1"/><rect x="207" y="300" width="24" height="86" fill="url(#fut)"/><rect x="203" y="386" width="32" height="10" fill="#e8d6b0" stroke="#a68d66" stroke-width="1"/><rect x="246" y="292" width="30" height="8" fill="#efdfbc" stroke="#a68d66" stroke-width="1"/><rect x="249" y="300" width="24" height="86" fill="url(#fut)"/><rect x="245" y="386" width="32" height="10" fill="#e8d6b0" stroke="#a68d66" stroke-width="1"/><rect x="288" y="292" width="30" height="8" fill="#efdfbc" stroke="#a68d66" stroke-width="1"/><rect x="291" y="300" width="24" height="86" fill="url(#fut)"/><rect x="287" y="386" width="32" height="10" fill="#e8d6b0" stroke="#a68d66" stroke-width="1"/><rect x="330" y="292" width="30" height="8" fill="#efdfbc" stroke="#a68d66" stroke-width="1"/><rect x="333" y="300" width="24" height="86" fill="url(#fut)"/><rect x="329" y="386" width="32" height="10" fill="#e8d6b0" stroke="#a68d66" stroke-width="1"/><rect x="372" y="292" width="30" height="8" fill="#efdfbc" stroke="#a68d66" stroke-width="1"/><rect x="375" y="300" width="24" height="86" fill="url(#fut)"/><rect x="371" y="386" width="32" height="10" fill="#e8d6b0" stroke="#a68d66" stroke-width="1"/><rect x="582" y="292" width="30" height="8" fill="#efdfbc" stroke="#a68d66" stroke-width="1"/><rect x="585" y="300" width="24" height="86" fill="url(#fut)"/><rect x="581" y="386" width="32" height="10" fill="#e8d6b0" stroke="#a68d66" stroke-width="1"/><rect x="624" y="292" width="30" height="8" fill="#efdfbc" stroke="#a68d66" stroke-width="1"/><rect x="627" y="300" width="24" height="86" fill="url(#fut)"/><rect x="623" y="386" width="32" height="10" fill="#e8d6b0" stroke="#a68d66" stroke-width="1"/><rect x="666" y="292" width="30" height="8" fill="#efdfbc" stroke="#a68d66" stroke-width="1"/><rect x="669" y="300" width="24" height="86" fill="url(#fut)"/><rect x="665" y="386" width="32" height="10" fill="#e8d6b0" stroke="#a68d66" stroke-width="1"/><rect x="708" y="292" width="30" height="8" fill="#efdfbc" stroke="#a68d66" stroke-width="1"/><rect x="711" y="300" width="24" height="86" fill="url(#fut)"/><rect x="707" y="386" width="32" height="10" fill="#e8d6b0" stroke="#a68d66" stroke-width="1"/><rect x="750" y="292" width="30" height="8" fill="#efdfbc" stroke="#a68d66" stroke-width="1"/><rect x="753" y="300" width="24" height="86" fill="url(#fut)"/><rect x="749" y="386" width="32" height="10" fill="#e8d6b0" stroke="#a68d66" stroke-width="1"/>
+    <rect x="428.0" y="296" width="104" height="100" fill="#1a1209"/>
   </g>
-  <!-- La volee de marches, frontale -->
-  <g fill="#e6d3ac" stroke="#b39a70" stroke-width="1">
-    <rect x="352" y="330" width="96" height="9"/><rect x="345" y="339" width="110" height="9"/>
-    <rect x="338" y="348" width="124" height="9"/><rect x="331" y="357" width="138" height="9"/>
-    <rect x="324" y="366" width="152" height="9"/>
+  <rect y="470" width="960" height="150" fill="url(#bassin)"/>
+  <g stroke="#f0dcb4" stroke-width="1.2" opacity=".22" fill="none">
+    <path d="M60 502h840M120 528h720M180 556h600M240 584h480"/>
   </g>
-  <!-- Le bassin : c'est lui qui double le monument -->
-  <rect y="375" width="800" height="125" fill="#5f5947"/>
-  <rect y="375" width="800" height="125" fill="url(#eau)"/>
-  <g opacity=".28" transform="translate(0,750) scale(1,-1)">
-    <path d="M270 300 A130 118 0 0 1 530 300 Z" fill="#e2cda3"/>
-    <rect x="374" y="248" width="52" height="82" fill="#1c150e"/>
-  </g>
-  <rect y="373" width="800" height="2" fill="#8d7f63"/>
+  <rect y="468" width="960" height="3" fill="#8d7f63"/>
 </svg>
-<figcaption><span class="titre">C bis · Le Seuil, tel que tu l'aimais</span><br>
-<span class="note">Colonnade, entablement et volée de marches : le détail qui manque au rendu
-actuel. Le bassin double le monument, les montagnes s'effacent par plans successifs.</span></figcaption>
+
+
+<figcaption><span class="titre">C · Le Seuil, repris</span><br>
+<span class="note">Monumental et frontal : le dôme domine la colonnade, quatorze colonnes
+avec base et chapiteau, sept marches sur toute la largeur, et une silhouette au pied pour donner
+l'échelle. Les cyprès bordent l'allée au lieu de la fermer, les montagnes s'effacent dans la brume,
+et le bassin rend le bâtiment entier, dôme compris, écrasé comme dans une eau peu profonde.
+<strong>Reste que c'est une invention</strong> : chez Borges la bibliothèque n'a pas d'extérieur.</span></figcaption>
 </figure>
 
 </div>
