@@ -78,13 +78,18 @@ export function Library({
         Une ambiance tres faible, juste pour que les noirs ne soient pas des
         trous. Toute la lumiere vient des lampes spheriques.
       */}
-      <ambientLight color={PALETTE.calcaire} intensity={0.045} />
+      {/*
+        Presque rien : juste de quoi que les noirs restent des noirs colores et
+        non des trous. A 0,045 elle relevait tout le fond de la salle, et la
+        lampe n'avait plus rien a eclairer.
+      */}
+      <ambientLight color={PALETTE.calcaire} intensity={0.03} />
       <Lamps
         origins={origins}
         shadowIndex={profile.shadows ? Math.floor(origins.length / 2) : -1}
       />
 
-      <Slabs origins={origins} />
+      <Slabs origins={origins} reflectIndex={Math.floor(origins.length / 2)} />
       <Boxes boxes={stone} color={PALETTE.calcaire} roughness={0.94} castShadow materialRef={calcaire} />
       <Boxes boxes={wood} color={PALETTE.bois} roughness={0.75} castShadow />
       <Boxes
@@ -105,9 +110,9 @@ export function Library({
         <Halo
           key={index}
           position={[origin.x, LAMP_Y, origin.z]}
-          radius={LAMP_RADIUS * 5.5}
+          radius={LAMP_RADIUS * 9}
           color={PALETTE.lampe}
-          strength={0.36}
+          strength={0.55}
         />
       ))}
 

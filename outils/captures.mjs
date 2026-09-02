@@ -92,6 +92,17 @@ async function main() {
     const page = await navigateur.newPage({
       viewport: { width: LARGEUR, height: HAUTEUR },
       deviceScaleFactor: 1,
+      /*
+       * Sans cela, on mesure le mauvais site.
+       *
+       * Un Chrome sans interface annonce « animations reduites » par defaut.
+       * Le profil de qualite y voit, a juste titre, une demande de sobriete et
+       * bascule en mode minimal : ni post-traitement, ni ombres, ni poussiere,
+       * une seule galerie. Toutes les mesures portaient donc sur une version
+       * degradee du rendu, et l'on cherchait pourquoi la lampe ne rayonnait
+       * pas alors que le bloom etait simplement absent.
+       */
+      reducedMotion: 'no-preference',
     })
     page.setDefaultTimeout(45000)
     await page.goto(`http://localhost:${PORT}/?sonde`, { waitUntil: 'load' })
@@ -118,9 +129,18 @@ async function main() {
     const { navigateur, page } = await preparer()
     try {
       await page.evaluate((v) => window.__babbelStage(v.stage), vue)
-      // Le changement de lieu monte la scene ; le placement ne peut se faire
-      // qu'une fois la camera de ce lieu en place.
-      await attendre(900)
+      /*
+       * On laisse la scene se poser AVANT de placer le visiteur.
+       *
+       * Le changement de lieu monte un nouveau monde, et la sequence d'arrivee
+       * peut encore tenir la camera : un travelling prend la main sur tout le
+       * reste, et repose le visiteur ou il finit. Placer trop tot revenait
+       * donc a l'origine sans un mot, et l'on croyait mesurer un cadrage
+       * qu'on n'avait jamais obtenu.
+       */
+      await attendre(1500)
+      await page.evaluate(() => window.__babbelStep(10))
+      await attendre(300)
       if (vue.position) {
         await page.evaluate((v) => {
           window.__babbelPlace(v.position.x, v.position.z, v.yaw)
@@ -184,7 +204,8 @@ async function main() {
       const bench = await page.evaluate(() => window.__babbelBench(20))
       const controle = await page.evaluate((nom) => window.__babbelControle(nom), vue.nom)
 
-      releve.vues[vue.nom] = { pourquoi: vue.pourquoi, bench, ...controle }
+      const profil = await page.evaluate(() => window.__babbelProfil?.())
+      releve.vues[vue.nom] = { pourquoi: vue.pourquoi, profil, bench, ...controle }
       manquants += controle?.manques.length ?? 0
 
       const m = controle.mesure
@@ -228,7 +249,10 @@ async function orchestrer() {
   const serveur = await servir()
   const executablePath = CHEMINS.find(Boolean)
   const navigateur = await chromium.launch({ executablePath, args: ['--disable-dev-shm-usage'] })
-  const page = await navigateur.newPage({ viewport: { width: LARGEUR, height: HAUTEUR } })
+  const page = await navigateur.newPage({
+    viewport: { width: LARGEUR, height: HAUTEUR },
+    reducedMotion: 'no-preference',
+  })
   await page.goto(`http://localhost:${PORT}/?sonde`, { waitUntil: 'load' })
   await page.getByRole('button', { name: 'entrer' }).click()
   await page.waitForFunction(() => Boolean(window.__babbelVues), null, { timeout: 60000 })

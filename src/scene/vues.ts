@@ -1,6 +1,6 @@
 import type { Objectif } from '../mesure/photometrie.ts'
 import type { Stage } from '../store/useLibraryStore.ts'
-import { STAIRWELL_RADIUS } from './dimensions.ts'
+import { HEXAGON_APOTHEM, STAIRWELL_RADIUS } from './dimensions.ts'
 import { CORRIDOR_SIDES, SHELF_SIDES, sideAngle } from './hexagon/layout3d.ts'
 import { stairwellCentre } from './hexagon/stairs.ts'
 
@@ -67,6 +67,32 @@ function devantLeVide(): { position: { x: number; z: number }; yaw: number } {
 
 const ZAGUAN = devantLeVide()
 
+/**
+ * Depuis le couloir, regard vers la salle.
+ *
+ * L'illustration de reference est construite autour de la lampe : elle est au
+ * point de fuite, et tout le reste tombe dans le noir autour d'elle. Se tenir
+ * au centre de la galerie la met hors champ, au-dessus de la tete, et l'on
+ * cadre alors un couloir sans source. On se recule donc dans le passage, d'ou
+ * l'on voit ce que voit un visiteur qui entre.
+ */
+function depuisLePassage(): { position: { x: number; z: number }; yaw: number } {
+  const nx = Math.cos(THETA_COULOIR)
+  const nz = Math.sin(THETA_COULOIR)
+  /*
+   * On reste DANS la salle, pres de la bouche du couloir.
+   *
+   * Plus loin, dans le passage lui-meme, les collisions repoussent le visiteur
+   * vers le centre : le passage est etroit et la marge de degagement le remplit
+   * presque entierement. La camera revenait donc a l'origine sans un mot, et
+   * l'on croyait mesurer un cadrage qu'on n'avait jamais obtenu.
+   */
+  const recul = HEXAGON_APOTHEM * 0.72
+  return { position: { x: nx * recul, z: nz * recul }, yaw: capVers(-nx, -nz) }
+}
+
+const ENTREE = depuisLePassage()
+
 /** Le cap qui fait face au premier mur d'etageres, a portee de main. */
 const THETA_ETAGERE = sideAngle(SHELF_SIDES[0] as number)
 
@@ -91,8 +117,8 @@ export const VUES: readonly Vue[] = [
   {
     nom: 'galerie',
     stage: 'library',
-    position: { x: 0, z: 0 },
-    yaw: capVers(Math.cos(THETA_COULOIR), Math.sin(THETA_COULOIR)),
+    position: ENTREE.position,
+    yaw: ENTREE.yaw,
     pourquoi: 'Le couloir de la galerie, dos de livres et lampe. Le cadrage de l illustration.',
     objectif: { contrasteMin: 3.5, variationMin: 0.024, noirsMin: 0.3 },
   },

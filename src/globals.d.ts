@@ -47,6 +47,8 @@ interface Window {
   __babbelPlace?: (x: number, z: number, yaw?: number) => void
   /** Les points de vue de reference, lus depuis le module qui les definit. */
   __babbelVues?: () => import('./scene/vues.ts').Vue[]
+  /** Le profil de qualite en vigueur : sans lui, on ignore ce qu'on mesure. */
+  __babbelProfil?: () => { level: string; fullEffects: boolean; shadows: boolean; depth: number }
   /** La photometrie de l'image affichee. Voir mesure/photometrie.ts. */
   __babbelPhoto?: (
     cote?: number,

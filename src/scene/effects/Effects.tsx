@@ -67,10 +67,13 @@ const REGLAGES: Record<Ambiance, Reglages> = {
   },
   // La bibliotheque : tenebres. Vignettage lourd, halo autour des lampes.
   bibliotheque: {
-    vignette: 0.9,
-    vignetteFondu: 0.2,
-    bloomSeuil: 0.58,
-    bloomIntensite: 0.95,
+    vignette: 0.82,
+    vignetteFondu: 0.26,
+    // La lampe est la seule source de la salle : son halo doit se voir. A
+    // 0,58 de seuil et 0,95 d'intensite, elle sortait comme un disque a bord
+    // net, ce que la direction artistique refuse explicitement.
+    bloomSeuil: 0.42,
+    bloomIntensite: 1.8,
     grain: 0.042,
     aberration: 0.0008,
     saturation: -0.02,

@@ -34,13 +34,13 @@ export function Lamps({
           */}
           <mesh>
             <sphereGeometry args={[LAMP_RADIUS * 0.7, 16, 12]} />
-            <meshBasicMaterial color={PALETTE.lampe} />
+            <meshBasicMaterial color={PALETTE.lampe} toneMapped={false} />
           </mesh>
           <pointLight
             color={PALETTE.lampe}
             intensity={7}
-            distance={9}
-            decay={2.1}
+            distance={8}
+            decay={2.2}
             castShadow={false}
           />
         </group>
@@ -50,13 +50,32 @@ export function Lamps({
         <group key={index} position={[origin.x, LAMP_Y, origin.z]}>
           <mesh>
             <sphereGeometry args={[LAMP_RADIUS, 20, 14]} />
-            <meshBasicMaterial color={PALETTE.lampe} />
+            {/*
+              Hors tone mapping, et volontairement.
+              La lampe sortait a 0,55 de luminance quand le bloom se declenche
+              a 0,58 : elle passait juste en dessous du seuil et ne rayonnait
+              pas du tout. Un globe eteint au milieu d'une piece sombre, c'est
+              exactement ce que la direction artistique interdit. En la sortant
+              du tone mapping, elle franchit le seuil et retrouve son halo.
+            */}
+            <meshBasicMaterial color={PALETTE.lampe} toneMapped={false} />
           </mesh>
           <pointLight
             color={PALETTE.lampe}
-            intensity={11}
-            distance={8.5}
-            decay={2.3}
+            /*
+             * La lumiere s'eteint vite, et c'est tout le sujet.
+             *
+             * Mesure a l'appui : dans l'illustration de reference, le plafond
+             * et le sol sont a 0,002 de luminance, c'est-a-dire noirs, quand
+             * les notres etaient a 0,12 et 0,03. La lampe eclairait la piece
+             * entiere, et une piece entierement eclairee n'a pas de
+             * clair-obscur. On raccourcit sa portee et on durcit sa
+             * decroissance : le rayonnage reste lu, le reste tombe dans le
+             * noir. Voir D60.
+             */
+            intensity={12}
+            distance={7.5}
+            decay={2.4}
             castShadow={index === shadowIndex}
             shadow-mapSize-width={1024}
             shadow-mapSize-height={1024}

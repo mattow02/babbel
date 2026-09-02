@@ -206,6 +206,16 @@ export function PerfProbe(): null {
     window.__babbelVues = () => VUES.map((vue) => ({ ...vue }))
 
     /*
+     * Le profil de qualite reellement en vigueur.
+     *
+     * Une mesure qui ne dit pas quelle version du rendu elle a mesuree ne vaut
+     * rien : un navigateur pilote annonce « animations reduites » par defaut,
+     * et le site lui sert alors sa version minimale, sans post-traitement. On
+     * a cherche longtemps pourquoi la lampe ne rayonnait pas.
+     */
+    window.__babbelProfil = () => useLibraryStore.getState().profile
+
+    /*
      * La photometrie de l'image affichee.
      *
      * On mesure dans la page plutot qu'en dehors : le navigateur sait deja
@@ -222,7 +232,16 @@ export function PerfProbe(): null {
      * portent exactement sur la meme image.
      */
     const recopier = (cote: number): { plan: HTMLCanvasElement; largeur: number; hauteur: number } => {
-      gl.render(scene, camera)
+      /*
+       * On fait avancer la BOUCLE, on ne rend pas la scene soi-meme.
+       *
+       * `gl.render` dessine le monde brut et court-circuite le compositeur :
+       * ni bloom, ni vignettage, ni grain. Les captures montraient donc une
+       * image que personne ne voit, et l'on a cherche un moment pourquoi la
+       * lampe ne rayonnait pas alors que le bloom etait simplement absent de
+       * l'image mesuree.
+       */
+      advance(performance.now())
       const source = gl.domElement
       const largeur = Math.min(cote, source.width)
       const hauteur = Math.max(1, Math.round((largeur * source.height) / source.width))
@@ -274,6 +293,7 @@ export function PerfProbe(): null {
       delete window.__babbelStage
       delete window.__babbelStep
       delete window.__babbelVues
+      delete window.__babbelProfil
       delete window.__babbelPhoto
       delete window.__babbelControle
       delete window.__babbelImage

@@ -3,7 +3,7 @@ import { Color, type InstancedMesh } from 'three'
 import { BOOKS_PER_HEXAGON } from '../../core/index.ts'
 import { BOOK_DEPTH, BOOK_HEIGHT, BOOK_WIDTH } from '../dimensions.ts'
 import { writeBoxMatrices, type Box } from '../instancing.ts'
-import { spineHeightFactor, spineOf } from '../materials/palette.ts'
+import { spineHeightFactor, spineOf, spineShade } from '../materials/palette.ts'
 import { allBookPlacements } from './layout3d.ts'
 import type { Origin } from './parts.ts'
 
@@ -75,7 +75,9 @@ export function Books({
     const graine = Number(hexagon % 4294967291n)
     for (let index = 0; index < boxes.length; index += 1) {
       const galerie = Math.floor(index / BOOKS_PER_HEXAGON) - depth
-      mesh.setColorAt(index, couleur.set(spineOf(index + (graine + galerie) * 7919)))
+      const graineVolume = index + (graine + galerie) * 7919
+      couleur.set(spineOf(graineVolume)).multiplyScalar(spineShade(graineVolume))
+      mesh.setColorAt(index, couleur)
     }
     if (mesh.instanceColor) mesh.instanceColor.needsUpdate = true
   }, [boxes, hexagon, depth, ref])
