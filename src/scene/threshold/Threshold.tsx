@@ -81,7 +81,15 @@ function Sequence(): React.ReactElement | null {
   const cible = useRef(new Vector3())
 
   useFrame((_, delta) => {
-    elapsed.current += Math.min(delta, 0.05)
+    /*
+     * Le temps de la sequence est du temps reel, pas du temps d'image.
+     *
+     * Plafonne a 50 ms, il s'ecoulait au ralenti des que la machine peinait :
+     * une arrivee de trente secondes en prenait plusieurs minutes, et l'on
+     * croyait le site bloque. Rien ici ne traverse de mur, il n'y a donc rien
+     * a proteger : on ne borne que pour l'onglet masque.
+     */
+    elapsed.current += Math.min(delta, 0.5)
     const shot = cameraAt(elapsed.current)
     camera.position.set(shot.position.x, shot.position.y, shot.position.z)
     cible.current.set(shot.lookAt.x, shot.lookAt.y, shot.lookAt.z)

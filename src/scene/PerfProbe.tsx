@@ -129,8 +129,21 @@ export function PerfProbe(): null {
       gl.render(scene, camera)
 
       return {
+        /*
+         * Attention a ce que ces deux nombres veulent dire.
+         *
+         * `msParImage` est le temps que met le PROCESSEUR a soumettre une
+         * image, pas le temps qu'elle met a s'afficher. Le travail de la carte
+         * graphique se fait apres, sans qu'on l'attende : une scene qui rend a
+         * trois images par seconde peut tres bien annoncer 0,3 ms ici. C'est
+         * ce qui a longtemps fait croire ce site rapide.
+         *
+         * `fps` est la cadence reellement observee, relevee par la boucle
+         * d'affichage. C'est celui-la qu'il faut regarder.
+         */
         msParImage,
-        fpsEquivalent: Math.round(1000 / msParImage),
+        fps: window.__babbel?.fps ?? 0,
+        soumissionSeulement: true,
         calls: gl.info.render.calls,
         triangles: gl.info.render.triangles,
         camera: {

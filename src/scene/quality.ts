@@ -82,3 +82,47 @@ export function readCapabilities(): Capabilities {
     reducedMotion: window.matchMedia('(prefers-reduced-motion: reduce)').matches,
   }
 }
+
+/* ---------------------------------------------------------------------------
+   La qualite qui se corrige elle-meme
+
+   Les indices lus au demarrage disent ce que la machine ANNONCE, pas ce
+   qu'elle tient. Un ordinateur de bureau avec huit coeurs et une carte
+   graphique integree passe pour « complet » et rend a dix images par seconde.
+   Aucune API ne le dit ; la cadence, elle, le dit tout de suite.
+
+   On la mesure donc, et on redescend d'un cran si elle ne suit pas. On ne
+   remonte jamais : une qualite qui oscille est pire que trop basse, elle
+   attire l'oeil a chaque bascule.
+   --------------------------------------------------------------------------- */
+
+/** Le cran en dessous, ou le meme si l'on est deja au plus bas. */
+export function niveauInferieur(level: Level): Level {
+  if (level === 'complet') return 'reduit'
+  return 'minimal'
+}
+
+/** En dessous, l'image saccade visiblement et le deplacement devient penible. */
+export const CADENCE_PLANCHER = 40
+
+/** Il faut deux fenetres de suite pour agir : une seule peut etre un a-coup. */
+export const FENETRES_AVANT_BAISSE = 2
+
+/**
+ * Faut-il baisser d'un cran ?
+ *
+ * `cadences` sont les dernieres mesures, la plus recente en dernier.
+ */
+export function doitBaisser(level: Level, cadences: readonly number[]): boolean {
+  if (level === 'minimal') return false
+  if (cadences.length < FENETRES_AVANT_BAISSE) return false
+  return cadences
+    .slice(-FENETRES_AVANT_BAISSE)
+    .every((cadence) => cadence > 0 && cadence < CADENCE_PLANCHER)
+}
+
+/** Le profil apres une baisse, en gardant ce qui ne depend pas du niveau. */
+export function profilBaisse(actuel: Profile): Profile {
+  const level = niveauInferieur(actuel.level)
+  return { level, ...PROFILES[level] }
+}

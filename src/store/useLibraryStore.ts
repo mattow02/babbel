@@ -63,6 +63,8 @@ export interface Perf {
 interface LibraryState {
   /** Ce que cette machine peut tenir. Voir scene/quality.ts. */
   profile: Profile
+  /** Baisser d'un cran quand la cadence ne suit pas. Jamais l'inverse. */
+  setProfile: (profile: Profile) => void
 
   stage: Stage
   begin: () => void
@@ -94,6 +96,9 @@ interface LibraryState {
 
 export const useLibraryStore = create<LibraryState>((set) => ({
   profile: initialProfile(),
+  setProfile: (profile) => {
+    set({ profile })
+  },
 
   stage: 'entry',
   begin: () => {

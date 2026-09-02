@@ -13,6 +13,7 @@ import { stairwellCentre } from './hexagon/stairs.ts'
 import { above, below } from './navigation/floors.ts'
 import { Library } from './Library.tsx'
 import { PerfProbe } from './PerfProbe.tsx'
+import { QualiteAdaptative } from './QualiteAdaptative.tsx'
 import { HallScene } from './hall/HallScene.tsx'
 import { Threshold } from './threshold/Threshold.tsx'
 import { PALETTE } from './materials/palette.ts'
@@ -250,6 +251,7 @@ export function Gallery({ library }: { library: PageLibrary }): React.ReactEleme
       camera={{ position: [0, 6, 250], fov: 58, near: 0.08, far: 1600 }}
     >
       <PerfProbe />
+      <QualiteAdaptative />
       {stage === 'threshold' || stage === 'parvis' ? (
         <Threshold />
       ) : stage === 'hall' ? (

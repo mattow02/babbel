@@ -235,7 +235,26 @@ export function usePlayer(world: World = LIBRARY_WORLD): PlayerHandle {
   }, [world])
 
   useFrame((_, delta) => {
-    const step = Math.min(delta, 0.05) // on encaisse un a-coup sans teleporter
+    /*
+     * On DECOUPE le temps ecoule, on ne le tronque pas.
+     *
+     * Il etait simplement plafonne a 50 ms « pour encaisser un a-coup sans
+     * teleporter ». Le plafond faisait bien plus que cela : en dessous de
+     * vingt images par seconde, le temps reel dure plus longtemps que le pas
+     * applique, et l'on avance donc au ralenti, proportionnellement a la
+     * chute de cadence. A dix images par seconde on marche a mi-vitesse, a
+     * cinq au quart. Le regard subissait la meme peine. C'est ce qui rendait
+     * le deplacement penible des que la machine peinait, et c'est aussi ce
+     * qui etirait la sequence d'arrivee jusqu'a l'absurde.
+     *
+     * Decouper le temps en pas courts garde la protection contre la
+     * traversee des murs, sans rien perdre du temps ecoule. Au-dela d'une
+     * demi-seconde on abandonne : l'onglet etait masque, il ne s'est rien
+     * passe qu'il faille rattraper.
+     */
+    const restant = Math.min(delta, 0.5)
+    const pas = Math.max(1, Math.ceil(restant / 0.05))
+    const step = restant / pas
 
     // --- Travelling : il prend la main sur tout le reste -------------------
     const trip = travel.current
@@ -265,6 +284,7 @@ export function usePlayer(world: World = LIBRARY_WORLD): PlayerHandle {
       return
     }
 
+    for (let sous = 0; sous < pas; sous += 1) {
     // --- Regard ------------------------------------------------------------
     const rates = cursor.current ? steerRates(cursor.current, size) : { yaw: 0, pitch: 0 }
     yaw.current += rates.yaw * step
@@ -305,6 +325,7 @@ export function usePlayer(world: World = LIBRARY_WORLD): PlayerHandle {
         shiftHexagon(recentre.shift)
       }
     }
+    }
 
     /*
      * Les yeux rattrapent le sol au lieu de le suivre au pixel pres.
@@ -313,7 +334,7 @@ export function usePlayer(world: World = LIBRARY_WORLD): PlayerHandle {
      * hauteur exacte de la marche, et monter deviendrait desagreable a
      * regarder. Le rattrapage exponentiel donne le balancement d'une montee.
      */
-    oeil.current += (sol.current - oeil.current) * Math.min(1, CLIMB_RATE * step)
+    oeil.current += (sol.current - oeil.current) * Math.min(1, CLIMB_RATE * restant)
 
     camera.position.set(position.current.x, oeil.current + EYE_HEIGHT, position.current.z)
     forward.current.set(

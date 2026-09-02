@@ -89,7 +89,13 @@ export function Library({
         shadowIndex={profile.shadows ? Math.floor(origins.length / 2) : -1}
       />
 
-      <Slabs origins={origins} reflectIndex={Math.floor(origins.length / 2)} />
+      {/*
+        Pas de miroir au sol ici.
+        Il a ete essaye et mesure : sur un sol devenu noir il ne montre rien,
+        et il coute un rendu de la scene entiere a chaque image. Le hall, lui,
+        le garde : son sol est clair et il n'a qu'une poignee d'appels.
+      */}
+      <Slabs origins={origins} />
       <Boxes boxes={stone} color={PALETTE.calcaire} roughness={0.94} castShadow materialRef={calcaire} />
       <Boxes boxes={wood} color={PALETTE.bois} roughness={0.75} castShadow />
       <Boxes

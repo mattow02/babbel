@@ -16,7 +16,8 @@ interface BabbelReleve {
 interface Window {
   /** Dernier releve publie, quatre fois par seconde. */
   __babbel?: BabbelReleve
-  /** Chronometre N rendus et rend le cout d'une image. */
+  /** Chronometre N soumissions. Voir la note dans PerfProbe : ce n'est PAS
+   *  le temps d'une image affichee, seulement le temps de la soumettre. */
   __babbelBench?: (frames?: number) => Record<string, unknown>
   /** Fait avancer la boucle de rendu de N images. */
   __babbelStep?: (frames?: number, msPerFrame?: number) => number

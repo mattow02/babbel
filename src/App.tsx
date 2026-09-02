@@ -51,6 +51,7 @@ export function App(): React.ReactElement {
   const stage = useLibraryStore((store) => store.stage)
   const begin = useLibraryStore((store) => store.begin)
   const enterLibrary = useLibraryStore((store) => store.enterLibrary)
+  const arrive = useLibraryStore((store) => store.arrive)
   const setHexagon = useLibraryStore((store) => store.setHexagon)
   const opened = useLibraryStore((store) => store.opened)
   const open = useLibraryStore((store) => store.open)
@@ -150,8 +151,19 @@ export function App(): React.ReactElement {
           onEnter={() => {
             ambience.start()
             library.prefetch([ORIGIN])
-            if (profile.sequence && troisD) begin()
-            else enterLibrary()
+            /*
+             * Sans la sequence, on arrive quand meme DEHORS.
+             *
+             * Une demande d'animations reduites, ou une machine modeste,
+             * supprimait le Seuil entier et deposait le visiteur au milieu
+             * des rayonnages : on entrait dans une bibliotheque sans jamais
+             * l'avoir vue, ni comprendre ou l'on etait. Ce qu'il faut retirer
+             * dans ce cas, c'est le mouvement de camera, pas le lieu. On se
+             * tient donc sur le parvis, face au portail, et l'on entre a pied.
+             */
+            if (!troisD) enterLibrary()
+            else if (profile.sequence) begin()
+            else arrive()
           }}
         />
         {panneau}
