@@ -66,6 +66,12 @@ export function App(): React.ReactElement {
   const [lienPartage] = useState(() =>
     typeof window === 'undefined' ? null : fromHash(window.location.hash),
   )
+  /** On compare des directions visuelles : le detour par le Seuil n'a pas lieu d'etre. */
+  const [comparaison] = useState(() =>
+    typeof window === 'undefined'
+      ? false
+      : new URLSearchParams(window.location.search).has('look'),
+  )
 
   // L'URL reste la source de verite : au premier chargement, elle decide dans
   // quelle galerie on se trouve.
@@ -161,7 +167,16 @@ export function App(): React.ReactElement {
              * dans ce cas, c'est le mouvement de camera, pas le lieu. On se
              * tient donc sur le parvis, face au portail, et l'on entre a pied.
              */
-            if (!troisD) enterLibrary()
+            /*
+             * Une direction visuelle demandee mene DIRECTEMENT au rayonnage.
+             *
+             * Les reglages de `?look=` ne touchent que la bibliotheque. Sans
+             * ce raccourci, comparer deux variantes obligeait a traverser la
+             * sequence d'arrivee, le parvis et la nef a chaque fois : on ne
+             * voyait donc que le Seuil, rigoureusement identique dans les cinq
+             * cas, et l'on concluait a juste titre que rien n'avait change.
+             */
+            if (!troisD || comparaison) enterLibrary()
             else if (profile.sequence) begin()
             else arrive()
           }}
