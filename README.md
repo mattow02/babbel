@@ -112,6 +112,7 @@ l'audit qui a suivi est corrigé, y compris une régression de performance à
 
 MIT, voir [`LICENSE`](LICENSE).
 
-Le dossier `design/` contient des captures de la vidéo *« Viens, je vais te
-Montrer l'Infini »*, conservées comme références visuelles de travail. Elles
-appartiennent à leurs auteurs et ne font pas partie de la licence ci-dessus.
+La direction artistique s'est appuyée sur la vidéo *« Viens, je vais te
+Montrer l'Infini »*, dont les images ne sont pas reproduites ici : ce qu'on en
+a retenu est décrit en mots dans
+[`docs/DIRECTION-ARTISTIQUE.md`](docs/DIRECTION-ARTISTIQUE.md).

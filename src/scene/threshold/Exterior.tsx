@@ -28,7 +28,8 @@ import { SEUIL } from './palette.ts'
  * L'exterieur : le dome dans son bassin, les terrasses plantees de cypres,
  * l'escalier d'honneur et l'entree unique.
  *
- * C'est la premiere image du site, celle de la capture 3 de `design/`. Elle
+ * C'est la premiere image du site, celle de la troisieme capture de
+ * reference. Elle
  * n'a qu'une seule source de lumiere — le soleil rasant — ce qui la rend
  * naturellement peu couteuse : pas besoin d'eclairage precalcule ici, la
  * question ne se posera que pour l'interieur du hall.

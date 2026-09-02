@@ -102,7 +102,7 @@ la retourner plus tard. Décidé le 2026-08-29.
 
 
 ### D16 — Direction artistique arrêtée, et éclairage baké au Seuil
-DA établie à partir des 10 captures de `design/` (film « Viens, je vais te
+DA établie à partir de 10 captures du film « Viens, je vais te
 Montrer l'Infini »), documentée dans `docs/DIRECTION-ARTISTIQUE.md`.
 Parti pris : **deux régimes de lumière** — le Seuil solaire et doré, la
 Bibliothèque ténébreuse — qui recoupe exactement le découpage D11.

@@ -24,7 +24,7 @@ export const PALETTE = {
 /**
  * Les dos de livres.
  *
- * Tires de la capture 5 de `design/` : des bruns, des rouges eteints, des
+ * Tires de la cinquieme capture de reference : des bruns, des rouges eteints, des
  * verts sourds, jamais saturés. La couleur d'un volume est deterministe,
  * derivee de son indice — comme tout le reste de la bibliotheque.
  */

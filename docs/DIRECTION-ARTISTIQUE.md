@@ -1,6 +1,6 @@
 # Direction artistique — Babbel
 
-> Établie le 2026-08-29 à partir des 10 captures de `design/`, tirées de
+> Établie le 2026-08-29 à partir de 10 captures de
 > « Viens, je vais te Montrer l'Infini » (youtube.com/watch?v=J3JsyxABi0g).
 > Ces images sont la **référence visuelle de vérité** du projet.
 

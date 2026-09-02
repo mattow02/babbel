@@ -45,10 +45,9 @@ livre est généré à la volée dans le navigateur du visiteur.
 | `docs/RECHERCHE.md` | Faits sourcés : Borges, l'algorithme, les limites techniques |
 | `docs/ARCHITECTURE.md` | Stack, arborescence, modèle de données, budget perf |
 | `docs/ROADMAP.md` | Les 7 phases et l'état d'avancement |
-| `docs/DECISIONS.md` | Chaque choix structurant + son pourquoi (46 ADR) |
+| `docs/DECISIONS.md` | Chaque choix structurant + son pourquoi (59 ADR) |
 | `docs/AUDIT.md` | **Revue complète, classée par gravité. À lire en premier.** |
 | `docs/DIRECTION-ARTISTIQUE.md` | Palette, formes, matériaux, post-process, motifs |
-| `design/` | Les 10 captures de référence — **la vérité visuelle** |
 | `docs/captures/` | Captures de l'état du projet, phase par phase |
 
 **Avant toute session de dev : lire ROADMAP.md pour savoir où on en est.**
@@ -121,10 +120,10 @@ des chantiers restants, par ordre d'importance.
   d'être coûteuse parce qu'elle est unique.
 
 ## Direction artistique
-**Référence visuelle de vérité : les 10 captures de `design/`**, tirées de la
-vidéo « Viens, je vais te Montrer l'Infini »
-<https://www.youtube.com/watch?v=J3JsyxABi0g>.
-DA complète : `docs/DIRECTION-ARTISTIQUE.md`. En résumé :
+**Référence visuelle** : la vidéo « Viens, je vais te Montrer l'Infini »
+<https://www.youtube.com/watch?v=J3JsyxABi0g>. Ses images ne sont pas
+conservées dans le dépôt ; ce qu'on en a retenu est décrit en mots dans
+`docs/DIRECTION-ARTISTIQUE.md`, qui fait désormais foi. En résumé :
 - **Deux régimes de lumière** : le Seuil solaire, calcaire crème et or, ciel teal.
   La Bibliothèque ténébreuse, noir chaud et halos ambrés. Le visiteur passe du
   plein soleil aux ténèbres : c'est l'arc du site entier.
@@ -150,7 +149,7 @@ film. La contrainte technique et l'intention esthétique coïncident.
   roadmap rédigées. En attente des arbitrages `docs/DECISIONS.md` § ouvertes.
   Aucun code applicatif écrit à ce stade, volontairement.
   Arbitrages rendus dans la foulée : D9 à D15 (voir DECISIONS.md).
-  Captures de référence reçues dans `design/` et direction artistique établie
+  Direction artistique établie d'après la vidéo de référence
   (D16). Plus aucune question ouverte.
 - **2026-08-29 (suite)** — **Phase 1 terminée.** Socle Vite + TS strict monté,
   `src/core/` écrit et testé : 48 tests verts, `npm run check` vert.
