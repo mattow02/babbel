@@ -1,6 +1,6 @@
 import { LAMP_RADIUS, LAMP_Y, VESTIBULE_HEIGHT } from '../dimensions.ts'
 import { stairwellCentre } from '../hexagon/stairs.ts'
-import { PALETTE } from '../materials/palette.ts'
+import { lookCourant } from '../materials/looks.ts'
 import type { Origin } from '../hexagon/parts.ts'
 
 /**
@@ -22,6 +22,7 @@ export function Lamps({
   origins: readonly Origin[]
   shadowIndex?: number
 }): React.ReactElement {
+  const look = lookCourant()
   return (
     <>
       {origins.map((origin, index) => (
@@ -34,13 +35,13 @@ export function Lamps({
           */}
           <mesh>
             <sphereGeometry args={[LAMP_RADIUS * 0.7, 16, 12]} />
-            <meshBasicMaterial color={PALETTE.lampe} toneMapped={false} />
+            <meshBasicMaterial color={look.lampe} toneMapped={false} />
           </mesh>
           <pointLight
-            color={PALETTE.lampe}
+            color={look.lampe}
             intensity={7}
-            distance={8}
-            decay={2.2}
+            distance={look.portee * 1.05}
+            decay={look.chute * 0.92}
             castShadow={false}
           />
         </group>
@@ -58,10 +59,10 @@ export function Lamps({
               exactement ce que la direction artistique interdit. En la sortant
               du tone mapping, elle franchit le seuil et retrouve son halo.
             */}
-            <meshBasicMaterial color={PALETTE.lampe} toneMapped={false} />
+            <meshBasicMaterial color={look.lampe} toneMapped={false} />
           </mesh>
           <pointLight
-            color={PALETTE.lampe}
+            color={look.lampe}
             /*
              * La lumiere s'eteint vite, et c'est tout le sujet.
              *
@@ -74,8 +75,8 @@ export function Lamps({
              * noir. Voir D60.
              */
             intensity={12}
-            distance={7.5}
-            decay={2.4}
+            distance={look.portee}
+            decay={look.chute}
             castShadow={index === shadowIndex}
             shadow-mapSize-width={1024}
             shadow-mapSize-height={1024}

@@ -2,6 +2,7 @@ import { useLayoutEffect, useMemo, useRef } from 'react'
 import type { InstancedMesh, Material } from 'three'
 import { Outlines } from '@react-three/drei'
 import { writeBoxMatrices, type Box } from './instancing.ts'
+import { lookCourant } from './materials/looks.ts'
 import { degradeToon } from './materials/toon.ts'
 
 /** La couleur du trait : l'encre du dessin, jamais un noir pur. */
@@ -49,7 +50,8 @@ export function Boxes({
 
   // La geometrie unitaire est creee une fois pour toutes.
   const args = useMemo(() => [1, 1, 1] as const, [])
-  const degrade = useMemo(() => degradeToon(), [])
+  const look = useMemo(() => lookCourant(), [])
+  const degrade = useMemo(() => degradeToon(look.paliers), [look])
 
   return (
     <instancedMesh
@@ -83,7 +85,7 @@ export function Boxes({
         qu'un appel de plus pour tout le paquet, quel que soit le nombre de
         boites.
       */}
-      {contour ? <Outlines thickness={contour} color={TRAIT} /> : null}
+      {contour ? <Outlines thickness={contour * look.trait * 50} color={TRAIT} /> : null}
     </instancedMesh>
   )
 }

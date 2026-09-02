@@ -13,7 +13,7 @@ import { Effects } from './effects/Effects.tsx'
 import { Halo } from './effects/LightShaft.tsx'
 import { LAMP_RADIUS, LAMP_Y, ROOM_HEIGHT } from './dimensions.ts'
 import { Lamps } from './lighting/Lamp.tsx'
-import { PALETTE } from './materials/palette.ts'
+import { lookCourant } from './materials/looks.ts'
 
 /**
  * Les galeries visibles autour du visiteur.
@@ -58,6 +58,7 @@ export function Library({
    * une veine se lit comme une salissure, et ce qui donne le relief est la
    * bande d'ombre franche du degrade a paliers.
    */
+  const look = useMemo(() => lookCourant(), [])
   const origins = useMemo(() => galleryOrigins(depth), [depth])
   const stone = useMemo(() => origins.flatMap((origin) => stoneBoxes(origin)), [origins])
   const wood = useMemo(() => origins.flatMap((origin) => woodBoxes(origin)), [origins])
@@ -74,7 +75,7 @@ export function Library({
         non des trous. A 0,045 elle relevait tout le fond de la salle, et la
         lampe n'avait plus rien a eclairer.
       */}
-      <ambientLight color={PALETTE.calcaire} intensity={0.03} />
+      <ambientLight color={look.murs} intensity={look.ambiance} />
       <Lamps
         origins={origins}
         shadowIndex={profile.shadows ? Math.floor(origins.length / 2) : -1}
@@ -87,11 +88,11 @@ export function Library({
         le garde : son sol est clair et il n'a qu'une poignee d'appels.
       */}
       <Slabs origins={origins} />
-      <Boxes boxes={stone} color={PALETTE.calcaire} castShadow contour={0.02} />
-      <Boxes boxes={wood} color={PALETTE.bois} castShadow contour={0.012} />
+      <Boxes boxes={stone} color={look.murs} castShadow contour={0.02} />
+      <Boxes boxes={wood} color={look.bois} castShadow contour={0.012} />
       <Boxes
         boxes={stairs}
-        color={PALETTE.bois}
+        color={look.bois}
         castShadow
         meshRef={stairsRef}
       />
@@ -107,7 +108,7 @@ export function Library({
           key={index}
           position={[origin.x, LAMP_Y, origin.z]}
           radius={LAMP_RADIUS * 9}
-          color={PALETTE.lampe}
+          color={look.lampe}
           strength={0.55}
         />
       ))}
@@ -117,7 +118,7 @@ export function Library({
         count={profile.dust}
         radius={2.2}
         height={ROOM_HEIGHT}
-        color={PALETTE.lampe}
+        color={look.lampe}
         strength={0.16}
         size={6}
       />

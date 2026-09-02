@@ -14,7 +14,8 @@
     "test:watch": "vitest --config vitest.config.ts",
     "check": "npm run typecheck && npm run lint && npm run test",
     "captures": "node outils/captures.mjs",
-    "publier": "node outils/publier.mjs"
+    "publier": "node outils/publier.mjs",
+    "variantes": "node outils/variantes.mjs"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.8",

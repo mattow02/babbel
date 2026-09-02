@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { HEXAGON_RADIUS, ROOM_HEIGHT, WALL_THICKNESS } from '../dimensions.ts'
-import { PALETTE } from '../materials/palette.ts'
+import { lookCourant } from '../materials/looks.ts'
 import { degradeToon } from '../materials/toon.ts'
 import type { Origin } from './parts.ts'
 
@@ -15,7 +15,8 @@ export function Slabs({ origins }: { origins: readonly Origin[] }): React.ReactE
   // En rendu a aplats, une veine de marbre ne dit plus rien : elle se lit
   // comme une salissure. Le sol est une couleur franche, et c'est la lumiere
   // a paliers qui lui donne son relief.
-  const degrade = useMemo(() => degradeToon(), [])
+  const look = useMemo(() => lookCourant(), [])
+  const degrade = useMemo(() => degradeToon(look.paliers), [look])
 
   // Un cylindre a six cotes EST un prisme hexagonal. On lui fait faire un
   // sixieme de tour pour que ses aretes tombent sur celles de la piece.
@@ -30,11 +31,11 @@ export function Slabs({ origins }: { origins: readonly Origin[] }): React.ReactE
         <group key={index} position={[origin.x, 0, origin.z]} rotation={[0, Math.PI / 6, 0]}>
           <mesh position={[0, -WALL_THICKNESS / 2, 0]} receiveShadow>
             <cylinderGeometry args={args} />
-            <meshToonMaterial color={PALETTE.dalle} gradientMap={degrade} />
+            <meshToonMaterial color={look.sol} gradientMap={degrade} />
           </mesh>
           <mesh position={[0, ROOM_HEIGHT + WALL_THICKNESS / 2, 0]} receiveShadow>
             <cylinderGeometry args={args} />
-            <meshToonMaterial color={PALETTE.plafond} gradientMap={degrade} />
+            <meshToonMaterial color={look.plafond} gradientMap={degrade} />
           </mesh>
         </group>
       ))}
