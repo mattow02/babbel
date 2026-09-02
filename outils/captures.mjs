@@ -125,6 +125,16 @@ async function main() {
         await page.evaluate((v) => {
           window.__babbelPlace(v.position.x, v.position.z, v.yaw)
         }, vue)
+        /*
+         * Une image au moins avant de faire quoi que ce soit d'autre : la
+         * camera ne prend sa nouvelle orientation qu'au rendu suivant, et un
+         * tir de reticule lance avant partirait dans l'ancienne direction.
+         */
+        await page.evaluate(() => window.__babbelStep(3))
+        if (process.env.BAVARD) {
+          const c = await page.evaluate(() => window.__babbelBench(2).camera)
+          console.log(`  [${vue.nom}] demande x=${vue.position.x} z=${vue.position.z} cap=${vue.yaw} -> camera ${JSON.stringify(c.position)}`)
+        }
       }
       /*
        * On avance par petites bouffees, avec de vraies pauses entre.
@@ -140,13 +150,27 @@ async function main() {
          * partait dans le vide : la galerie n'existait pas encore, et la
          * capture montrait l'etagere au lieu du livre.
          */
-        await page.evaluate(() => window.__babbelOuvrir())
         /*
-         * Le livre s'anime tout seul : il sort de l'etagere, vient devant le
-         * visiteur et s'ouvre. Forcer la boucle par-dessus cette animation
-         * fait rendre l'ame a l'onglet, alors qu'il suffit de la laisser se
-         * derouler en temps reel.
+         * On insiste, en balayant tres legerement.
+         *
+         * Deux raisons, et les deux sont reelles : la camera ne prend son
+         * orientation qu'au rendu suivant, donc un tir immediat part de
+         * l'ancienne direction ; et un rayon perpendiculaire passe entre deux
+         * volumes sans rien toucher. Quelques degres d'ecart suffisent, et la
+         * capture ne montre pas la difference.
          */
+        let ouvert = false
+        for (let essai = 0; essai < 10 && !ouvert; essai += 1) {
+          const devers = ((essai % 2 === 0 ? 1 : -1) * Math.ceil(essai / 2) * 0.05)
+          await page.evaluate(
+            (a) => window.__babbelPlace(a[0], a[1], a[2]),
+            [vue.position.x, vue.position.z, vue.yaw + devers],
+          )
+          await page.evaluate(() => window.__babbelStep(5))
+          await page.evaluate(() => window.__babbelInteragir())
+          ouvert = await page.evaluate(() => Boolean(window.__babbelEtat().opened))
+        }
+        if (!ouvert) throw new Error('le reticule n a ouvert aucun volume')
         await attendre(6000)
       } else {
         for (let i = 0; i < 6; i += 1) {

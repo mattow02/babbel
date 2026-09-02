@@ -20,35 +20,49 @@ transfère est précis :
 
 ## 2. Le constat, mesuré
 
-Mesures photométriques sur l'illustration et sur la capture 3D correspondante.
-La luminance est relative (0 à 1), le contraste est le rapport
+Mesures photométriques sur l'illustration et sur le rendu, aux mêmes points de
+vue. La luminance est relative (0 à 1), le contraste est le rapport
 `(p95 + 0,05) / (p5 + 0,05)`, la variation locale est l'écart-type moyen de la
 luminance sur des tuiles de 16 px : elle dit si une surface est plate.
 
-| Vue | p95 (hautes lumières) | Contraste | Noirs | Variation locale |
+Le relevé du rendu est produit par `npm run captures` (phase 0) et vit dans
+`docs/captures/reference/mesures.json`.
+
+| Vue | p95 (hautes lumières) | Contraste | Variation locale | Verdict |
 |---|---|---|---|---|
-| **Le Seuil**, illustration | 0,70 | 6,7:1 | 0 % | 0,069 |
-| Le Seuil, rendu actuel | **0,37** | **4,5:1** | 0 % | **0,022** |
-| **La galerie**, illustration | 0,14 | 3,7:1 | 65 % | 0,024 |
-| La galerie, rendu actuel | 0,12 | 3,4:1 | 50 % | **0,013** |
-| **Le livre**, illustration | 0,81 | 16,8:1 | 34 % | 0,072 |
-| Le livre, rendu actuel | **0,12** | **3,4:1** | 50 % | **0,013** |
+| **Le Seuil**, illustration | 0,70 | 6,7:1 | 0,069 | cible |
+| Le Seuil, rendu | **0,59** | 8,2:1 | **0,041** | manque de lumière haute et de relief |
+| **La galerie**, illustration | 0,14 | 3,7:1 | 0,024 | cible |
+| La galerie, rendu | 0,13 | **3,4:1** | **0,013** | surfaces deux fois trop plates |
+| **Le livre**, illustration | 0,81 | 16,8:1 | 0,072 | cible |
+| Le livre, rendu | 0,70 | 14,7:1 | 0,053 | **atteint** |
 
-Trois conclusions, dont une qui contredit l'intuition de départ :
+### Une correction, et elle vaut d'être écrite
 
-1. **Le Seuil manque de lumière haute et de détail.** Ses hautes lumières
-   plafonnent à la moitié de la cible et ses surfaces sont trois fois plus
-   plates. Il ne manque pas d'obscurité, il manque de relief.
-2. **La galerie n'est pas trop sombre.** L'illustration l'est autant. Ce qui
-   lui manque n'est pas la luminosité mais l'**articulation** : un halo autour
-   de la lampe, des dos de livres qui se distinguent les uns des autres, un sol
-   qui réfléchit. La variation locale est deux fois trop basse.
-3. **Le livre est le plus gros écart, et c'est le sujet du projet.**
-   L'illustration montre une page éclairée dans le noir, contraste 16,8:1. Le
-   lecteur actuel montre du texte sombre sur fond sombre. C'est là qu'il faut
-   commencer.
+La première version de ce plan désignait le livre comme le plus grand écart :
+contraste de 3,4:1 pour une cible à 16,8:1. C'était faux, et faux pour une
+raison instructive : la capture censée montrer le livre montrait l'étagère. Le
+volume ne s'affiche que si l'on sait de quelle étagère il part, et l'ouvrir en
+posant l'état directement ne renseignait pas cet endroit. On mesurait donc le
+couloir en croyant mesurer la page.
 
-Ces mesures sont reproductibles : voir la phase 0.
+Une fois le livre réellement ouvert par le geste du réticule, il atteint son
+objectif du premier coup. C'est exactement ce que la phase 0 existe pour
+éviter : sans elle, on aurait refait un lecteur qui n'avait rien à se
+reprocher, et laissé la galerie en l'état.
+
+### Ce qui reste, par ordre d'écart
+
+1. **La galerie.** Ses surfaces sont deux fois plus plates que l'illustration.
+   Ce n'est pas une question de luminosité : l'illustration est aussi sombre.
+   Ce qui lui manque est l'articulation, un halo autour de la lampe, des dos de
+   livres qui se distinguent, un sol qui réfléchit.
+2. **Le Seuil.** Ses hautes lumières plafonnent à 0,59 pour une cible à 0,70,
+   et ses surfaces sont un quart trop plates. Il lui manque la colonnade, les
+   marches, le bassin réfléchissant et la brume qui efface les montagnes.
+3. **Le livre.** Il passe, mais il reste en deçà de l'illustration sur les trois
+   grandeurs. La reliure, la courbure des pages et la tranche sont ce qui l'en
+   sépare.
 
 ## 3. Les règles de travail
 
@@ -89,34 +103,22 @@ de suite, le module de mesure est testé, la référence est écrite.
 **NO-GO :** si les captures ne sont pas déterministes, on ne va pas plus loin :
 sans elles, tout le reste est une question de goût.
 
-### Phase 1 : le livre
+### Phase 1 : la galerie
 
-Le plus grand écart, et le sujet même du projet.
-
-- La page devient **une feuille éclairée dans le noir** : matériau clair, une
-  source rasante, le reste de la scène éteint.
-- Le texte gagne le contraste d'une encre sur papier, pas d'un gris sur gris.
-- La tranche, la reliure et la courbure des pages donnent le volume que
-  l'illustration obtient par le dessin.
-
-**Sortie :** sur la capture « livre », p95 ≥ 0,60, contraste ≥ 10:1, noirs entre
-25 % et 50 %, variation locale ≥ 0,05. Le texte reste lisible au caractère près
-(le test de bijection ne bouge pas). Budget : +0 appel de rendu.
-
-### Phase 2 : la galerie
+Le plus grand écart, et l'endroit où le visiteur passe son temps.
 
 - **La lampe devient une source** : cœur émissif, halo en volume (D38 existe
   déjà), décroissance en carré inverse. Le halo est ce qui manque le plus.
 - **Les dos de livres se distinguent** : teinte et valeur variées par instance,
   tirées du hachage existant (D32, jamais une multiplication affine), avec un
   liseré clair qui accroche la lampe.
-- **Le sol réfléchit**, comme le hall le fait déjà (`Marble.tsx` est réutilisable).
+- **Le sol réfléchit**, comme le hall le fait déjà (`Marble.tsx` est
+  réutilisable).
 
-**Sortie :** variation locale ≥ 0,024 (le niveau de l'illustration), halo
-visible sur la mesure (présence de pixels entre 0,3 et 0,8 autour de la source),
-budget d'image sous 8 ms, appels de rendu sous 60.
+**Sortie :** variation locale ≥ 0,024 et contraste ≥ 3,5:1 sur la vue
+`galerie`, budget d'image sous 8 ms, appels de rendu sous 60.
 
-### Phase 3 : le Seuil
+### Phase 2 : le Seuil
 
 - **La colonnade et les marches** : ce qui donne l'échelle et le détail. Tout
   en boîte unitaire instanciée (D25), sinon le compte d'appels explose.
@@ -126,8 +128,17 @@ budget d'image sous 8 ms, appels de rendu sous 60.
   montagnes s'effacent au lieu d'être découpées.
 - **Le soleil visible** et son halo.
 
-**Sortie :** p95 ≥ 0,65, contraste ≥ 6:1, variation locale ≥ 0,05, appels de
-rendu sous 60, budget sous 10 ms.
+**Sortie :** p95 ≥ 0,65, variation locale ≥ 0,05, appels de rendu sous 60,
+budget sous 10 ms.
+
+### Phase 3 : le livre, pour le finir
+
+Il passe déjà. Ce qui l'éloigne encore de l'illustration est le volume : la
+reliure, la courbure des pages, la tranche. Rien d'urgent, et c'est ce qui
+rendra la lecture crédible.
+
+**Sortie :** p95 ≥ 0,75 et variation ≥ 0,065 sans perdre la lisibilité du
+texte, que le test de bijection continue de garantir.
 
 ### Phase 4 : le post-traitement
 
@@ -159,5 +170,8 @@ différents :
   vectoriel, mais c'est un autre projet : il faut écrire ses propres shaders et
   refaire tous les matériaux.
 
-Ce plan retient **A** par défaut. B reste possible et se déciderait avant la
-phase 1, pas après.
+**A** a été retenu le 2 septembre 2026 : on transpose la composition et la
+lumière, on garde un rendu réaliste. Ce qui prime est le résultat visuel ; les
+mesures existent pour ne pas perdre un gain ni laisser passer une régression,
+pas pour brider le rendu. Un effet qui rend bien et coûte trop cher se
+travaille avant d'être abandonné.

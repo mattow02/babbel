@@ -1,7 +1,7 @@
 import type { Objectif } from '../mesure/photometrie.ts'
 import type { Stage } from '../store/useLibraryStore.ts'
 import { STAIRWELL_RADIUS } from './dimensions.ts'
-import { CORRIDOR_SIDES, sideAngle } from './hexagon/layout3d.ts'
+import { CORRIDOR_SIDES, SHELF_SIDES, sideAngle } from './hexagon/layout3d.ts'
 import { stairwellCentre } from './hexagon/stairs.ts'
 
 /**
@@ -67,6 +67,20 @@ function devantLeVide(): { position: { x: number; z: number }; yaw: number } {
 
 const ZAGUAN = devantLeVide()
 
+/** Le cap qui fait face au premier mur d'etageres, a portee de main. */
+const THETA_ETAGERE = sideAngle(SHELF_SIDES[0] as number)
+
+/**
+ * Le leger devers qui evite l'interstice.
+ *
+ * Un tir de reticule lance pile perpendiculairement a une etagere, depuis le
+ * centre exact de la galerie, passe ENTRE deux volumes et ne touche rien : le
+ * piege est connu du projet depuis la phase 8. Sept degres suffisent a poser
+ * le rayon sur un dos plutot que dans la fente, et personne ne voit la
+ * difference a l'image.
+ */
+const DEVERS = 0.12
+
 export const VUES: readonly Vue[] = [
   {
     nom: 'parvis',
@@ -85,6 +99,8 @@ export const VUES: readonly Vue[] = [
   {
     nom: 'livre',
     stage: 'library',
+    position: { x: 0, z: 0 },
+    yaw: capVers(Math.cos(THETA_ETAGERE), Math.sin(THETA_ETAGERE)) + DEVERS,
     livre: true,
     pourquoi: 'Une page ouverte. C est le sujet du projet, et le plus grand ecart mesure.',
     objectif: { p95Min: 0.6, contrasteMin: 10, variationMin: 0.05, noirsMin: 0.2, noirsMax: 0.55 },

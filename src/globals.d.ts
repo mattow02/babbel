@@ -58,6 +58,11 @@ interface Window {
     nom: string,
     cote?: number,
   ) => { mesure: import('./mesure/photometrie.ts').Photometrie; manques: string[] } | null
-  /** Ouvre le volume d'origine, pour la vue du livre. */
-  __babbelOuvrir?: () => void
+  /**
+   * Declenche le geste du reticule : viser, puis ouvrir ce qu'on vise.
+   *
+   * Poser le volume ouvert directement dans l'etat ne montre rien : le livre
+   * ne s'affiche que s'il sait de quelle etagere il part.
+   */
+  __babbelInteragir?: () => void
 }

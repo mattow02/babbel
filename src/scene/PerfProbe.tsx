@@ -265,10 +265,6 @@ export function PerfProbe(): null {
       return { mesure, manques: vue.objectif ? ecarts(mesure, vue.objectif) : [] }
     }
 
-    /** Ouvre le volume d'origine, pour la vue du livre. */
-    window.__babbelOuvrir = () => {
-      useLibraryStore.getState().open({ hexagon: 0n, wall: 0, shelf: 0, volume: 0, page: 1 })
-    }
 
     return () => {
       delete window.__babbelBench
@@ -281,7 +277,6 @@ export function PerfProbe(): null {
       delete window.__babbelPhoto
       delete window.__babbelControle
       delete window.__babbelImage
-      delete window.__babbelOuvrir
       delete window.__babbel
     }
   }, [gl, scene, camera, advance, viseur, centreEcran])

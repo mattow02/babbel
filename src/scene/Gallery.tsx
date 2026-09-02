@@ -170,6 +170,26 @@ function Scene({
 
   useEffect(() => player.setInteract(interagir), [player, interagir])
 
+  /*
+   * Le geste du reticule, declenchable de l'exterieur.
+   *
+   * Poser directement le volume ouvert dans l'etat ne suffit pas : le livre
+   * ne s'affiche que s'il sait d'ou il part, et cet endroit-la n'existe que
+   * si le rayon a touche une etagere. Ouvrir sans viser produisait donc une
+   * scene ou rien ne se passait, et une capture qui montrait l'etagere.
+   * Mieux vaut declencher le vrai geste : c'est aussi ce qu'on veut mesurer.
+   */
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    const demandee =
+      import.meta.env.DEV || new URLSearchParams(window.location.search).has('sonde')
+    if (!demandee) return
+    window.__babbelInteragir = interagir
+    return () => {
+      delete window.__babbelInteragir
+    }
+  }, [interagir])
+
   return (
     <>
       <Library depth={depth} booksRef={books} stairsRef={stairs} />

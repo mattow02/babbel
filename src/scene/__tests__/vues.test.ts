@@ -41,6 +41,18 @@ describe('les points de vue de reference', () => {
     expect(Math.hypot(x, z)).toBeGreaterThan(1)
   })
 
+  it('ne vise pas une etagere pile de face', () => {
+    // Un tir lance perpendiculairement depuis le centre passe entre deux
+    // volumes et ne touche rien : verifie dans un navigateur, sur les douze
+    // caps a trente degres. La vue du livre porte donc un leger devers, sans
+    // lequel elle ne montrerait jamais de livre.
+    const livre = vuePar('livre')
+    const perpendiculaire = capVers(Math.cos(Math.PI / 2), Math.sin(Math.PI / 2))
+    expect(livre?.yaw).toBeDefined()
+    expect(Math.abs((livre!.yaw as number) - perpendiculaire)).toBeGreaterThan(0.05)
+    expect(Math.abs((livre!.yaw as number) - perpendiculaire)).toBeLessThan(0.3)
+  })
+
   it('ne lit une vue que si l URL en demande une', () => {
     expect(vueDemandee('')).toBeNull()
     expect(vueDemandee('?sonde')).toBeNull()
