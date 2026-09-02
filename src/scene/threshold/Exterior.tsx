@@ -168,7 +168,7 @@ export function Exterior(): React.ReactElement {
       </mesh>
 
       {/* L'escalier d'honneur, unique, dans l'axe. */}
-      <Boxes boxes={marches} color={SEUIL.calcaire} roughness={0.93} castShadow materialRef={pierreSol} />
+      <Boxes boxes={marches} color={SEUIL.calcaire} castShadow materialRef={pierreSol} />
 
       {/* L'entree unique : deux jambages, un linteau, et du noir derriere. */}
       <group position={[0, DOME_BASE_Y, PORTAL_Z]}>

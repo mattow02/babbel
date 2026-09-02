@@ -1,0 +1,41 @@
+{
+  "galerie": {
+    "pourquoi": "Le couloir de la galerie, dos de livres et lampe. Le cadrage de l illustration.",
+    "profil": {
+      "level": "minimal",
+      "dpr": 1,
+      "shadows": false,
+      "depth": 0,
+      "dust": 0,
+      "fullEffects": false,
+      "sequence": false
+    },
+    "bench": {
+      "msParImage": 0.075,
+      "fps": 5,
+      "soumissionSeulement": true,
+      "calls": 12,
+      "triangles": 37132,
+      "camera": {
+        "position": [
+          1.296,
+          1.55,
+          0.748
+        ],
+        "pitchDeg": 0
+      }
+    },
+    "mesure": {
+      "p5": 0.0011248710010319917,
+      "mediane": 0.031170811838966944,
+      "p95": 0.1664698362468322,
+      "contraste": 4.234139509955195,
+      "partNoirs": 0.4282082324455206,
+      "partBrulees": 0,
+      "variationLocale": 0.02568702405751416,
+      "largeur": 420,
+      "hauteur": 236
+    },
+    "manques": []
+  }
+}

@@ -1,9 +1,11 @@
+import { Outlines } from '@react-three/drei'
 import { useLayoutEffect, useMemo, useRef } from 'react'
 import { Color, type InstancedMesh } from 'three'
 import { BOOKS_PER_HEXAGON } from '../../core/index.ts'
 import { BOOK_DEPTH, BOOK_HEIGHT, BOOK_WIDTH } from '../dimensions.ts'
 import { writeBoxMatrices, type Box } from '../instancing.ts'
 import { spineHeightFactor, spineOf, spineShade } from '../materials/palette.ts'
+import { degradeToon } from '../materials/toon.ts'
 import { allBookPlacements } from './layout3d.ts'
 import type { Origin } from './parts.ts'
 
@@ -31,6 +33,8 @@ export function Books({
 }): React.ReactElement {
   const own = useRef<InstancedMesh>(null)
   const ref = meshRef ?? own
+
+  const degrade = useMemo(() => degradeToon(), [])
 
   const boxes = useMemo<Box[]>(() => {
     const all: Box[] = []
@@ -92,7 +96,9 @@ export function Books({
       frustumCulled={false}
     >
       <boxGeometry args={[1, 1, 1]} />
-      <meshStandardMaterial roughness={0.82} metalness={0.02} />
+      <meshToonMaterial gradientMap={degrade} />
+      {/* Le trait qui separe deux dos voisins de meme valeur. */}
+      <Outlines thickness={0.004} color="#17110d" />
     </instancedMesh>
   )
 }

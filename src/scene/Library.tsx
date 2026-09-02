@@ -4,6 +4,7 @@ import { useLibraryStore } from '../store/useLibraryStore.ts'
 import { Boxes } from './Boxes.tsx'
 import { galleryOrigins } from './galleries.ts'
 import { Books } from './hexagon/Books.tsx'
+import { Mirrors } from './hexagon/Mirrors.tsx'
 import { Slabs } from './hexagon/Slabs.tsx'
 import { stoneBoxes, woodBoxes } from './hexagon/parts.ts'
 import { stairBoxes } from './hexagon/stairs.ts'
@@ -12,7 +13,6 @@ import { Effects } from './effects/Effects.tsx'
 import { Halo } from './effects/LightShaft.tsx'
 import { LAMP_RADIUS, LAMP_Y, ROOM_HEIGHT } from './dimensions.ts'
 import { Lamps } from './lighting/Lamp.tsx'
-import { useMarble } from './materials/Marble.tsx'
 import { PALETTE } from './materials/palette.ts'
 
 /**
@@ -51,22 +51,13 @@ export function Library({
   const profile = useLibraryStore((state) => state.profile)
 
   /*
-   * Le calcaire des murs n'est pas uni : il porte de longues veines sourdes.
-   * C'est ce que demande la direction artistique (§ 5) : « calcaire mat,
-   * micro-relief », et c'est ce qui empeche les grandes surfaces claires de
-   * ressembler a du carton.
+   * Plus de veine dans le calcaire.
+   *
+   * Le mur portait un motif de marbre, pour « empecher les grandes surfaces
+   * claires de ressembler a du carton ». En rendu a aplats, c'est l'inverse :
+   * une veine se lit comme une salissure, et ce qui donne le relief est la
+   * bande d'ombre franche du degrade a paliers.
    */
-  const calcaire = useMarble({
-    base: PALETTE.calcaire,
-    vein: '#a89073',
-    scale: 2.8,
-    sharpness: 2.6,
-    // Le calcaire couvre d'immenses surfaces vues de pres : c'est le materiau
-    // le plus cher du site s'il est traite comme du marbre de premier plan.
-    octaves: 2,
-    warp: false,
-  })
-
   const origins = useMemo(() => galleryOrigins(depth), [depth])
   const stone = useMemo(() => origins.flatMap((origin) => stoneBoxes(origin)), [origins])
   const wood = useMemo(() => origins.flatMap((origin) => woodBoxes(origin)), [origins])
@@ -96,17 +87,16 @@ export function Library({
         le garde : son sol est clair et il n'a qu'une poignee d'appels.
       */}
       <Slabs origins={origins} />
-      <Boxes boxes={stone} color={PALETTE.calcaire} roughness={0.94} castShadow materialRef={calcaire} />
-      <Boxes boxes={wood} color={PALETTE.bois} roughness={0.75} castShadow />
+      <Boxes boxes={stone} color={PALETTE.calcaire} castShadow contour={0.02} />
+      <Boxes boxes={wood} color={PALETTE.bois} castShadow contour={0.012} />
       <Boxes
         boxes={stairs}
         color={PALETTE.bois}
-        roughness={0.6}
-        metalness={0.25}
         castShadow
         meshRef={stairsRef}
       />
       <Books origins={origins} hexagon={hexagon} depth={depth} meshRef={booksRef} />
+      <Mirrors origins={origins} />
 
       {/*
         L'aureole des lampes. Le bloom seul ne suffit pas quand la source est

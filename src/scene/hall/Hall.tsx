@@ -169,7 +169,7 @@ export function Hall(): React.ReactElement {
         />
       </mesh>
 
-      <Boxes boxes={dallage} color={SEUIL.hall} roughness={0.55} receiveShadow />
+      <Boxes boxes={dallage} color={SEUIL.hall} receiveShadow />
 
       {/* Le mur circulaire, et la coupole a caissons qui le couronne. */}
       <mesh position={[0, PILLAR_HEIGHT / 2 + 1, 0]}>
@@ -180,16 +180,16 @@ export function Hall(): React.ReactElement {
         <sphereGeometry args={[HALL_RADIUS, 72, 36, 0, Math.PI * 2, 0, Math.PI * 0.42]} />
         <meshStandardMaterial ref={marbre} roughness={0.94} side={BackSide} />
       </mesh>
-      <Boxes boxes={caissons} color={SEUIL.hallOmbre} roughness={0.95} receiveShadow={false} />
+      <Boxes boxes={caissons} color={SEUIL.hallOmbre} receiveShadow={false} />
 
       {/* Les deux files de piliers. */}
       <InstancedShapes items={futs} castShadow receiveShadow>
         <cylinderGeometry args={[0.5, 0.54, 1, 24]} />
         <meshStandardMaterial ref={marbreFut} roughness={0.78} />
       </InstancedShapes>
-      <Boxes boxes={socles} color={SEUIL.hall} roughness={0.85} castShadow />
-      <Boxes boxes={chapiteaux} color={SEUIL.hall} roughness={0.85} castShadow />
-      <Boxes boxes={architraves} color={SEUIL.hall} roughness={0.9} castShadow />
+      <Boxes boxes={socles} color={SEUIL.hall} castShadow />
+      <Boxes boxes={chapiteaux} color={SEUIL.hall} castShadow />
+      <Boxes boxes={architraves} color={SEUIL.hall} castShadow />
 
       {/* Les bas-cotes : plafond bas, donc pesant, donc sombre. */}
       {[-1, 1].map((cote) => (
@@ -204,8 +204,8 @@ export function Hall(): React.ReactElement {
       ))}
 
       {/* Les escaliers lateraux, et les tribunes qu'ils desservent. */}
-      <Boxes boxes={marches} color={SEUIL.hall} roughness={0.88} castShadow receiveShadow />
-      <Boxes boxes={tribunes} color={SEUIL.hall} roughness={0.86} castShadow receiveShadow />
+      <Boxes boxes={marches} color={SEUIL.hall} castShadow receiveShadow />
+      <Boxes boxes={tribunes} color={SEUIL.hall} castShadow receiveShadow />
 
       {/* Le cube d'or, en levitation au bout de l'allee. */}
       <mesh ref={cube} position={[0, CUBE_Y, CUBE_Z]} castShadow>

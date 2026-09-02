@@ -620,3 +620,46 @@ Trouve dans le navigateur, le 2026-08-31.
 - **La licence.** MIT a été posée par défaut, comme choix le plus permissif.
   C'est une décision à confirmer : elle autorise n'importe qui à reprendre,
   modifier et vendre ce travail.
+
+
+### D60 : Le rendu passe en aplats
+Le rendu physique demandait des matieres, et une matiere credible demande des
+textures : veines de calcaire, grain de pierre, marbre du sol. Chacune coutait
+un shader de plus et aucune ne se voyait vraiment. Mesure a l'appui, la
+variation locale des surfaces plafonnait a la moitie de celle de
+l'illustration de reference alors que la luminance moyenne etait identique :
+on payait de la matiere que personne ne percevait.
+
+On change de terrain. La lumiere est desormais projetee sur trois paliers, et
+c'est le saut d'un palier a l'autre qui donne le relief. L'echelle de valeurs
+est CALCULEE, comme tout le reste du site, et lue au plus proche voisin : sans
+ce filtrage, le navigateur interpole et l'on retombe sur un degrade continu.
+
+Les consequences depassent l'esthetique. Rugosite et metal n'ont plus de sens
+et disparaissent des appels. Les veines de marbre et de calcaire sont retirees
+partout. Et le compte d'appels de rendu de la galerie tombe de 39 a 12,
+contours compris.
+
+Le trait de contour est dessine en agrandissant la face arriere : un appel de
+plus pour tout un paquet instancie, quel qu'en soit le nombre. Sans lui, deux
+aplats de meme valeur se confondent et la piece perd ses aretes.
+Decide le 2026-09-02.
+
+
+### D61 : Le miroir du zaguan
+« Dans le zaguan il y a un miroir, qui duplique fidelement les apparences. »
+La phrase etait citee dans les dimensions du vestibule depuis la phase 8, et
+le miroir n'avait jamais ete construit. Il n'est pas decoratif : c'est de lui
+que le narrateur tire son doute, « les hommes en deduisent que la Bibliotheque
+n'est pas infinie ; s'ils la deduisaient du miroir, ils auraient raison ».
+
+En rendu a aplats, on ne cherche pas un reflet calcule : un miroir de dessin
+est une plaque froide dans une piece chaude, et c'est ce contraste de
+temperature qui le fait lire comme du verre. Il est pose sur un cote du
+vestibule, hors de l'axe de passage.
+
+Restent absents du texte : les deux cabinets minuscules, l'un pour dormir
+debout, l'autre pour les besoins. Ils demandent de creuser deux niches dans
+les parois du vestibule, donc de reprendre les collisions du lieu : c'est un
+chantier a part, et il est ecrit ici pour ne pas etre oublie.
+Decide le 2026-09-02.

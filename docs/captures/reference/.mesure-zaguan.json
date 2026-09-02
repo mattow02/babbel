@@ -1,6 +1,41 @@
 {
   "zaguan": {
     "pourquoi": "La tremie et l escalier qui s abime : le vertige de la nouvelle.",
-    "echec": "page.evaluate: Target page, context or browser has been closed"
+    "profil": {
+      "level": "minimal",
+      "dpr": 1,
+      "shadows": false,
+      "depth": 0,
+      "dust": 0,
+      "fullEffects": false,
+      "sequence": false
+    },
+    "bench": {
+      "msParImage": 0.06000000014901161,
+      "fps": 7,
+      "soumissionSeulement": true,
+      "calls": 10,
+      "triangles": 35848,
+      "camera": {
+        "position": [
+          3.272,
+          1.55,
+          1.889
+        ],
+        "pitchDeg": -180
+      }
+    },
+    "mesure": {
+      "p5": 0.00034614217203909425,
+      "mediane": 0.02587005873189271,
+      "p95": 0.09522099996579658,
+      "contraste": 2.8844513939033933,
+      "partNoirs": 0.46073446327683615,
+      "partBrulees": 0,
+      "variationLocale": 0.007923149478085154,
+      "largeur": 420,
+      "hauteur": 236
+    },
+    "manques": []
   }
 }
