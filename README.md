@@ -1,6 +1,6 @@
 # Babbel
 
-**La Bibliothèque de Babel de Borges, visitable en 3D dans le navigateur.**
+**La Bibliothèque de Babel de Borges, visitable dans le navigateur.**
 
 ![La bibliothèque vue de l'extérieur : un dôme calcaire posé dans son bassin, au milieu d'un désert de montagnes](docs/captures/phase8-seuil.png)
 
@@ -40,17 +40,19 @@ sans rien stocker.
 - **L'adresse vit dans le fragment de l'URL**, qui n'est jamais envoyé au
   serveur. L'hébergeur ne peut donc pas savoir ce que vous lisez.
 
-Le facteur limitant en 3D n'est pas le nombre de polygones mais le nombre
-d'appels de rendu : toute géométrie répétée passe par une boîte unitaire
-instanciée, ce qui affiche les 1 920 volumes d'une galerie en 27 appels,
-quand le budget en autorisait 100.
+**Le site est dessiné, pas modélisé** (voir [décision D62](docs/DECISIONS.md)).
+Le moteur 3D pesait 1,1 Mo sur 1,3, et la première illustration dessinée a
+dépassé en une heure ce que trois jours de rendu n'avaient pas atteint. Les 640
+volumes d'une galerie sont calculés, dessinés et cliquables, chacun portant son
+adresse : le placement reste un problème de géométrie pure, dans un module pur
+et testé.
 
 ## Démarrer
 
 ```sh
 npm install
 npm run dev       # développement
-npm run check     # types, style et 293 tests
+npm run check     # types, style et 174 tests
 npm run build     # produit dist/
 ```
 
@@ -59,7 +61,7 @@ Ajouter `?sonde` à l'URL installe les fonctions de mesure (`__babbelBench`,
 
 ## Vérification
 
-`npm run check` enchaîne le typage, le style et **293 tests**, tous verts. Le
+`npm run check` enchaîne le typage, le style et **174 tests**, tous verts. Le
 plus important d'entre eux tient en une ligne :
 
 ```ts
@@ -69,10 +71,10 @@ expect(inverse(forward(x))).toBe(x)
 S'il tombe, tout le reste est faux. Il vit dans
 [`src/core/__tests__/bijection.test.ts`](src/core/__tests__/bijection.test.ts).
 
-Le cœur (`src/core/`) est du TypeScript pur : aucune dépendance à React ni à
-three.js, donc testable sans navigateur. Le placement 3D lui-même est écrit en
-mathématiques pures dans `scene/**/layout3d.ts`, ce qui est la seule façon de
-vérifier la position de 640 objets sans GPU.
+Le cœur (`src/core/`) est du TypeScript pur : aucune dépendance à React, donc
+testable sans navigateur. Le placement des 640 volumes est écrit en
+mathématiques pures dans `vue2d/perspective.ts`, ce qui est la seule façon de
+vérifier qu'aucune adresse ne manque et qu'aucune n'apparaît deux fois.
 
 ## Déployer
 
@@ -87,8 +89,8 @@ Vercel à un simple `nginx`.
 npm run build && npx vercel deploy --prod dist
 ```
 
-La 3D est chargée en différé : **69 Ko gzippés** suffisent pour lire une page,
-les 292 Ko de moteur 3D n'arrivent que si l'on entre dans la bibliothèque.
+Tout le site tient en **232 Ko**, worker compris. Il n'y a plus de moteur 3D à
+charger, et donc plus rien à charger en différé.
 
 ## État
 

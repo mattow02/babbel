@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { HEXAGON_COUNT } from '../../../core/index.ts'
-import { FLOOR_COUNT, FLOOR_STRIDE, above, below, columnOf, floorOf } from '../floors.ts'
+import { HEXAGON_COUNT } from '../../core/index.ts'
+import { FLOOR_COUNT, FLOOR_STRIDE, above, below, columnOf, floorOf } from '../etages.ts'
 
 describe('les etages', () => {
   it('empile un nombre demesure detages', () => {

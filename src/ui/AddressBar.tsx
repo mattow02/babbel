@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { PAGES_PER_BOOK, toPath, type Address } from '../core/index.ts'
-import { columnOf, floorOf } from '../scene/navigation/floors.ts'
+import { columnOf, floorOf } from '../vue2d/etages.ts'
 
 /** Les galeries ont des noms de 2 870 caracteres : on n'en montre que les bouts. */
 function shortenGallery(hexagon: bigint): string {

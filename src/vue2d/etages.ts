@@ -24,7 +24,7 @@
  * choix reste arbitraire, mais il est tire de l'alphabet plutot que du vide.
  */
 
-import { HEXAGON_COUNT, RADIX_BIG } from '../../core/index.ts'
+import { HEXAGON_COUNT, RADIX_BIG } from '../core/index.ts'
 
 /** Distance, en galeries, entre une salle et celle qui la surplombe. */
 export const FLOOR_STRIDE: bigint = RADIX_BIG ** 800n

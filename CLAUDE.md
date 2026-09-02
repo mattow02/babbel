@@ -60,9 +60,10 @@ des chantiers restants, par ordre d'importance.
    de l'adresse. Il n'y a pas de base de données, il n'y en aura jamais.
 2. **La bijection opère à l'échelle de la page** (3 200 caractères = 14 861 bits
    en BigInt), pas du livre (6,1 Mbits, trop lourd).
-3. **Le facteur limitant en 3D est le nombre de draw calls**, pas les polygones.
-   InstancedMesh partout, streaming par chunks, une seule page de texte réel
-   existante à la fois.
+3. **Le site est dessiné, pas modélisé** (D62, 2026-09-03). Les scènes sont du
+   SVG calculé en React. Une galerie, c'est 640 tranches, chacune portant son
+   adresse. Le placement est de la géométrie pure et testée, comme il l'était
+   en 3D : c'est la partie qui a survécu.
 
 ## Disciplines de dev
 - `src/core/` est du TypeScript pur : **aucune** dépendance à React ou three.js.
@@ -77,30 +78,23 @@ des chantiers restants, par ordre d'importance.
   l'appelant.
 - Ajouter `?sonde` à l'URL pour installer les fonctions de mesure sur un build
   de production.
-- Le placement 3D s'écrit en maths pures dans `scene/**/layout3d.ts` et
-  `parts.ts`, sans three.js : c'est la seule façon de vérifier 640 objets (D24).
-- L'interaction ne passe **pas** par les événements du moteur de rendu : on
-  lance le rayon soi-même depuis le réticule (D42). C'est plus juste, et c'est
-  la seule version vérifiable de l'extérieur.
-- Toute géométrie répétée passe par une **boîte unitaire instanciée** (D25) :
-  un appel de rendu par matériau, quel que soit le nombre d'objets.
-- Les positions du monde sont **toujours relatives à la galerie courante** (D30).
-  Jamais de coordonnée absolue : il y a 10^4468 galeries.
-- Toute logique un peu subtile d'un composant 3D est extraite en module pur et
-  testée (`geometry.ts`, `steering.ts`, `picking.ts`, `approach.ts`,
-  `landscape.ts`, `sequence.ts`).
+- Le placement s'écrit en maths pures dans `vue2d/perspective.ts`, sans rien
+  qui touche au DOM : c'est la seule façon de vérifier 640 objets (D24).
+- Chaque tranche est un noeud SVG cliquable qui porte son adresse : l'interaction
+  n'a plus besoin de lancer de rayon, elle est dans le document.
+- Toute logique un peu subtile d'une scène est extraite en module pur et testée
+  (`perspective.ts`, `couleurs.ts`, `etages.ts`, `hash.ts`).
 - Pour dérégler un alignement, passer par `scene/hash.ts` : **jamais** par une
   simple multiplication, qui est affine et produit un motif périodique (D32).
 - Ce qui peut être une **fonction du temps** ne doit pas devenir un état : la
   poussière est animée dans le shader, sans coût processeur (D37).
 - Rien n'est téléchargé : ni texture, ni police, ni son. Tout est calculé.
-- Zéro allocation et zéro `setState` React dans `useFrame`.
 - Le test `inverse(forward(x)) === x` est le test le plus important du projet.
   S'il casse, tout est faux. Il vit dans `src/core/__tests__/bijection.test.ts`.
 - `npm run check` (typecheck + lint + tests) doit être vert avant tout commit.
-- Mesurer avant d'optimiser, et mesurer le **temps d'une image**, pas seulement
-  les appels de rendu : un shader peut ruiner le budget sans toucher au nombre
-  d'appels ni de triangles (constat A6 de `docs/AUDIT.md`).
+- Mesurer avant d'optimiser, et vérifier ce que l'on mesure : le banc du projet
+  a longtemps chronométré la **soumission** d'une image et non son affichage,
+  ce qui faisait croire le site rapide (constat A6 de `docs/AUDIT.md`).
 
 ## Décisions actées (2026-08-29)
 - **Alphabet : 25 symboles**, fidèle à Borges (22 lettres + espace + virgule + point).
@@ -113,6 +107,9 @@ des chantiers restants, par ordre d'importance.
 - **Bijection inversible dès la Phase 1** (gratuit maintenant, coûteux après),
   interface de recherche seulement en Phase 7.
 - **Desktop cible v1**, leviers de dégradation mobile prévus dès l'architecture.
+- **Le rendu est en 2D dessinée** (D62, 2026-09-03) : le moteur 3D a été retiré.
+  Les décisions D23 à D61 qui parlent de three.js sont **historiques** : elles
+  disent pourquoi le projet a été construit ainsi, pas ce qu'il est aujourd'hui.
 - **Deux mondes distincts** (D11) : *le Seuil*, scène authorée à la main
   (extérieur → dôme → marches → entrée unique → grand hall → cube flottant),
   et *la Bibliothèque*, procédurale et infinie. Budgets et dossiers séparés.

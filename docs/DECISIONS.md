@@ -663,3 +663,52 @@ debout, l'autre pour les besoins. Ils demandent de creuser deux niches dans
 les parois du vestibule, donc de reprendre les collisions du lieu : c'est un
 chantier a part, et il est ecrit ici pour ne pas etre oublie.
 Decide le 2026-09-02.
+
+
+### D62 : Le site quitte la trois dimensions
+Trois jours de travail sur le rendu 3D ont produit une galerie que la premiere
+illustration dessinee a depassee en une heure. Le constat n'est pas un avis :
+les mesures photometriques donnaient a l'illustration deux fois la variation
+locale du rendu pour une luminance identique, et il a fallu corriger trois
+defauts de mesure avant de seulement pouvoir comparer.
+
+S'y ajoutent des couts qui n'avaient rien d'esthetique : le moteur pesait 1,1
+Mo sur 1,3, soit 84 % de ce que telechargeait un visiteur ; le deplacement
+devenait penible des que la cadence tombait ; et le banc d'essai du projet
+mesurait le temps de SOUMISSION d'une image et non son affichage, ce qui a
+longtemps fait croire le site rapide.
+
+Le dessin coute moins cher que la modelisation et rend mieux. On garde donc ce
+qui fait le projet, et qui n'a jamais dependu de la 3D : la bijection, le
+worker, le lecteur, la recherche, l'adressage dans le fragment d'URL. On perd
+8 100 lignes et cinq dependances.
+
+Ce qui ne change pas : le placement reste un probleme de geometrie pure, dans
+un module pur et teste. Les 640 volumes d'une galerie sont calcules et portent
+chacun leur adresse, comme ils le faisaient en instances.
+Decide le 2026-09-03.
+
+
+### D63 : La hauteur de la galerie, corrigee d'apres le texte
+« Vingt etageres, cinq longues etageres par cote, couvrent tous les cotes sauf
+deux ; LEUR HAUTEUR, QUI EST CELLE DES ETAGES, depasse a peine celle d'un
+bibliothecaire normal. »
+
+La hauteur des etageres est celle de l'etage. La salle fait donc environ deux
+metres, pas trois, les cinq etageres montent jusqu'au plafond, et il n'y a
+aucun mur nu au-dessus d'elles. Le grand pan vide qu'on cherchait a meubler ne
+devait pas exister.
+Decide le 2026-09-03.
+
+
+### D64 : Le puits d'aeration existe
+D31 avait ecarte l'idee d'un puits central en concluant que « Borges ne decrit
+rien de tel ». La toute premiere phrase de la nouvelle dit le contraire : « des
+galeries hexagonales, avec de vastes puits d'aeration AU MILIEU, entoures de
+balustrades tres basses. De n'importe quel hexagone on voit les etages
+inferieurs et superieurs : interminablement. »
+
+L'escalier en colimacon, lui, est bien dans le zaguan : les deux coexistent.
+Le puits est desormais au centre de chaque galerie, ceint de sa balustrade
+tres basse, et c'est par lui qu'on descend d'un etage.
+Decide le 2026-09-03.

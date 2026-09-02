@@ -1,7 +1,9 @@
-import { Suspense, lazy, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import type { Address } from './core/index.ts'
-import { hasWebGL } from './scene/webgl.ts'
 import { useLibraryStore } from './store/useLibraryStore.ts'
+import { Galerie } from './vue2d/Galerie.tsx'
+import { Seuil } from './vue2d/Seuil.tsx'
+import { above, below } from './vue2d/etages.ts'
 import { AddressBar } from './ui/AddressBar.tsx'
 import { Entry } from './ui/Entry.tsx'
 import { Reader } from './ui/Reader.tsx'
@@ -21,28 +23,6 @@ import { usePageText } from './ui/usePageText.ts'
  */
 const ORIGIN: Address = { hexagon: 0n, wall: 0, shelf: 0, volume: 0, page: 1 }
 
-/**
- * La 3D n'est chargee que si l'on entre.
- *
- * three.js et sa chaine d'effets pesent l'essentiel du site. Or le cas le plus
- * probable de partage est une URL de LECTURE : c'est ce que produit la
- * recherche, et il serait absurde de faire telecharger toute la machinerie a
- * quelqu'un qui vient lire une page de texte.
- */
-const Gallery = lazy(async () => {
-  const module = await import('./scene/Gallery.tsx')
-  return { default: module.Gallery }
-})
-
-/** Ce qu'on montre pendant que la galerie se telecharge. */
-function Chargement(): React.ReactElement {
-  return (
-    <div className="chargement" role="status">
-      <span>la bibliothèque s’ouvre…</span>
-    </div>
-  )
-}
-
 export function App(): React.ReactElement {
   const library = useLibrary(ORIGIN)
   const [address, goTo] = useAddress(ORIGIN)
@@ -51,26 +31,17 @@ export function App(): React.ReactElement {
   const stage = useLibraryStore((store) => store.stage)
   const begin = useLibraryStore((store) => store.begin)
   const enterLibrary = useLibraryStore((store) => store.enterLibrary)
-  const arrive = useLibraryStore((store) => store.arrive)
   const setHexagon = useLibraryStore((store) => store.setHexagon)
   const opened = useLibraryStore((store) => store.opened)
   const open = useLibraryStore((store) => store.open)
   const close = useLibraryStore((store) => store.close)
   const muted = useLibraryStore((store) => store.muted)
   const toggleMuted = useLibraryStore((store) => store.toggleMuted)
-  const profile = useLibraryStore((store) => store.profile)
   const ambience = useAmbience()
 
   const [recherche, setRecherche] = useState(false)
-  const troisD = hasWebGL()
   const [lienPartage] = useState(() =>
     typeof window === 'undefined' ? null : fromHash(window.location.hash),
-  )
-  /** On compare des directions visuelles : le detour par le Seuil n'a pas lieu d'etre. */
-  const [comparaison] = useState(() =>
-    typeof window === 'undefined'
-      ? false
-      : new URLSearchParams(window.location.search).has('look'),
   )
 
   // L'URL reste la source de verite : au premier chargement, elle decide dans
@@ -157,28 +128,7 @@ export function App(): React.ReactElement {
           onEnter={() => {
             ambience.start()
             library.prefetch([ORIGIN])
-            /*
-             * Sans la sequence, on arrive quand meme DEHORS.
-             *
-             * Une demande d'animations reduites, ou une machine modeste,
-             * supprimait le Seuil entier et deposait le visiteur au milieu
-             * des rayonnages : on entrait dans une bibliotheque sans jamais
-             * l'avoir vue, ni comprendre ou l'on etait. Ce qu'il faut retirer
-             * dans ce cas, c'est le mouvement de camera, pas le lieu. On se
-             * tient donc sur le parvis, face au portail, et l'on entre a pied.
-             */
-            /*
-             * Une direction visuelle demandee mene DIRECTEMENT au rayonnage.
-             *
-             * Les reglages de `?look=` ne touchent que la bibliotheque. Sans
-             * ce raccourci, comparer deux variantes obligeait a traverser la
-             * sequence d'arrivee, le parvis et la nef a chaque fois : on ne
-             * voyait donc que le Seuil, rigoureusement identique dans les cinq
-             * cas, et l'on concluait a juste titre que rien n'avait change.
-             */
-            if (!troisD || comparaison) enterLibrary()
-            else if (profile.sequence) begin()
-            else arrive()
+            begin()
           }}
         />
         {panneau}
@@ -186,35 +136,47 @@ export function App(): React.ReactElement {
     )
   }
 
-  /*
-   * Sans WebGL, on garde le lecteur de texte : personne n'est prive des livres
-   * pour une carte graphique. C'est le seul endroit ou une interface s'affiche
-   * par-dessus la page.
-   */
-  if (!troisD) {
+  if (stage === 'seuil') {
     return (
-      <div className="shell">
-        <AddressBar address={address} />
-        <main className="stage">
-          <Reader state={state} />
-        </main>
+      <div className="shell shell--scene">
+        <Seuil onEntrer={enterLibrary} />
         {panneau}
       </div>
     )
   }
 
   return (
-    <div className="shell shell--gallery">
-      <div className="canvas">
-        <Suspense fallback={<Chargement />}>
-          <Gallery library={library} />
-        </Suspense>
-      </div>
+    <div className="shell shell--scene">
+      {opened ? (
+        <div className="lecture">
+          <AddressBar address={address} />
+          <main className="stage">
+            <Reader state={state} />
+          </main>
+        </div>
+      ) : (
+        <Galerie
+          hexagon={address.hexagon}
+          onOuvrir={(cible) => {
+            open(cible)
+          }}
+          onZaguan={() => {
+            const suivante = address.hexagon + 1n
+            setHexagon(suivante)
+            goTo({ ...address, hexagon: suivante, wall: 0, shelf: 0, volume: 0, page: 1 })
+          }}
+          onEtage={(sens) => {
+            const cible = sens === 1 ? above(address.hexagon) : below(address.hexagon)
+            if (cible === null) return
+            setHexagon(cible)
+            goTo({ ...address, hexagon: cible, wall: 0, shelf: 0, volume: 0, page: 1 })
+          }}
+        />
+      )}
 
       {/*
-        La seule chose qui s'affiche par-dessus le monde : de quoi refermer le
-        livre. Tout le reste, position, performance, aide, a disparu : on ne
-        met pas de tableau de bord dans une bibliotheque.
+        La seule chose qui s'affiche par-dessus le lieu : de quoi refermer le
+        livre. On ne met pas de tableau de bord dans une bibliotheque.
       */}
       {opened ? (
         <button type="button" className="fermer" onClick={close} aria-label="Fermer le livre">

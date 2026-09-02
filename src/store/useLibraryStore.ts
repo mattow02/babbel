@@ -1,25 +1,5 @@
 import { create } from 'zustand'
 import type { Address } from '../core/index.ts'
-import { profileFor, readCapabilities, type Profile } from '../scene/quality.ts'
-
-/**
- * Le profil de qualite, decide une fois pour toutes au demarrage.
- *
- * Hors navigateur, dans les tests, on prend le profil complet : il n'y a de
- * toute facon rien a afficher.
- */
-function initialProfile(): Profile {
-  if (typeof window === 'undefined') {
-    return profileFor({
-      coarsePointer: false,
-      memory: undefined,
-      cores: undefined,
-      width: 1920,
-      reducedMotion: false,
-    })
-  }
-  return profileFor(readCapabilities())
-}
 
 /**
  * L'etat qui doit vivre HORS de React.
@@ -52,25 +32,12 @@ export type Mode = 'gallery' | 'reader'
  * `hall`      : la nef d'accueil, ou l'on marche jusqu'au cube.
  * `library`   : la bibliotheque infinie, ou l'on marche et l'on lit.
  */
-export type Stage = 'entry' | 'threshold' | 'parvis' | 'hall' | 'library'
-
-export interface Perf {
-  readonly fps: number
-  readonly calls: number
-  readonly triangles: number
-}
+export type Stage = 'entry' | 'seuil' | 'library'
 
 interface LibraryState {
-  /** Ce que cette machine peut tenir. Voir scene/quality.ts. */
-  profile: Profile
-  /** Baisser d'un cran quand la cadence ne suit pas. Jamais l'inverse. */
-  setProfile: (profile: Profile) => void
-
   stage: Stage
+  /** On pousse la porte : le Seuil, dessine. */
   begin: () => void
-  /** Le film rend la main : on se tient devant l'entree. */
-  arrive: () => void
-  enterHall: () => void
   enterLibrary: () => void
 
   muted: boolean
@@ -90,25 +57,12 @@ interface LibraryState {
   open: (address: Address) => void
   close: () => void
 
-  perf: Perf
-  setPerf: (perf: Perf) => void
 }
 
 export const useLibraryStore = create<LibraryState>((set) => ({
-  profile: initialProfile(),
-  setProfile: (profile) => {
-    set({ profile })
-  },
-
   stage: 'entry',
   begin: () => {
-    set({ stage: 'threshold' })
-  },
-  arrive: () => {
-    set({ stage: 'parvis' })
-  },
-  enterHall: () => {
-    set({ stage: 'hall' })
+    set({ stage: 'seuil' })
   },
   enterLibrary: () => {
     set({ stage: 'library' })
@@ -147,8 +101,4 @@ export const useLibraryStore = create<LibraryState>((set) => ({
     set({ opened: null })
   },
 
-  perf: { fps: 0, calls: 0, triangles: 0 },
-  setPerf: (perf) => {
-    set({ perf })
-  },
 }))

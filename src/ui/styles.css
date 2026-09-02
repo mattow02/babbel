@@ -597,3 +597,89 @@ body::after {
   stroke-width: 1.4;
   stroke-linecap: round;
 }
+
+/* ---------------------------------------------------------------------------
+   Les lieux dessines
+
+   Le site a quitte la trois dimensions : les salles sont des dessins, et le
+   navigateur n'a plus a modeliser quoi que ce soit. Une scene occupe donc
+   toute la fenetre et se recadre au lieu de se deformer.
+   --------------------------------------------------------------------------- */
+
+.shell--scene {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  background: #0a0806;
+}
+
+.galerie2d,
+.seuil svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Un volume qu'on peut ouvrir se signale au survol, discretement : c'est le
+   seul indice d'interface dans un lieu qui n'en a aucune. */
+.galerie2d .tranche {
+  cursor: pointer;
+  transition: filter 0.12s ease;
+}
+
+.galerie2d .tranche:hover {
+  filter: brightness(1.9);
+}
+
+.galerie2d .passage,
+.galerie2d .puits,
+.galerie2d .montee {
+  cursor: pointer;
+}
+
+.galerie2d .passage:hover path,
+.galerie2d .puits:hover ellipse:first-child {
+  stroke: #96784f;
+  stroke-width: 4;
+}
+
+.seuil {
+  position: absolute;
+  inset: 0;
+}
+
+.seuil__entrer {
+  position: absolute;
+  left: 50%;
+  bottom: clamp(2rem, 8vh, 5rem);
+  transform: translateX(-50%);
+  padding: 0.85rem 2rem;
+  border: 1px solid rgb(255 240 210 / 0.35);
+  border-radius: 2px;
+  background: rgb(20 14 8 / 0.55);
+  color: #f3e6cd;
+  font-family: inherit;
+  font-size: 0.95rem;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  backdrop-filter: blur(2px);
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.seuil__entrer:hover,
+.seuil__entrer:focus-visible {
+  background: rgb(40 28 16 / 0.75);
+  border-color: rgb(255 240 210 / 0.6);
+}
+
+/* La lecture recouvre le lieu : on ne lit pas en marchant. */
+.lecture {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  background: #0a0806;
+  overflow: auto;
+}

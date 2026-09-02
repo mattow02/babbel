@@ -21,20 +21,24 @@ Toute la conception découle de là :
 
 | Couche | Choix | Pourquoi |
 |---|---|---|
-| Build | **Vite** + TypeScript strict | zéro backend nécessaire, HMR rapide (crucial en 3D), build statique |
-| UI | **React 19** | écosystème 3D, composants d'overlay |
-| 3D | **three.js** via **@react-three/fiber** | déclaratif, se compose avec React, standard de fait |
-| Helpers 3D | **@react-three/drei** | `<Text>` (troika), contrôles, LOD, perf monitor |
-| Post-process | **@react-three/postprocessing** | bloom/vignette/grain : l'essentiel de l'esthétique |
-| État | **zustand** | store hors-React pour la boucle de rendu (pas de re-render par frame) |
-| Style overlay | **Tailwind v4** + CSS modules | overlay 2D uniquement |
+| Build | **Vite** + TypeScript strict | zéro backend nécessaire, HMR rapide, build statique |
+| UI | **React 19** | tout le site, scènes comprises |
+| Dessin | **SVG** calculé en React | le trait est net à toute résolution, chaque volume est un noeud cliquable |
+| Perspective | maths pures, `vue2d/perspective.ts` | testable sans navigateur : 640 tranches, 640 adresses |
+| État | **zustand** | store hors-React, une seule source de vérité |
+| Style | **CSS** dans `src/ui/styles.css` | le site tient en un fichier |
 | Calcul | **Web Worker** + **BigInt natif** | pas de GMP/WASM nécessaire |
 | Tests | **Vitest** | le cœur (bijection) doit être testé, c'est du pur calcul |
 | Qualité | ESLint + Prettier + `tsc --noEmit` en CI | |
 
 **Stack confirmée le 2026-08-29.** Next.js écarté : aucun besoin de SSR ni
-d'API routes, l'expérience est entièrement cliente, et le HMR de Vite est
-décisif quand on itère sur de la 3D.
+d'API routes, l'expérience est entièrement cliente.
+
+**Revue le 2026-09-03 (décision D62).** three.js, @react-three/fiber, drei et
+postprocessing ont été retirés : le moteur 3D pesait 1,1 Mo sur 1,3, et une
+illustration dessinée rendait mieux. Les scènes sont désormais du SVG calculé.
+Le site entier tient en 232 Ko. La couche `core/` n'a pas bougé d'une ligne,
+ce qui était exactement le pari de la règle structurante ci-dessous.
 
 ## 3. Structure des dossiers
 
@@ -48,12 +52,11 @@ Babbel/
 │   ├── ROADMAP.md             # phases et état d'avancement
 │   └── DECISIONS.md           # ADR : chaque choix structurant + son pourquoi
 ├── public/
-│   └── fonts/                 # .woff pour troika
 └── src/
     ├── main.tsx
     ├── App.tsx
     │
-    ├── core/                  # ❗ ZÉRO dépendance à React ou three.js
+    ├── core/                  # ❗ ZÉRO dépendance à React
     │   ├── alphabet.ts        # jeu de caractères, encode/decode
     │   ├── address.ts         # type Address, sérialisation <-> URL
     │   ├── bijection.ts       # LCG inversible en BigInt (le cœur)
@@ -69,49 +72,23 @@ Babbel/
     │   ├── neighbourhood.ts   # quelles pages précharger, dans quel ordre
     │   └── client.ts          # PageLibrary : peek / read / prefetch
     │
-    ├── scene/                 # tout le three.js
-    │   ├── threshold/          # LE SEUIL : scène authorée, non procédurale
-    │   │   ├── Threshold.tsx   # racine de la séquence d'arrivée
-    │   │   ├── Exterior.tsx    # le dôme (demi-sphère) vu du dehors
-    │   │   ├── Stairs.tsx      # les marches vers l'entrée unique
-    │   │   ├── Portal.tsx      # l'entrée unique
-    │   │   ├── Atrium.tsx      # le grand hall
-    │   │   └── Cube.tsx        # le cube flottant au centre
-    │   ├── Library.tsx        # racine de la bibliothèque procédurale
-    │   ├── hexagon/           # géométrie de la galerie
-    │   │   ├── Hexagon.tsx
-    │   │   ├── Shelves.tsx    # InstancedMesh des 640 livres
-    │   │   └── Corridor.tsx
-    │   ├── book/
-    │   │   ├── BookMesh.tsx
-    │   │   └── OpenBook.tsx   # livre ouvert + <Text> troika
-    │   ├── streaming/
-    │   │   ├── ChunkManager.ts# charge/décharge les hexagones voisins
-    │   │   └── pool.ts        # pool d'objets recyclés
-    │   ├── lighting/
-    │   ├── materials/
-    │   └── effects/           # post-processing
-    │
-    ├── controls/
-    │   ├── usePlayerControls.ts  # déplacement (pointer lock / clavier)
-    │   └── useCameraModes.ts     # marche / lecture / transition
-    │
-    ├── ui/                    # overlay 2D (HTML par-dessus le canvas)
-    │   ├── Reader.tsx         # interface de lecture d'un livre
-    │   ├── AddressBar.tsx     # adresse courante, copiable
-    │   ├── Search.tsx         # recherche par texte (bijection inverse)
-    │   └── Loader.tsx
-    │
-    ├── store/
-    │   └── useLibraryStore.ts # zustand : adresse courante, mode, livre ouvert
-    │
+    ├── vue2d/                 # les scènes dessinées
+    │   ├── perspective.ts     # ❗ maths pures : la galerie en fuite centrale
+    │   ├── couleurs.ts        # palette des dos, usure déterministe par adresse
+    │   ├── hash.ts            # bruit non affine (D32)
+    │   ├── etages.ts          # galerie = étage x 25^800 + colonne (D43)
+    │   ├── Galerie.tsx        # l'hexagone : 640 tranches cliquables, puits, lampe
+    │   └── Seuil.tsx          # la scène d'arrivée
+    ├── reader/                # le lecteur de page
+    ├── search/                # la recherche par texte
     └── styles/
 ```
 
 ### La règle structurante
 `core/` est du **TypeScript pur, testable, sans aucune dépendance**.
 On doit pouvoir lancer `vitest` dessus sans navigateur ni GPU.
-Si le rendu 3D change complètement, `core/` ne bouge pas d'une ligne.
+Si le rendu change complètement, `core/` ne bouge pas d'une ligne. **C'est
+arrivé** : le moteur 3D a été supprimé le 2026-09-03 et `core/` n'a pas bougé.
 
 ## 4. Le modèle de données
 
@@ -169,12 +146,13 @@ viable : l'infini n'est jamais calculé, seulement suggéré.
 On construit du **plus contraint vers le plus libre** :
 1. le cœur mathématique (contrainte absolue, non négociable) ;
 2. la génération asynchrone (contrainte de performance) ;
-3. la lecture 2D (valide que le contenu est juste, sans 3D) ;
-4. la galerie 3D (contrainte de rendu) ;
-5. la navigation et le streaming (contrainte de mémoire) ;
+3. la lecture (valide que le contenu est juste, sans décor) ;
+4. la galerie (contrainte de rendu) ;
+5. la navigation ;
 6. l'esthétique et l'ambiance (le seul espace vraiment libre).
 
-Faire l'inverse (commencer par la 3D jolie) mènerait à tout refaire.
+Faire l'inverse mènerait à tout refaire. La suite l'a montré à l'envers : le
+rendu a été refait de fond en comble sans qu'une ligne du cœur ne change.
 
 
 ## 9. Les deux mondes (décision D11)

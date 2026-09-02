@@ -396,3 +396,41 @@ mais une fenêtre étroite n'est pas un téléphone.
 
 Les quatre constats de l'audit (§ 5) restent vrais par nature : ce sont des
 propriétés à connaître, pas des défauts à corriger.
+
+
+---
+
+## Après les sept phases : le site quitte la 3D (2026-09-03)
+
+Trois jours de travail sur le rendu ont produit une galerie que la première
+illustration dessinée a dépassée en une heure. La mesure le disait avant l'oeil :
+l'illustration avait deux fois la variation locale du rendu pour une luminance
+identique.
+
+**Ce qui est parti** : `src/scene/` en entier (71 fichiers, 8 102 lignes),
+three.js, @react-three/fiber, drei, postprocessing, @types/three.
+**Ce qui reste** : la bijection, le worker, le lecteur, la recherche,
+l'adressage dans le fragment d'URL. Rien du coeur n'a bougé.
+**Ce qui arrive** : `src/vue2d/`, les scènes dessinées en SVG calculé.
+
+Trois erreurs de fidélité au texte ont été corrigées au passage, toutes
+vérifiables dans la nouvelle :
+- la hauteur des étagères **est** celle de l'étage : la salle fait deux mètres,
+  pas trois, et il n'y a aucun mur nu au-dessus des livres (D63) ;
+- il y a bien de **vastes puits d'aération au milieu** des galeries, ceints de
+  balustrades très basses : D31 avait conclu l'inverse, à tort (D64) ;
+- l'escalier en colimaçon est dans le zaguán, et coexiste avec le puits.
+
+**Mesures** : 174 tests verts ; le site passe de 1,3 Mo à **232 Ko** ;
+640 volumes cliquables par galerie, chacun portant son adresse ; parcours
+complet vérifié dans Chromium, de l'écran d'entrée à une page lue, sans une
+seule erreur de console.
+
+## Ce qui n'est pas fait, à jour au 2026-09-03
+
+- Le **Seuil** est une invention : chez Borges, la bibliothèque *est* l'univers,
+  elle n'a pas d'extérieur. Il est gardé comme seuil de fiction, à assumer ou à
+  retirer.
+- Les **deux petits cabinets** du zaguán (un pour dormir debout, un pour les
+  besoins) ne sont pas dessinés.
+- Aucun test sur un vrai appareil mobile.
