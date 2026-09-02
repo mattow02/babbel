@@ -426,6 +426,26 @@ vérifiables dans la nouvelle :
 complet vérifié dans Chromium, de l'écran d'entrée à une page lue, sans une
 seule erreur de console.
 
+## Le site perd sa page d'accueil (2026-09-03)
+
+Sur les retours de l'utilisateur, trois choses.
+
+**L'arrivée.** Plus d'écran de titre ni de bouton : la bibliothèque est là dès
+la première image, et l'introduction s'écrit par-dessus elle en quatre phrases,
+puis s'efface. On entre en cliquant la porte (D65). Un lien partagé n'a plus
+aucun écran à franchir.
+
+**Les portes se cliquaient mal**, et la cause n'était pas dans la porte : le
+halo de la lampe, dessiné après elle, en couvrait 93 % et avalait le clic. Tout
+le décor est désormais privé d'événements, et les cibles vivent dans une couche
+dessinée en dernier (D66). Vérifié : 5 points d'essai sur 5 pour la porte du
+dehors, 6 sur 6 pour celle du fond, sommet de l'arc et bords compris.
+
+**On peut enfin monter**, et par un objet visible : le puits traverse aussi le
+plafond, et l'on y voit la lampe de la galerie du dessus (D67).
+
+**180 tests.** La feuille de style perd 88 lignes devenues orphelines.
+
 ## Ce qui n'est pas fait, à jour au 2026-09-03
 
 - Le **Seuil** est une invention : chez Borges, la bibliothèque *est* l'univers,

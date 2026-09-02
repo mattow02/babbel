@@ -5,7 +5,7 @@ import { Galerie } from './vue2d/Galerie.tsx'
 import { Seuil } from './vue2d/Seuil.tsx'
 import { above, below } from './vue2d/etages.ts'
 import { AddressBar } from './ui/AddressBar.tsx'
-import { Entry } from './ui/Entry.tsx'
+import { Intro } from './ui/Intro.tsx'
 import { Reader } from './ui/Reader.tsx'
 import { Search } from './ui/Search.tsx'
 import { resolveKey } from './ui/navigation.ts'
@@ -29,7 +29,6 @@ export function App(): React.ReactElement {
   const state = usePageText(library, address)
 
   const stage = useLibraryStore((store) => store.stage)
-  const begin = useLibraryStore((store) => store.begin)
   const enterLibrary = useLibraryStore((store) => store.enterLibrary)
   const setHexagon = useLibraryStore((store) => store.setHexagon)
   const opened = useLibraryStore((store) => store.opened)
@@ -40,14 +39,44 @@ export function App(): React.ReactElement {
   const ambience = useAmbience()
 
   const [recherche, setRecherche] = useState(false)
-  const [lienPartage] = useState(() =>
+  const [partage] = useState(() =>
     typeof window === 'undefined' ? null : fromHash(window.location.hash),
   )
 
-  // L'URL reste la source de verite : au premier chargement, elle decide dans
-  // quelle galerie on se trouve.
+  /*
+   * Un lien partage ouvre la page tout de suite.
+   *
+   * C'est le sujet meme du lien : celui qui le recoit veut voir CETTE page, pas
+   * visiter un monument. Il n'y a plus d'ecran a franchir pour l'atteindre, et
+   * la bibliotheque reste derriere le livre, atteignable en le refermant.
+   */
   useEffect(() => {
     setHexagon(address.hexagon)
+    library.prefetch([address])
+    if (partage) {
+      enterLibrary()
+      open(partage)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  /*
+   * Le son attend un geste, n'importe lequel.
+   *
+   * Aucun navigateur n'autorise le son avant que le visiteur n'ait touche la
+   * page. C'etait la vraie raison d'etre de l'ecran d'accueil ; comme il n'y en
+   * a plus, on ecoute simplement le premier geste, quel qu'il soit.
+   */
+  useEffect(() => {
+    const eveiller = (): void => {
+      ambience.start()
+    }
+    window.addEventListener('pointerdown', eveiller, { once: true })
+    window.addEventListener('keydown', eveiller, { once: true })
+    return () => {
+      window.removeEventListener('pointerdown', eveiller)
+      window.removeEventListener('keydown', eveiller)
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -110,36 +139,18 @@ export function App(): React.ReactElement {
     />
   ) : null
 
-  if (stage === 'entry') {
-    return (
-      <>
-        <Entry
-          onOpenShared={
-            lienPartage
-              ? () => {
-                  ambience.start()
-                  goTo(lienPartage)
-                  setHexagon(lienPartage.hexagon)
-                  enterLibrary()
-                  open(lienPartage)
-                }
-              : undefined
-          }
-          onEnter={() => {
-            ambience.start()
-            library.prefetch([ORIGIN])
-            begin()
-          }}
-        />
-        {panneau}
-      </>
-    )
-  }
-
+  /*
+   * Le dehors, et l'introduction ecrite par-dessus lui.
+   *
+   * La bibliotheque est deja la, des la premiere image : on n'attend pas
+   * derriere un ecran de titre pour la voir. Le texte s'efface tout seul, ou au
+   * premier geste, et l'on entre en poussant la porte.
+   */
   if (stage === 'seuil') {
     return (
       <div className="shell shell--scene">
         <Seuil onEntrer={enterLibrary} />
+        <Intro />
         {panneau}
       </div>
     )

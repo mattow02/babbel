@@ -10,11 +10,15 @@
  * plusieurs essais : le fond du portique est a l'OMBRE. Une colonnade posee
  * devant une surface claire se lit toujours comme un decor decoupe, quoi qu'on
  * mette dessous ; c'est l'ombre derriere elle qui lui donne son epaisseur.
+ *
+ * On entre en cliquant la porte, et non par un bouton : le site doit avoir
+ * l'air d'un lieu, pas d'une application. La porte est donc une cible pour de
+ * vrai, avec sa lueur qui respire et sa reponse au survol.
  */
 export function Seuil({ onEntrer }: { onEntrer: () => void }): React.ReactElement {
   return (
     <div className="seuil">
-      <svg viewBox="0 0 960 620" preserveAspectRatio="xMidYMid slice" role="img"
+      <svg viewBox="0 0 960 620" preserveAspectRatio="xMidYMid slice" role="group"
            aria-label="La bibliothèque vue du dehors, au soleil rasant">
 
   <defs>
@@ -40,6 +44,12 @@ export function Seuil({ onEntrer }: { onEntrer: () => void }): React.ReactElemen
       <stop offset=".45" stopColor="#8a7d63" stopOpacity=".3"/>
       <stop offset="1" stopColor="#3d3529" stopOpacity=".05"/>
     </linearGradient>
+    {/* La lueur de la porte : un degrade, pas un disque. Une lumiere n'a pas de bord. */}
+    <radialGradient id="s-porte" cx="50%" cy="50%">
+      <stop offset="0" stopColor="#ffc072" stopOpacity=".85"/>
+      <stop offset=".5" stopColor="#ffb15a" stopOpacity=".3"/>
+      <stop offset="1" stopColor="#ff9d3c" stopOpacity="0"/>
+    </radialGradient>
     <linearGradient id="s-brume" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0" stopColor="#e8c9a0" stopOpacity="0"/>
       <stop offset="1" stopColor="#e8c9a0" stopOpacity=".55"/>
@@ -85,7 +95,6 @@ export function Seuil({ onEntrer }: { onEntrer: () => void }): React.ReactElemen
   {/* L entree unique, en ombre franche */}
   <rect x="428.0" y="296" width="104" height="100" fill="#1a1209"/>
   <path d="M428.0 316 A52 46 0 0 1 532.0 316" fill="#1a1209"/>
-  <ellipse cx="480.0" cy="380" rx="30" ry="26" fill="#ffc072" opacity=".12"/>
 
   {/* L ombre du monument sur la terrasse : c est elle qui le pose */}
   <ellipse cx="480.0" cy="486" rx="392" ry="26" fill="#6b5b42" opacity=".36"/>
@@ -120,10 +129,34 @@ export function Seuil({ onEntrer }: { onEntrer: () => void }): React.ReactElemen
   <rect y="508" width="960" height="4" fill="#9a8a6c"/>
   <rect y="504" width="960" height="4" fill="#c4b18c"/>
 
+  {/*
+    La porte, seule chose cliquable du dehors.
+
+    Elle est dessinee EN DERNIER, et c'est une regle et non un hasard : une
+    cible posee au milieu d'un dessin finit toujours par passer sous un decor
+    ajoute apres elle, et le clic se perd sans que rien ne le montre. La lueur
+    suit la cible pour que le survol se voie.
+  */}
+  <g className="porte">
+    <path
+      className="cible"
+      d="M428 400 L428 316 A52 46 0 0 1 532 316 L532 400 Z"
+      role="button"
+      tabIndex={0}
+      aria-label="Entrer dans la bibliothèque"
+      onClick={onEntrer}
+      onKeyDown={(event) => {
+        if (event.key !== 'Enter' && event.key !== ' ') return
+        event.preventDefault()
+        onEntrer()
+      }}
+    >
+      <title>Entrer dans la bibliothèque</title>
+    </path>
+    <ellipse className="porte__lueur" cx="480.0" cy="372" rx="46" ry="40" fill="url(#s-porte)"/>
+  </g>
+
       </svg>
-      <button type="button" className="seuil__entrer" onClick={onEntrer}>
-        franchir le seuil
-      </button>
     </div>
   )
 }

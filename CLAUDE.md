@@ -82,6 +82,10 @@ des chantiers restants, par ordre d'importance.
   qui touche au DOM : c'est la seule façon de vérifier 640 objets (D24).
 - Chaque tranche est un noeud SVG cliquable qui porte son adresse : l'interaction
   n'a plus besoin de lancer de rayon, elle est dans le document.
+- **Un décor ne reçoit jamais de clic** (D66). Le dessin est privé d'événements
+  dans la feuille de style, et tout ce qui se clique vit dans une couche unique
+  dessinée en dernier. Ne jamais compter sur l'ordre du dessin pour qu'une
+  scène reste cliquable : un halo ajouté après une porte l'avale en silence.
 - Toute logique un peu subtile d'une scène est extraite en module pur et testée
   (`perspective.ts`, `couleurs.ts`, `etages.ts`, `hash.ts`).
 - Pour dérégler un alignement, passer par `scene/hash.ts` : **jamais** par une

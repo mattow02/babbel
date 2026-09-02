@@ -203,70 +203,7 @@ body::after {
 }
 
 /* ---------------------------------------------------------------- galerie */
-
-.shell--gallery {
-  display: block;
-  padding: 0;
-}
-
-.canvas {
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-}
-
 /* ------------------------------------------------------------------ seuil */
-
-.overlay--seuil {
-  inset: 0;
-  align-items: flex-end;
-  justify-content: space-between;
-}
-
-/*
- * Le titre est en bas, discret, en calcaire : il ne doit pas concurrencer
- * l'image. C'est le monument qui parle, pas la typographie.
- */
-.seuil__titre {
-  display: flex;
-  flex-direction: column;
-  margin: 0;
-  color: var(--creme);
-  font-size: clamp(1.4rem, 3.4vw, 2.6rem);
-  line-height: 1.05;
-  letter-spacing: 0.02em;
-  text-shadow: 0 2px 24px rgb(0 0 0 / 45%);
-  animation: seuil-apparait 2.4s ease-out both;
-}
-
-.seuil__titre span:last-child {
-  padding-left: 1.6em;
-  color: var(--soleil);
-}
-
-.seuil__passer {
-  padding: 0.5rem 1.2rem;
-  border: 1px solid rgb(232 220 200 / 35%);
-  border-radius: 2px;
-  background: rgb(13 11 10 / 25%);
-  color: var(--creme);
-  font: inherit;
-  font-size: 0.85rem;
-  letter-spacing: 0.05em;
-  cursor: pointer;
-  pointer-events: auto;
-  backdrop-filter: blur(2px);
-  transition: border-color 220ms ease, color 220ms ease;
-  animation: seuil-apparait 3.6s ease-out both;
-}
-
-.seuil__passer:hover,
-.seuil__passer:focus-visible {
-  border-color: var(--or);
-  color: var(--soleil);
-  outline: none;
-}
-
 @keyframes seuil-apparait {
   from {
     opacity: 0;
@@ -275,122 +212,6 @@ body::after {
     opacity: 1;
   }
 }
-
-/* ------------------------------------------------------------- écran d'entrée */
-
-.entree {
-  position: fixed;
-  inset: 0;
-  z-index: 5;
-  display: grid;
-  place-items: center;
-  padding: var(--gouttiere);
-  background:
-    radial-gradient(ellipse 60% 50% at 50% 45%, #1b1510 0%, transparent 70%),
-    var(--nuit);
-}
-
-.entree__contenu {
-  max-width: 46ch;
-  animation: seuil-apparait 1.6s ease-out both;
-}
-
-.entree__titre {
-  display: flex;
-  flex-direction: column;
-  margin: 0 0 1.6rem;
-  color: var(--creme);
-  font-size: clamp(2rem, 6vw, 3.6rem);
-  font-weight: 400;
-  line-height: 1;
-  letter-spacing: 0.01em;
-}
-
-.entree__titre span:last-child {
-  padding-left: 1.5em;
-  color: var(--soleil);
-}
-
-.entree__phrase {
-  margin: 0 0 2rem;
-  color: var(--sable);
-  font-size: 1rem;
-  line-height: 1.65;
-}
-
-.entree__chiffre {
-  display: flex;
-  align-items: baseline;
-  gap: 0.6rem;
-  margin: 0 0 2.4rem;
-  padding-top: 1.2rem;
-  border-top: 1px solid var(--brun-sourd);
-}
-
-.entree__chiffre strong {
-  color: var(--or);
-  font-size: 1.6rem;
-  font-variant-numeric: tabular-nums;
-  font-weight: 400;
-}
-
-.entree__chiffre span {
-  color: var(--ombre-chaude);
-  font-size: 0.78rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-}
-
-.entree__bouton {
-  padding: 0.7rem 2.4rem;
-  border: 1px solid var(--or);
-  border-radius: 2px;
-  background: transparent;
-  color: var(--soleil);
-  font: inherit;
-  font-size: 1rem;
-  letter-spacing: 0.14em;
-  cursor: pointer;
-  transition: background 260ms ease, color 260ms ease;
-}
-
-.entree__bouton:hover,
-.entree__bouton:focus-visible {
-  background: var(--or);
-  color: var(--nuit);
-  outline: none;
-}
-
-.entree__note {
-  margin: 0.9rem 0 0;
-  color: var(--ombre-chaude);
-  font-size: 0.76rem;
-}
-
-.seuil__actions {
-  display: flex;
-  gap: 0.6rem;
-  pointer-events: auto;
-}
-
-.overlay__son {
-  margin-left: 1.2rem;
-  padding: 0.1rem 0.6rem;
-  border: 1px solid var(--brun-sourd);
-  border-radius: 2px;
-  background: transparent;
-  color: var(--ombre-chaude);
-  font: inherit;
-  font-size: 0.72rem;
-  cursor: pointer;
-  pointer-events: auto;
-}
-
-.overlay__son:hover {
-  border-color: var(--or);
-  color: var(--soleil);
-}
-
 /* --------------------------------------------------------------- recherche */
 
 .recherche {
@@ -537,27 +358,6 @@ body::after {
   letter-spacing: 0.06em;
 }
 
-/* Le choix secondaire de l'ecran d'entree. */
-.entree__second {
-  display: block;
-  margin-top: 1.1rem;
-  padding: 0;
-  border: 0;
-  background: none;
-  color: var(--ombre-chaude);
-  font: inherit;
-  font-size: 0.85rem;
-  text-decoration: underline;
-  text-underline-offset: 0.25em;
-  cursor: pointer;
-}
-
-.entree__second:hover,
-.entree__second:focus-visible {
-  color: var(--soleil);
-  outline: none;
-}
-
 /* -------------------------------------------------------- fermer le livre */
 
 /*
@@ -633,45 +433,163 @@ body::after {
   filter: brightness(1.9);
 }
 
-.galerie2d .passage,
-.galerie2d .puits,
-.galerie2d .montee {
-  cursor: pointer;
+/*
+ * Un decor ne recoit jamais de clic.
+ *
+ * Regle apprise d'un bogue : le halo de la lampe, dessine apres la porte du
+ * fond, en couvrait quatre-vingt-treize pour cent et avalait le clic sans que
+ * rien ne le montre. On eteint donc tout le dessin, et l'on rallume les seules
+ * choses qui se cliquent. Une ligne de dessin ajoutee demain ne pourra plus
+ * rendre la salle inutilisable.
+ *
+ * L'extinction passe par `:where()`, qui ne pese rien : sans lui elle serait
+ * plus specifique que le rallumage, et gagnerait. C'est exactement ce qui
+ * s'est produit la premiere fois.
+ */
+:where(.galerie2d, .seuil svg) * {
+  pointer-events: none;
 }
 
-.galerie2d .passage:hover path,
-.galerie2d .puits:hover ellipse:first-child {
-  stroke: #96784f;
-  stroke-width: 4;
+.tranche,
+.cible {
+  pointer-events: auto;
+}
+
+/*
+ * Une cible est invisible tant qu'on ne la vise pas, et elle epouse
+ * exactement la forme dessinee : le survol allume la porte, pas un rectangle.
+ */
+.cible {
+  fill: transparent;
+  cursor: pointer;
+  transition: fill 160ms ease;
+}
+
+.cible:hover {
+  fill: rgb(255 198 122 / 13%);
+}
+
+.cible:focus-visible {
+  outline: none;
+  fill: rgb(255 198 122 / 20%);
+  stroke: var(--soleil);
+  stroke-width: 2;
+}
+
+/* La porte du dehors respire, pour se designer sans une ligne de texte. */
+.porte__lueur {
+  opacity: 0.14;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: porte-respire 3.6s ease-in-out infinite;
+  transition: opacity 260ms ease;
+}
+
+.porte .cible:hover ~ .porte__lueur,
+.porte .cible:focus-visible ~ .porte__lueur {
+  opacity: 0.42;
+}
+
+@keyframes porte-respire {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.16);
+  }
+}
+
+/* ----------------------------------------------------------- introduction */
+
+/*
+ * Il n'y a plus de page d'accueil : on arrive devant la bibliotheque, et le
+ * texte s'ecrit par-dessus elle. L'introduction ne prend aucun clic, pour que
+ * la porte reste atteignable a chaque instant.
+ */
+.intro {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 0 var(--gouttiere) clamp(1.6rem, 6vh, 4rem);
+  text-align: center;
+  pointer-events: none;
+}
+
+.intro__voile {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgb(9 7 5 / 62%) 0%,
+    rgb(9 7 5 / 30%) 20%,
+    rgb(9 7 5 / 0%) 42%
+  );
+  transition: opacity 1.4s ease;
+}
+
+.intro__tout,
+.intro__ligne {
+  position: relative;
+  max-width: 36ch;
+  margin: 0 0 clamp(1rem, 3.5vh, 2.2rem);
+  color: var(--creme);
+  font-size: clamp(1.02rem, 2.4vw, 1.55rem);
+  line-height: 1.45;
+  text-shadow: 0 2px 26px rgb(0 0 0 / 60%);
+  animation: intro-parait 900ms ease-out both;
+}
+
+.intro__tout .intro__ligne {
+  margin-bottom: 0.7rem;
+  animation: none;
+}
+
+.intro__ligne--titre {
+  color: var(--soleil);
+  font-size: clamp(1.7rem, 5vw, 3rem);
+  line-height: 1.1;
+  letter-spacing: 0.03em;
+}
+
+.intro__invite {
+  position: relative;
+  margin: 0;
+  color: var(--soleil);
+  font-size: clamp(0.72rem, 1.5vw, 0.84rem);
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  text-shadow: 0 2px 18px rgb(0 0 0 / 70%);
+  animation: intro-parait 1.6s ease-out both;
+}
+
+@keyframes intro-parait {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .intro__ligne,
+  .intro__invite,
+  .porte__lueur {
+    animation: none;
+  }
 }
 
 .seuil {
   position: absolute;
   inset: 0;
-}
-
-.seuil__entrer {
-  position: absolute;
-  left: 50%;
-  bottom: clamp(2rem, 8vh, 5rem);
-  transform: translateX(-50%);
-  padding: 0.85rem 2rem;
-  border: 1px solid rgb(255 240 210 / 0.35);
-  border-radius: 2px;
-  background: rgb(20 14 8 / 0.55);
-  color: #f3e6cd;
-  font-family: inherit;
-  font-size: 0.95rem;
-  letter-spacing: 0.06em;
-  cursor: pointer;
-  backdrop-filter: blur(2px);
-  transition: background-color 0.2s ease, border-color 0.2s ease;
-}
-
-.seuil__entrer:hover,
-.seuil__entrer:focus-visible {
-  background: rgb(40 28 16 / 0.75);
-  border-color: rgb(255 240 210 / 0.6);
 }
 
 /* La lecture recouvre le lieu : on ne lit pas en marchant. */

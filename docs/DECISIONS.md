@@ -712,3 +712,62 @@ L'escalier en colimacon, lui, est bien dans le zaguan : les deux coexistent.
 Le puits est desormais au centre de chaque galerie, ceint de sa balustrade
 tres basse, et c'est par lui qu'on descend d'un etage.
 Decide le 2026-09-03.
+
+
+### D65 : Plus de page d'accueil, et l'on entre par la porte
+Le site s'ouvrait sur un ecran de titre, avec un bouton « entrer », puis un
+second ecran avec un bouton « franchir le seuil ». Deux ecrans et deux boutons
+avant de voir quoi que ce soit.
+
+La bibliotheque est desormais la des la premiere image, et le texte s'ecrit
+par-dessus elle en quatre phrases. On entre en cliquant la porte : le lieu ne
+doit pas ressembler a une application. Le minutage vit dans un module pur et
+teste (`ui/intro.ts`) parce que c'est la seule partie qui puisse se tromper, et
+un test interdit a l'introduction de depasser douze secondes.
+
+L'ecran d'accueil avait pourtant une raison technique : aucun navigateur
+n'autorise le son avant un geste du visiteur. On ecoute donc le premier geste,
+quel qu'il soit, ce qui revient au meme sans rien couter a l'oeil. Et un lien
+partage n'a plus aucun ecran a franchir : il ouvre sa page directement, ce qui
+est son sujet.
+Decide le 2026-09-03.
+
+
+### D66 : Un decor ne recoit jamais de clic
+Un bogue a rendu la regle evidente. Le halo de la lampe, un simple disque
+degrade, etait dessine APRES la porte du fond : il en couvrait
+quatre-vingt-treize pour cent et avalait le clic sans que rien ne le montre. Il
+fallait viser le liseré du bas. La meme cause rendait inertes les volumes les
+plus lointains, et une zone invisible « monter d'un etage », posee par-dessus le
+haut de la porte, faisait changer d'etage quand on croyait passer.
+
+Deux mesures, et la premiere seule ne suffit pas :
+1. tout le dessin est prive d'evenements dans la feuille de style, et seules
+   les tranches et les cibles les recoivent. L'extinction passe par `:where()`,
+   qui ne pese rien dans le calcul de specificite : sans lui elle l'emportait
+   sur le rallumage, ce qui s'est produit a la premiere tentative ;
+2. tout ce qui se clique vit dans une couche unique, dessinee en dernier. On ne
+   compte plus sur l'ordre du dessin pour qu'une salle reste cliquable.
+
+Chaque cible epouse exactement la forme dessinee et s'allume au survol : le
+visiteur voit ce qu'il vise. Mesure apres correction : la porte du dehors
+repond sur cinq points d'essai sur cinq, la porte du fond sur six sur six, y
+compris le sommet de l'arc et les bords.
+Decide le 2026-09-03.
+
+
+### D67 : Le puits traverse aussi le plafond
+Il n'y avait aucun moyen visible de monter d'un etage : la cible etait un
+rectangle transparent pose sur la porte. Or le texte donne la solution.
+« De n'importe quel hexagone on voit les etages inferieurs ET superieurs :
+interminablement. » Le puits perce donc les deux faces.
+
+L'ouverture du haut est enorme parce qu'elle est proche : le plafond est a
+hauteur d'homme. On y voit la lampe de la galerie du dessus, minuscule, et une
+autre au fond du puits, en dessous. Ce sont ces deux points de lumiere qui
+disent « interminablement », et ils font d'un trou une invitation.
+
+Detail de dessin qui a demande deux essais : la trouee est percee APRES le halo
+de notre propre lampe. Dessinee avant, la lumiere la remplissait et l'on y
+voyait une coupole.
+Decide le 2026-09-03.
