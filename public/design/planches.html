@@ -7,7 +7,9 @@
          font: 15px/1.6 ui-sans-serif, system-ui, sans-serif; }
   header { padding: 48px clamp(20px, 5vw, 72px) 8px; }
   h1 { font-size: clamp(1.8rem, 4vw, 2.6rem); margin: 0 0 8px; letter-spacing: -.02em; }
-  p.chapo { max-width: 62ch; color: #a99a82; margin: 0; }
+  p.chapo { max-width: 68ch; color: #a99a82; margin: 0 0 10px; }
+  blockquote { max-width: 68ch; margin: 18px 0 0; padding-left: 16px;
+               border-left: 2px solid #6b5a3e; color: #c9b795; font-style: italic; }
   .planches { display: grid; gap: 40px; padding: 32px clamp(20px, 5vw, 72px) 72px;
               grid-template-columns: repeat(auto-fit, minmax(440px, 1fr)); }
   figure { margin: 0; }
@@ -18,75 +20,182 @@
 </style>
 <header>
   <h1>Babel, planches de design</h1>
-  <p class="chapo">Quatre propositions dessinées, deux dedans, deux dehors. Rien n'est codé :
-  ce sont des intentions à valider avant de toucher au moteur.</p>
+  <p class="chapo">Deuxième passe, tenue au plus près du texte. Deux corrections structurelles
+  que le projet avait manquées, et qui changent le lieu.</p>
+  <blockquote>« … un nombre indéfini, et peut-être infini, de galeries hexagonales, avec de vastes
+  puits d'aération au milieu, entourés de balustrades très basses. De n'importe quel hexagone on
+  voit les étages inférieurs et supérieurs : interminablement. Vingt étagères, cinq longues
+  étagères par côté, couvrent tous les côtés sauf deux ; leur hauteur, qui est celle des étages,
+  dépasse à peine celle d'un bibliothécaire normal. »</blockquote>
 </header>
 <div class="planches">
 
 <figure>
-<svg viewBox="0 0 800 500" role="img" aria-label="La galerie hexagonale vue de son axe">
+<svg viewBox="0 0 800 520" role="img" aria-label="La galerie hexagonale, plafond bas et puits central">
   <defs>
-    <linearGradient id="mur" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#3b2f22"/><stop offset="1" stop-color="#15100b"/>
+    <linearGradient id="murA" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2a2118"/><stop offset="1" stop-color="#100c08"/>
     </linearGradient>
-    <radialGradient id="halo" cx="50%" cy="50%">
-      <stop offset="0" stop-color="#ffe6b0" stop-opacity=".95"/>
-      <stop offset=".35" stop-color="#ffcc78" stop-opacity=".45"/>
+    <radialGradient id="haloA" cx="50%" cy="50%">
+      <stop offset="0" stop-color="#ffeaba" stop-opacity=".95"/>
+      <stop offset=".4" stop-color="#ffcc78" stop-opacity=".38"/>
       <stop offset="1" stop-color="#ffb347" stop-opacity="0"/>
     </radialGradient>
-    <linearGradient id="solg" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#0d0a07"/><stop offset="1" stop-color="#221a12"/>
+    <linearGradient id="puitsA" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#3a2f22"/><stop offset=".5" stop-color="#0a0705"/>
+      <stop offset="1" stop-color="#3a2f22"/>
     </linearGradient>
+    <g id="tranche">
+      <rect width="4" height="30" fill="#c9ae7c"/><rect x="4.5" y="2" width="3" height="28" fill="#4a3a2a"/>
+      <rect x="8" width="5" height="30" fill="#8a6f47"/><rect x="13.5" y="1" width="3" height="29" fill="#241c15"/>
+      <rect x="17" y="1" width="4" height="29" fill="#e0cb9d"/><rect x="21.5" width="3" height="30" fill="#6b5334"/>
+      <rect x="25" y="2" width="4" height="28" fill="#332818"/><rect x="29.5" width="5" height="30" fill="#a98a5c"/>
+      <rect x="35" y="1" width="3" height="29" fill="#7d6242"/><rect x="38.5" width="4" height="30" fill="#d8c091"/>
+    </g>
   </defs>
-  <rect width="800" height="500" fill="#0b0806"/>
-  <!-- Les six pans : on voit que la salle est un hexagone, ce que la 3D ne montre jamais -->
-  <polygon points="0,60 190,120 190,380 0,440" fill="url(#mur)"/>
-  <polygon points="800,60 610,120 610,380 800,440" fill="url(#mur)"/>
-  <polygon points="190,120 330,155 330,345 190,380" fill="#2e2419"/>
-  <polygon points="610,120 470,155 470,345 610,380" fill="#2e2419"/>
-  <rect x="330" y="155" width="140" height="190" fill="#100c08"/>
-  <!-- Le couloir au fond, et la lueur de la galerie suivante -->
-  <rect x="360" y="200" width="80" height="145" fill="#070504"/>
-  <ellipse cx="400" cy="250" rx="46" ry="40" fill="url(#halo)" opacity=".5"/>
-  <!-- Les rayonnages : cinq etageres, dos de valeurs franchement differentes -->
+  <rect width="800" height="520" fill="#080605"/>
+
+  <!-- Le PLAFOND EST BAS : il dépasse à peine la tête. Les étagères montent jusqu'à lui. -->
+  <polygon points="0,0 800,0 800,64 0,64" fill="#0d0a07"/>
+  <polygon points="0,64 800,64 640,104 160,104" fill="#1a140e"/>
+
+  <!-- Quatre pans d'étagères, deux pans libres : l'hexagone se lit -->
+  <polygon points="0,64 160,104 160,392 0,470" fill="url(#murA)"/>
+  <polygon points="800,64 640,104 640,392 800,470" fill="url(#murA)"/>
+  <polygon points="160,104 318,132 318,364 160,392" fill="#241c14"/>
+  <polygon points="640,104 482,132 482,364 640,392" fill="#241c14"/>
+
+  <!-- Le pan libre du fond : le zaguán, étroit -->
+  <rect x="318" y="132" width="164" height="232" fill="#0f0b08"/>
+  <rect x="366" y="176" width="68" height="188" fill="#050403"/>
+  <ellipse cx="400" cy="230" rx="40" ry="34" fill="url(#haloA)" opacity=".38"/>
+
+  <!-- CINQ étagères par pan, du sol au plafond, trente-deux volumes chacune -->
   <g>
-    <g id="rangee">
-      <rect x="0" y="0" width="6" height="26" fill="#c9ae7c"/><rect x="7" y="2" width="5" height="24" fill="#4a3a2a"/>
-      <rect x="13" y="0" width="7" height="26" fill="#8a6f47"/><rect x="21" y="4" width="4" height="22" fill="#2a2119"/>
-      <rect x="26" y="1" width="6" height="25" fill="#e0cb9d"/><rect x="33" y="3" width="5" height="23" fill="#6b5334"/>
-      <rect x="39" y="0" width="4" height="26" fill="#3a2e21"/><rect x="44" y="2" width="7" height="24" fill="#a98a5c"/>
+    <g>
+      <use href="#tranche" x="12" y="120"/><use href="#tranche" x="56" y="120"/><use href="#tranche" x="100" y="120"/>
+      <use href="#tranche" x="12" y="172"/><use href="#tranche" x="56" y="172"/><use href="#tranche" x="100" y="172"/>
+      <use href="#tranche" x="12" y="224"/><use href="#tranche" x="56" y="224"/><use href="#tranche" x="100" y="224"/>
+      <use href="#tranche" x="12" y="276"/><use href="#tranche" x="56" y="276"/><use href="#tranche" x="100" y="276"/>
+      <use href="#tranche" x="12" y="328"/><use href="#tranche" x="56" y="328"/><use href="#tranche" x="100" y="328"/>
+      <use href="#tranche" x="180" y="140"/><use href="#tranche" x="224" y="140"/><use href="#tranche" x="268" y="140"/>
+      <use href="#tranche" x="180" y="186"/><use href="#tranche" x="224" y="186"/><use href="#tranche" x="268" y="186"/>
+      <use href="#tranche" x="180" y="232"/><use href="#tranche" x="224" y="232"/><use href="#tranche" x="268" y="232"/>
+      <use href="#tranche" x="180" y="278"/><use href="#tranche" x="224" y="278"/><use href="#tranche" x="268" y="278"/>
+      <use href="#tranche" x="180" y="324"/><use href="#tranche" x="224" y="324"/><use href="#tranche" x="268" y="324"/>
     </g>
-    <g fill="none">
-      <use href="#rangee" x="18" y="150"/><use href="#rangee" x="70" y="150"/><use href="#rangee" x="122" y="150"/>
-      <use href="#rangee" x="18" y="196"/><use href="#rangee" x="70" y="196"/><use href="#rangee" x="122" y="196"/>
-      <use href="#rangee" x="18" y="242"/><use href="#rangee" x="70" y="242"/><use href="#rangee" x="122" y="242"/>
-      <use href="#rangee" x="18" y="288"/><use href="#rangee" x="70" y="288"/><use href="#rangee" x="122" y="288"/>
-      <use href="#rangee" x="640" y="150"/><use href="#rangee" x="692" y="150"/><use href="#rangee" x="744" y="150"/>
-      <use href="#rangee" x="640" y="196"/><use href="#rangee" x="692" y="196"/><use href="#rangee" x="744" y="196"/>
-      <use href="#rangee" x="640" y="242"/><use href="#rangee" x="692" y="242"/><use href="#rangee" x="744" y="242"/>
-      <use href="#rangee" x="640" y="288"/><use href="#rangee" x="692" y="288"/><use href="#rangee" x="744" y="288"/>
+    <g transform="translate(800,0) scale(-1,1)">
+      <use href="#tranche" x="12" y="120"/><use href="#tranche" x="56" y="120"/><use href="#tranche" x="100" y="120"/>
+      <use href="#tranche" x="12" y="172"/><use href="#tranche" x="56" y="172"/><use href="#tranche" x="100" y="172"/>
+      <use href="#tranche" x="12" y="224"/><use href="#tranche" x="56" y="224"/><use href="#tranche" x="100" y="224"/>
+      <use href="#tranche" x="12" y="276"/><use href="#tranche" x="56" y="276"/><use href="#tranche" x="100" y="276"/>
+      <use href="#tranche" x="12" y="328"/><use href="#tranche" x="56" y="328"/><use href="#tranche" x="100" y="328"/>
+      <use href="#tranche" x="180" y="140"/><use href="#tranche" x="224" y="140"/><use href="#tranche" x="268" y="140"/>
+      <use href="#tranche" x="180" y="186"/><use href="#tranche" x="224" y="186"/><use href="#tranche" x="268" y="186"/>
+      <use href="#tranche" x="180" y="232"/><use href="#tranche" x="224" y="232"/><use href="#tranche" x="268" y="232"/>
+      <use href="#tranche" x="180" y="278"/><use href="#tranche" x="224" y="278"/><use href="#tranche" x="268" y="278"/>
+      <use href="#tranche" x="180" y="324"/><use href="#tranche" x="224" y="324"/><use href="#tranche" x="268" y="324"/>
     </g>
-    <g fill="#0f0b08">
-      <rect x="0" y="176" width="180" height="5"/><rect x="0" y="222" width="180" height="5"/>
-      <rect x="0" y="268" width="180" height="5"/><rect x="0" y="314" width="180" height="5"/>
-      <rect x="620" y="176" width="180" height="5"/><rect x="620" y="222" width="180" height="5"/>
-      <rect x="620" y="268" width="180" height="5"/><rect x="620" y="314" width="180" height="5"/>
+    <g fill="#0b0806">
+      <rect x="0" y="150" width="318" height="5"/><rect x="0" y="202" width="318" height="5"/>
+      <rect x="0" y="254" width="318" height="5"/><rect x="0" y="306" width="318" height="5"/>
+      <rect x="0" y="358" width="318" height="5"/>
+      <rect x="482" y="150" width="318" height="5"/><rect x="482" y="202" width="318" height="5"/>
+      <rect x="482" y="254" width="318" height="5"/><rect x="482" y="306" width="318" height="5"/>
+      <rect x="482" y="358" width="318" height="5"/>
     </g>
   </g>
-  <!-- La lampe, au point de fuite, avec son halo : c'est elle qui tient l'image -->
-  <ellipse cx="400" cy="118" rx="150" ry="120" fill="url(#halo)"/>
-  <circle cx="400" cy="112" r="21" fill="#fff3d4"/>
-  <circle cx="400" cy="112" r="21" fill="none" stroke="#17110d" stroke-width="2"/>
-  <line x1="400" y1="0" x2="400" y2="91" stroke="#2a2119" stroke-width="2"/>
-  <!-- Le sol, sombre, avec le seul reflet de la lampe -->
-  <rect y="380" width="800" height="120" fill="url(#solg)"/>
-  <ellipse cx="400" cy="440" rx="90" ry="26" fill="#ffcc78" opacity=".10"/>
-  <rect y="380" width="800" height="2" fill="#17110d"/>
+
+  <!-- La lampe sphérique, tout près de la tête puisque le plafond est bas -->
+  <ellipse cx="400" cy="96" rx="165" ry="105" fill="url(#haloA)"/>
+  <circle cx="400" cy="92" r="19" fill="#fff4d8"/>
+  <circle cx="400" cy="92" r="19" fill="none" stroke="#17110d" stroke-width="2"/>
+  <line x1="400" y1="60" x2="400" y2="74" stroke="#2a2119" stroke-width="2"/>
+
+  <!-- Le sol, et LE PUITS D'AÉRATION au milieu, ceint d'une balustrade très basse -->
+  <polygon points="0,470 800,470 800,520 0,520" fill="#171009"/>
+  <polygon points="160,392 640,392 800,470 0,470" fill="#1d150e"/>
+  <ellipse cx="400" cy="440" rx="118" ry="40" fill="url(#puitsA)"/>
+  <ellipse cx="400" cy="440" rx="118" ry="40" fill="none" stroke="#0a0705" stroke-width="3"/>
+  <g stroke="#3a2e21" stroke-width="3" fill="none">
+    <ellipse cx="400" cy="425" rx="128" ry="43"/>
+    <path d="M272 425v16M320 411v16M400 405v16M480 411v16M528 425v16"/>
+  </g>
+  <ellipse cx="400" cy="440" rx="60" ry="20" fill="#000" opacity=".65"/>
 </svg>
-<figcaption><span class="titre">A · La galerie</span><br>
-<span class="note">L'hexagone se lit enfin : six pans, deux libres. La lampe est au point de
-fuite et tient toute l'image. Dos de livres à valeurs franchement contrastées, sol presque noir
-avec le seul reflet de la lampe.</span></figcaption>
+<figcaption><span class="titre">A · La galerie, corrigée</span><br>
+<span class="note"><strong>Le plafond descend.</strong> Le texte dit que la hauteur des étagères
+« est celle des étages » et dépasse à peine un bibliothécaire : la salle fait environ deux mètres,
+pas trois. Les cinq étagères montent donc jusqu'au plafond et il n'y a plus de mur nu.
+<strong>Le puits d'aération apparaît</strong>, au milieu, ceint d'une balustrade très basse.
+La lampe est juste au-dessus de la tête.</span></figcaption>
+</figure>
+
+<figure>
+<svg viewBox="0 0 800 520" role="img" aria-label="Le puits d'aeration, etages superieurs et inferieurs sans fin">
+  <defs>
+    <linearGradient id="fuite" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#050403"/><stop offset=".5" stop-color="#1c1610"/>
+      <stop offset="1" stop-color="#050403"/>
+    </linearGradient>
+    <radialGradient id="lueur" cx="50%" cy="50%">
+      <stop offset="0" stop-color="#ffcc78" stop-opacity=".9"/>
+      <stop offset="1" stop-color="#ffb347" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="800" height="520" fill="url(#fuite)"/>
+
+  <!-- Le puits : des étages qui montent et descendent, en perspective verticale -->
+  <g>
+    <g id="etage">
+      <rect x="-190" y="0" width="380" height="6" fill="#2b2219"/>
+      <rect x="-190" y="6" width="380" height="34" fill="#120d09"/>
+      <g fill="#8a6f47">
+        <rect x="-182" y="12" width="3" height="22"/><rect x="-176" y="12" width="4" height="22"/>
+        <rect x="-169" y="12" width="3" height="22"/><rect x="-163" y="12" width="4" height="22"/>
+        <rect x="-156" y="12" width="3" height="22"/><rect x="-150" y="12" width="4" height="22"/>
+      </g>
+      <g fill="#c9ae7c" opacity=".8">
+        <rect x="-186" y="12" width="3" height="22"/><rect x="-172" y="12" width="2" height="22"/>
+        <rect x="-159" y="12" width="3" height="22"/><rect x="-145" y="12" width="2" height="22"/>
+      </g>
+      <g fill="#8a6f47">
+        <rect x="150" y="12" width="3" height="22"/><rect x="156" y="12" width="4" height="22"/>
+        <rect x="163" y="12" width="3" height="22"/><rect x="169" y="12" width="4" height="22"/>
+        <rect x="176" y="12" width="3" height="22"/><rect x="182" y="12" width="4" height="22"/>
+      </g>
+      <circle cx="0" cy="22" r="5" fill="#ffe6b0"/>
+      <ellipse cx="0" cy="22" rx="30" ry="18" fill="url(#lueur)" opacity=".5"/>
+      <g stroke="#3a2e21" stroke-width="2" fill="none">
+        <path d="M-190 44h380"/><path d="M-150 44v10M-80 44v10M0 44v10M80 44v10M150 44v10"/>
+      </g>
+    </g>
+    <use href="#etage" transform="translate(400,258) scale(1.00)" opacity="1"/>
+    <use href="#etage" transform="translate(400,190) scale(0.74)" opacity=".85"/>
+    <use href="#etage" transform="translate(400,142) scale(0.55)" opacity=".68"/>
+    <use href="#etage" transform="translate(400,108) scale(0.41)" opacity=".5"/>
+    <use href="#etage" transform="translate(400,84) scale(0.30)" opacity=".34"/>
+    <use href="#etage" transform="translate(400,66) scale(0.22)" opacity=".2"/>
+    <use href="#etage" transform="translate(400,338) scale(0.74)" opacity=".85"/>
+    <use href="#etage" transform="translate(400,392) scale(0.55)" opacity=".68"/>
+    <use href="#etage" transform="translate(400,430) scale(0.41)" opacity=".5"/>
+    <use href="#etage" transform="translate(400,458) scale(0.30)" opacity=".34"/>
+    <use href="#etage" transform="translate(400,478) scale(0.22)" opacity=".2"/>
+  </g>
+
+  <!-- La balustrade très basse, au premier plan : on est penché au-dessus du vide -->
+  <g stroke="#4a3a2a" stroke-width="5" fill="none">
+    <path d="M40 470 Q400 430 760 470"/>
+    <path d="M120 470v42M260 452v56M400 444v64M540 452v56M680 470v42"/>
+  </g>
+  <rect y="508" width="800" height="12" fill="#241c14"/>
+</svg>
+<figcaption><span class="titre">C · Le puits, remplaçant le Seuil</span><br>
+<span class="note"><strong>Chez Borges, la bibliothèque n'a pas d'extérieur : elle est
+l'univers.</strong> Le dôme dans le désert est une invention du projet. La seule vue monumentale
+que le texte autorise est celle-ci : « de n'importe quel hexagone on voit les étages inférieurs et
+supérieurs, interminablement ». On est penché sur la balustrade très basse, au-dessus du vide.
+</span></figcaption>
 </figure>
 
 <figure>
@@ -190,49 +299,9 @@ Le miroir de la nouvelle est là, sur le côté, froid dans une pièce chaude.</
   </g>
   <rect y="373" width="800" height="2" fill="#8d7f63"/>
 </svg>
-<figcaption><span class="titre">C · Le Seuil, au couchant</span><br>
+<figcaption><span class="titre">C bis · Le Seuil, tel que tu l'aimais</span><br>
 <span class="note">Colonnade, entablement et volée de marches : le détail qui manque au rendu
 actuel. Le bassin double le monument, les montagnes s'effacent par plans successifs.</span></figcaption>
-</figure>
-
-<figure>
-<svg viewBox="0 0 800 500" role="img" aria-label="Le portail, en contre-plongee">
-  <defs>
-    <linearGradient id="ciel2" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#0f2b3d"/><stop offset="1" stop-color="#5f7f86"/>
-    </linearGradient>
-    <linearGradient id="col" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0" stop-color="#8f7c5c"/><stop offset=".35" stop-color="#f2e2bf"/>
-      <stop offset="1" stop-color="#a38c66"/>
-    </linearGradient>
-    <radialGradient id="dedans" cx="50%" cy="30%">
-      <stop offset="0" stop-color="#ffcc7d" stop-opacity=".75"/>
-      <stop offset="1" stop-color="#2a1d10" stop-opacity="0"/>
-    </radialGradient>
-  </defs>
-  <rect width="800" height="500" fill="url(#ciel2)"/>
-  <!-- Contre-plongee : les colonnes fuient vers le haut, l'echelle ecrase -->
-  <polygon points="120,500 168,90 236,96 214,500" fill="url(#col)"/>
-  <polygon points="680,500 632,90 564,96 586,500" fill="url(#col)"/>
-  <polygon points="236,96 564,96 586,500 214,500" fill="#d9c49c"/>
-  <polygon points="168,90 632,90 620,52 180,52" fill="#f0e0bd"/>
-  <polygon points="180,52 620,52 606,26 194,26" fill="#c9b28a"/>
-  <!-- L'ouverture unique, et ce qu'on devine dedans -->
-  <path d="M330 500 L330 210 A70 70 0 0 1 470 210 L470 500 Z" fill="#140e08"/>
-  <path d="M330 500 L330 210 A70 70 0 0 1 470 210 L470 500 Z" fill="url(#dedans)"/>
-  <path d="M330 500 L330 210 A70 70 0 0 1 470 210 L470 500" fill="none" stroke="#7d6a4c" stroke-width="3"/>
-  <!-- Une silhouette : l'echelle ne se lit que par elle -->
-  <g fill="#241a10" opacity=".92">
-    <ellipse cx="400" cy="404" rx="9" ry="11"/>
-    <path d="M391 416 h18 l4 62 h-8 l-3 -34 -3 34 h-8 z"/>
-  </g>
-  <g fill="#0f0a06" opacity=".5">
-    <rect x="214" y="470" width="372" height="30"/>
-  </g>
-</svg>
-<figcaption><span class="titre">D · Le portail</span><br>
-<span class="note">Contre-plongée franche, une seule ouverture, une silhouette pour donner
-l'échelle. On ne voit pas la bibliothèque : on voit qu'elle est immense.</span></figcaption>
 </figure>
 
 </div>
