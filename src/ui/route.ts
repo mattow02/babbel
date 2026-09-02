@@ -12,7 +12,7 @@
  *    fragment, lui, marche partout sans la moindre configuration.
  *
  * 2. Un fragment n'est JAMAIS envoye au serveur. Il reste dans le navigateur.
- *    Autrement dit, l'hebergeur ne peut pas savoir quelle page vous lisez —
+ *    Autrement dit, l'hebergeur ne peut pas savoir quelle page vous lisez,
  *    non pas par politique de confidentialite, mais par construction du web.
  *    C'est le prolongement exact de l'exigence du projet : le serveur ne sert
  *    que des fichiers statiques, il ne sait rien.

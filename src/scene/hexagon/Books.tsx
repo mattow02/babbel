@@ -8,7 +8,7 @@ import { allBookPlacements } from './layout3d.ts'
 import type { Origin } from './parts.ts'
 
 /**
- * Les 640 volumes d'une galerie — ou les 1 920 de trois — en UN appel de rendu.
+ * Les 640 volumes d'une galerie, ou les 1 920 de trois : en UN appel de rendu.
  *
  * Chaque volume recoit sa couleur et sa hauteur par instance, derivees de son
  * indice. Les tranches ne sont donc jamais alignees ni monochromes, et la
@@ -66,7 +66,7 @@ export function Books({
    * Les couleurs de tranche dependent de la GALERIE, pas seulement de la place
    * du volume : sans cela, toutes les galeries se ressembleraient exactement et
    * l'on ne sentirait jamais qu'on avance. Elles sont recalculees au passage
-   * d'un couloir — 1 920 ecritures, une fois de temps en temps, c'est gratuit.
+   * d'un couloir : 1 920 ecritures, une fois de temps en temps, c'est gratuit.
    */
   useLayoutEffect(() => {
     const mesh = ref.current

@@ -41,7 +41,7 @@ const fragmentShader = `
      * Le terme de silhouette.
      *
      * On compare la NORMALE de la surface a la direction du regard, et non la
-     * direction du regard a elle-meme — l'erreur de la premiere version, qui
+     * direction du regard a elle-meme : l'erreur de la premiere version, qui
      * rendait le cone opaque de face et le faisait ressembler a du plastique.
      *
      * Vu de face, on ne traverse presque pas de matiere : c'est transparent.

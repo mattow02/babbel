@@ -18,7 +18,7 @@ import { useMemo } from 'react'
  * L'ordre d'importance y est donne, et il est respecte ici :
  *
  *   1. le VIGNETTAGE, present partout, qui isole le sujet ;
- *   2. le BLOOM sur les sources — le cube, les lampes, l'oculus ;
+ *   2. le BLOOM sur les sources : le cube, les lampes, l'oculus ;
  *   3. le GRAIN, fin et constant, qui donne la matiere filmique ;
  *   4. l'ABERRATION CHROMATIQUE, tres legere, visible sur les bords ;
  *   5. le tone mapping ACES, deja applique par le rendu lui-meme.
@@ -79,7 +79,7 @@ const REGLAGES: Record<Ambiance, Reglages> = {
 }
 
 /**
- * @param complet quand il est faux, on ne garde que le vignettage — le seul
+ * @param complet quand il est faux, on ne garde que le vignettage : le seul
  *   effet dont l'image ne peut pas se passer, et le moins cher. C'est le mode
  *   des appareils modestes (scene/quality.ts).
  */

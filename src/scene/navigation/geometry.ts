@@ -25,7 +25,7 @@
  *
  * Or il y a environ 10^4468 galeries. Aucun systeme de coordonnees ne peut les
  * couvrir : un float perd toute precision bien avant. On travaille donc en
- * ORIGINE FLOTTANTE — les positions sont toujours relatives a la galerie
+ * ORIGINE FLOTTANTE : les positions sont toujours relatives a la galerie
  * courante, et franchir un couloir remet le compteur a zero en incrementant le
  * numero d'hexagone. Voir `rebase`.
  */
@@ -91,7 +91,7 @@ export function insideHexagon(point: Point2, margin: number): boolean {
  * Le point est-il dans le zaguan, et hors de sa tremie ?
  *
  * Le vestibule est une salle carree, percee en son centre d'un puits. On y
- * marche donc sur un ANNEAU : dans le carre, et hors du puits — plus les deux
+ * marche donc sur un ANNEAU : dans le carre, et hors du puits, plus les deux
  * embrasures par lesquelles on y entre.
  *
  * @param u avancee depuis le centre du vestibule
@@ -109,7 +109,7 @@ export function insideVestibule(u: number, v: number, margin: number): boolean {
    *
    * Aux deux extremites du vestibule il n'y a pas de mur, mais l'ouverture du
    * passage. Sans ce cas, la garde au mur fermerait la porte de l'interieur et
-   * l'on resterait bloque a l'entree du zaguan — ce qui est exactement ce qui
+   * l'on resterait bloque a l'entree du zaguan : ce qui est exactement ce qui
    * arrivait avant d'ecrire ce test.
    */
   const dansLEmbrasure = Math.abs(v) <= CORRIDOR_WIDTH / 2 - margin
@@ -140,8 +140,8 @@ export function insideLibrary(point: Point2, margin: number): boolean {
    *
    * `du` est l'avancee depuis le centre de la galerie la plus proche, donc au
    * plus une demi-foulee. Le vestibule occupe la fin de cet intervalle, le
-   * passage le milieu. Sans ce decoupage, le test du passage — large ouvert au
-   * centre — laisserait marcher droit dans la tremie.
+   * passage le milieu. Sans ce decoupage, le test du passage : large ouvert au
+   * centre : laisserait marcher droit dans la tremie.
    */
   const du = u - nearest * GALLERY_PITCH
   const versVestibule = Math.abs(du) - GALLERY_PITCH / 2
@@ -187,7 +187,7 @@ export function rebase(point: Point2): Rebase {
  *
  * Resolution par glissement : si le pas complet ne passe pas, on tente
  * l'avancee seule, puis l'ecart lateral seul. On longe ainsi les murs au lieu
- * de s'y coller net — et c'est aussi ce qui permet de contourner la tremie
+ * de s'y coller net, et c'est aussi ce qui permet de contourner la tremie
  * sans avoir a viser.
  */
 export function slide(from: Point2, to: Point2, margin: number): Point2 {
@@ -198,7 +198,7 @@ export function slide(from: Point2, to: Point2, margin: number): Point2 {
 
   /*
    * Attention au piege : si l'on marche pile dans l'axe, l'ecart lateral vaut
-   * zero, et le candidat « lateral seul » EST la position actuelle — valide,
+   * zero, et le candidat « lateral seul » EST la position actuelle : valide,
    * evidemment. On repondrait alors « je ne bouge pas » sans avoir rien tente.
    * D'ou le seuil : une composante nulle n'est pas un candidat.
    */

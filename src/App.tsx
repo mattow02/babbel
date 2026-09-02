@@ -25,8 +25,8 @@ const ORIGIN: Address = { hexagon: 0n, wall: 0, shelf: 0, volume: 0, page: 1 }
  * La 3D n'est chargee que si l'on entre.
  *
  * three.js et sa chaine d'effets pesent l'essentiel du site. Or le cas le plus
- * probable de partage est une URL de LECTURE — c'est ce que produit la
- * recherche — et il serait absurde de faire telecharger toute la machinerie a
+ * probable de partage est une URL de LECTURE : c'est ce que produit la
+ * recherche, et il serait absurde de faire telecharger toute la machinerie a
  * quelqu'un qui vient lire une page de texte.
  */
 const Gallery = lazy(async () => {
@@ -186,7 +186,7 @@ export function App(): React.ReactElement {
 
       {/*
         La seule chose qui s'affiche par-dessus le monde : de quoi refermer le
-        livre. Tout le reste — position, performance, aide — a disparu : on ne
+        livre. Tout le reste, position, performance, aide, a disparu : on ne
         met pas de tableau de bord dans une bibliotheque.
       */}
       {opened ? (

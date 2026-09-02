@@ -2,7 +2,7 @@
  * Cette machine sait-elle faire de la 3D ?
  *
  * Sans WebGL, la toile leve une exception au montage et emporte toute la page
- * — alors que le lecteur, lui, n'a besoin de rien d'autre que du texte. On
+ * - alors que le lecteur, lui, n'a besoin de rien d'autre que du texte. On
  * verifie donc AVANT de monter quoi que ce soit, une seule fois, et l'on se
  * contente de la lecture quand la reponse est non.
  *

@@ -67,7 +67,7 @@ export function transcribe(input: string, limit = Number.POSITIVE_INFINITY): Tra
       continue
     }
 
-    // Tout le reste — chiffres, ponctuation, symboles — devient un blanc,
+    // Tout le reste : chiffres, ponctuation, symboles, devient un blanc,
     // sauf s'il en suit deja un : deux espaces de suite n'apportent rien.
     if (!text.endsWith(' ') && text.length > 0) text += ' '
     dropped = true

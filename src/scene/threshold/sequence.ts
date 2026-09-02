@@ -50,7 +50,7 @@ const EYE_LEVEL = 1.55
  *
  * Mesuree depuis le plan du portail, porche NON compris : celui-ci avance de
  * neuf metres. De trop pres, le porche remplit l'image et l'on ne voit plus
- * l'entree — seulement un mur.
+ * l'entree : seulement un mur.
  */
 export const ARRIVAL_STEP = 26
 

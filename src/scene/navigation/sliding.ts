@@ -1,8 +1,8 @@
 /**
  * Glisser le long de ce qu'on ne peut pas traverser.
  *
- * Le meme probleme se pose dans les deux lieux du site — la bibliotheque et le
- * grand hall — avec des murs completement differents. Seule change la reponse
+ * Le meme probleme se pose dans les deux lieux du site : la bibliotheque et le
+ * grand hall, avec des murs completement differents. Seule change la reponse
  * a la question « ai-je le droit d'etre ici ? » ; la maniere de longer un mur
  * plutot que de s'y coller, elle, est identique. On l'ecrit donc une fois.
  *
@@ -27,7 +27,7 @@ const NEGLIGEABLE = 1e-6
  * Le deplacement effectif de `from` vers `to`, sans traverser la matiere.
  *
  * On essaie d'abord le mouvement complet, puis chacune de ses deux composantes
- * seule — ce qui suffit a longer un mur droit — puis quelques directions
+ * seule : ce qui suffit a longer un mur droit, puis quelques directions
  * deviees, de plus en plus franches. Ces dernieres ne sont pas un luxe : face
  * a un obstacle ROND, ni l'avancee seule ni l'ecart seul ne passent, et l'on
  * resterait plante devant.

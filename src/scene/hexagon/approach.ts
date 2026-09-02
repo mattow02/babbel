@@ -3,7 +3,7 @@
  *
  * Quand le visiteur designe un livre, on ne bascule pas brutalement dans la
  * lecture : on s'approche d'abord. Ce module calcule le point d'arrivee et le
- * point vise du travelling — en mathematiques pures, donc testable sans GPU.
+ * point vise du travelling : en mathematiques pures, donc testable sans GPU.
  *
  * L'extraire du composant n'est pas cosmetique : c'est la seule facon de
  * verifier que l'on se place bien DEVANT le livre, du bon cote, et non dans le

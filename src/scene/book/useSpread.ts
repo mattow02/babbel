@@ -8,7 +8,7 @@ import { usePageText } from '../../ui/usePageText.ts'
  *
  * Un livre ouvert ne montre jamais une page, mais deux : celle de gauche et
  * celle de droite. On les demande donc toutes les deux, et le cache du worker
- * fait que la seconde est presque toujours deja la — le prechargement des
+ * fait que la seconde est presque toujours deja la : le prechargement des
  * voisines s'en charge depuis la phase 2.
  */
 export function useSpread(

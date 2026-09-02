@@ -172,7 +172,7 @@ describe('critere de sortie de la phase 2', () => {
      * Le budget d'UNE image est de 16,6 ms.
      *
      * Sur une machine au repos, les cent tournages reunis en coutent moins de
-     * trois — mais ce test partage son processeur avec tout ce qui tourne a
+     * trois, mais ce test partage son processeur avec tout ce qui tourne a
      * cote, et un seuil au millieme d'une image ne mesurerait plus que le bruit
      * de la machine. On garde donc une marge franche : ce qu'on veut prouver,
      * c'est qu'un tournage de page coute une fraction de milliseconde au thread

@@ -9,8 +9,8 @@ import { transcribe } from './transcribe.ts'
  *
  * Le mot « chercher » est trompeur, et c'est tout l'interet : rien n'est
  * parcouru. L'adresse est CALCULEE, en moins d'une milliseconde, par le sens
- * inverse de la bijection (decision D14). Quelle que soit la phrase — un vers,
- * votre nom, une chose que personne n'a jamais ecrite — elle est quelque part,
+ * inverse de la bijection (decision D14). Quelle que soit la phrase : un vers,
+ * votre nom, une chose que personne n'a jamais ecrite : elle est quelque part,
  * et l'on sait exactement ou.
  *
  * Le calcul passe par le worker, comme tout le reste.

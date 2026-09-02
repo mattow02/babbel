@@ -45,8 +45,8 @@ export interface PageLayout {
 /**
  * Calcule le gabarit pour une toile donnee.
  *
- * La police est dimensionnee par la contrainte la plus SERREE des deux —
- * quatre-vingts caracteres en largeur, quarante lignes en hauteur — puis le
+ * La police est dimensionnee par la contrainte la plus SERREE des deux,
+ * quatre-vingts caracteres en largeur, quarante lignes en hauteur, puis le
  * bloc est centre. Sans cela, une page un peu large deborderait par le bas.
  */
 export function pageLayout(width: number, height: number): PageLayout {

@@ -1,5 +1,5 @@
 /**
- * La nef : ou se posent les piliers, les marches, les tribunes — et ou l'on a
+ * La nef : ou se posent les piliers, les marches, les tribunes, et ou l'on a
  * le droit de marcher.
  *
  * Tout est mathematique pure, verifiable sans afficher une seule image. C'est

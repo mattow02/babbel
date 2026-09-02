@@ -8,7 +8,7 @@ import type { Origin } from './parts.ts'
  * Sol et plafond : deux hexagones par galerie.
  *
  * Le sol est POLI et reflechissant. Dans presque toutes les captures de
- * reference, c'est lui qui double la lumiere et creuse la profondeur — ce
+ * reference, c'est lui qui double la lumiere et creuse la profondeur : ce
  * n'est pas un detail (voir DIRECTION-ARTISTIQUE § 5).
  */
 export function Slabs({ origins }: { origins: readonly Origin[] }): React.ReactElement {

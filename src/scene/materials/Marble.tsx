@@ -28,14 +28,14 @@ interface ShaderHook {
  * COMMENT
  *
  * On ne remplace PAS le materiau standard : on lui greffe quelques lignes qui
- * modifient sa seule couleur de base. Tout le reste — eclairage, ombres,
- * brouillard, tone mapping — continue de fonctionner exactement comme avant.
+ * modifient sa seule couleur de base. Tout le reste : eclairage, ombres,
+ * brouillard, tone mapping : continue de fonctionner exactement comme avant.
  * C'est ce que permet `onBeforeCompile`, et c'est bien plus sur que d'ecrire
  * un materiau complet a la main.
  *
  * Le motif : un bruit fractal (quelques octaves de bruit de valeur), plie sur
- * lui-meme pour produire des VEINES nettes plutot qu'un nuage. Le pliage —
- * `abs(bruit - 0.5)` eleve a une puissance — est ce qui distingue le marbre de
+ * lui-meme pour produire des VEINES nettes plutot qu'un nuage. Le pliage,
+ * `abs(bruit - 0.5)` eleve a une puissance : est ce qui distingue le marbre de
  * la simple tache.
  */
 

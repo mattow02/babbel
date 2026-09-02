@@ -26,7 +26,7 @@ export function useFocusTrap(ref: RefObject<HTMLElement | null>, active = true):
        * clientes) : cela depend de la mise en page, donc du moteur de rendu, et
        * cela ne veut rien dire hors d'un navigateur. Le selecteur ecarte deja
        * ce qui est desactive, et une modale ne contient que ses propres
-       * commandes — c'est suffisant, et c'est verifiable.
+       * commandes : c'est suffisant, et c'est verifiable.
        */
       const elements = [...conteneur.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR)]
       if (elements.length === 0) return

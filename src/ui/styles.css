@@ -177,7 +177,7 @@ body::after {
   /*
    * Plancher a 9 px.
    *
-   * Sur un telephone, quatre-vingts colonnes tiennent a 7,5 px — mais ne se
+   * Sur un telephone, quatre-vingts colonnes tiennent a 7,5 px, mais ne se
    * lisent plus. Mieux vaut laisser le bloc deborder et defiler dans sa propre
    * boite (`overflow-x: auto`) que d'imposer une taille illisible : on lit ici
    * des caracteres au hasard, la lisibilite prime sur la vue d'ensemble.

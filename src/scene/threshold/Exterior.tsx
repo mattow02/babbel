@@ -30,7 +30,7 @@ import { SEUIL } from './palette.ts'
  *
  * C'est la premiere image du site, celle de la troisieme capture de
  * reference. Elle
- * n'a qu'une seule source de lumiere — le soleil rasant — ce qui la rend
+ * n'a qu'une seule source de lumiere : le soleil rasant, ce qui la rend
  * naturellement peu couteuse : pas besoin d'eclairage precalcule ici, la
  * question ne se posera que pour l'interieur du hall.
  */

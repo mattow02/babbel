@@ -26,7 +26,7 @@ export const PALETTE = {
  *
  * Tires de la cinquieme capture de reference : des bruns, des rouges eteints, des
  * verts sourds, jamais saturés. La couleur d'un volume est deterministe,
- * derivee de son indice — comme tout le reste de la bibliotheque.
+ * derivee de son indice : comme tout le reste de la bibliotheque.
  */
 export const SPINES: readonly string[] = [
   '#5c3a38',

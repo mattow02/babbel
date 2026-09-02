@@ -93,7 +93,7 @@ const fragmentShader = /* glsl */ `
     couleur = mix(couleur, soleil * 1.35, disque);
 
     /*
-     * Les nuages hauts. Ils sont etires horizontalement — le vent d'altitude —
+     * Les nuages hauts. Ils sont etires horizontalement : le vent d'altitude,
      * et ne s'accrochent qu'au-dessus de l'horizon, sinon ils flotteraient
      * devant les montagnes.
      */

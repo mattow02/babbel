@@ -30,7 +30,7 @@ export function Reader({ state }: { state: PageState }): React.ReactElement {
         Faire enoncer trois mille deux cents caracteres sans signification
         n'aide personne : le bloc est donc masque aux technologies
         d'assistance, et remplace par ce qu'un lecteur voyant percoit en un
-        coup d'oeil — le format, et le debut du texte.
+        coup d'oeil : le format, et le debut du texte.
       */}
       <p className="visuellement-cache" role="status">
         {lines

@@ -55,7 +55,7 @@ export function Book({
    * Trois toiles : la page de gauche, celle de droite, et celle qui tourne.
    *
    * Elles vivent dans une reference, pas dans un `useMemo` : on les MUTE a
-   * chaque tournage — on repeint la toile et l'on signale la texture — et une
+   * chaque tournage : on repeint la toile et l'on signale la texture, et une
    * reference est justement ce qui est fait pour porter un objet mutable a
    * travers les rendus.
    */
@@ -92,7 +92,7 @@ export function Book({
    * On accroche le livre a la camera, et on le detache en partant.
    *
    * Attention au piege, qui coute une soiree a qui l'ignore : three ne dessine
-   * que ce qui pend de la SCENE. Or la camera, elle, n'y est pas — trois.js ne
+   * que ce qui pend de la SCENE. Or la camera, elle, n'y est pas : trois.js ne
    * l'y met jamais, et un objet accroche a une camera hors scene n'est donc
    * jamais rendu, sans la moindre erreur pour le dire. On rattache donc la
    * camera a la scene le temps de la lecture. Elle n'a aucune apparence : cela
@@ -189,8 +189,8 @@ export function Book({
     /*
      * L'instant de depart est laisse a NaN : l'horloge de la scene n'est
      * lisible que depuis la boucle de rendu, et c'est elle qui le renseignera
-     * a l'image suivante. Melanger deux horloges — celle du navigateur et
-     * celle de la scene — donnerait un premier saut a chaque tournage.
+     * a l'image suivante. Melanger deux horloges, celle du navigateur et
+     * celle de la scene : donnerait un premier saut a chaque tournage.
      */
     tourne.current = { debut: Number.NaN, arriere: direction === -1, echange: false }
     onTurn(direction)
@@ -207,7 +207,7 @@ export function Book({
    * pour trois lignes, et sans dependre d'aucune plomberie.
    *
    * Cliquer a droite avance, cliquer a gauche revient : c'est ce que fait un
-   * livre. Les clics sur l'interface — la croix — ne sont pas concernes : ils
+   * livre. Les clics sur l'interface, la croix, ne sont pas concernes : ils
    * n'ont pas lieu sur la toile.
    */
   useEffect(() => {

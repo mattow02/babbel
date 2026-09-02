@@ -3,7 +3,7 @@
  *
  * Aucune dependance a three.js : ce module rend des nombres, pas des objets de
  * rendu. On peut donc verifier le placement des 640 livres sans GPU, sans
- * navigateur, et sans rien afficher — ce qui est exactement le genre de bug
+ * navigateur, et sans rien afficher : ce qui est exactement le genre de bug
  * qu'on ne voit pas a l'oeil (un livre a l'envers parmi 640, un mur decale
  * d'un demi-degre).
  *
@@ -96,7 +96,7 @@ export const VOLUME_PITCH = SHELF_USABLE_WIDTH / VOLUMES_PER_SHELF
 /**
  * Placement d'un volume.
  *
- * @param wall   index dans SHELF_SIDES, de 0 a 3 — c'est le « mur » de l'adresse
+ * @param wall   index dans SHELF_SIDES, de 0 a 3 : c'est le « mur » de l'adresse
  * @param shelf  etagere, de 0 a 4
  * @param volume volume, de 0 a 31
  * @param origin centre de la galerie dans le monde

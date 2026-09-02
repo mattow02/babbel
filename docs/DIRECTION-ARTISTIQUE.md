@@ -1,4 +1,4 @@
-# Direction artistique — Babbel
+# Direction artistique : Babbel
 
 > Établie le 2026-08-29 à partir de 10 captures de
 > « Viens, je vais te Montrer l'Infini » (youtube.com/watch?v=J3JsyxABi0g).
@@ -63,7 +63,7 @@ c'est immédiatement lisible, et c'est facile à composer.
 **Répétition sérielle.** Cyprès en anneau autour du dôme, colonnades qui fuient,
 caissons de coupole, dos de livres à perte de vue. La répétition *est* le sujet :
 elle dit l'infini sans avoir à le montrer. **C'est aussi exactement ce que
-l'instancing GPU sait faire pour rien** — la forme et la technique coïncident.
+l'instancing GPU sait faire pour rien** : la forme et la technique coïncident.
 
 **Échelle écrasante.** L'humain n'est jamais le sujet. Les colonnades sortent du
 cadre par le haut, les murs de livres n'ont pas de sommet visible.
@@ -94,12 +94,12 @@ Le **sol réfléchissant** revient dans presque tous les plans intérieurs
 ## 6. Post-processing (l'essentiel de l'ambiance)
 
 Par ordre d'importance :
-1. **Vignettage lourd** — présent partout, c'est ce qui isole le sujet ;
+1. **Vignettage lourd** : présent partout, c'est ce qui isole le sujet ;
 2. **Bloom** sur les sources (cube, torches, ouverture du dôme, autel) ;
 3. **Grain** fin et constant, donne la matière filmique ;
 4. **Profondeur de champ** légère, sur les plans rapprochés ;
 5. **Aberration chromatique** très légère (visible sur les bords de la capture 4) ;
-6. **Tone mapping filmique** (ACES) — indispensable pour ces contrastes.
+6. **Tone mapping filmique** (ACES) : indispensable pour ces contrastes.
 
 ## 7. La contrainte technique et le parti pris coïncident
 
@@ -127,12 +127,12 @@ Corollaires :
 
 ## 8. Motifs à reprendre explicitement
 
-- **Le dôme dans son bol**, ceinturé de deux anneaux de cyprès — l'image d'arrivée.
-- **Le cube d'or en lévitation** sous une coupole à caissons — le cœur du hall.
+- **Le dôme dans son bol**, ceinturé de deux anneaux de cyprès : l'image d'arrivée.
+- **Le cube d'or en lévitation** sous une coupole à caissons : le cœur du hall.
   À envisager comme l'objet de navigation du site.
 - **Le mur de livres sans sommet**, parcouru d'échelles obliques.
 - **Le couloir aux torches**, jalonné jusqu'à un point lumineux lointain.
-- **La coupole à caissons percée d'étoiles** — le plafond de la bibliothèque.
+- **La coupole à caissons percée d'étoiles** : le plafond de la bibliothèque.
 - **Atlas portant le globe**, éclairé à contre-jour dans une niche.
 
 ## 9. Ce qu'il faut éviter

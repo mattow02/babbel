@@ -3,7 +3,7 @@
  *
  * Le Seuil est une scene AUTHOREE (decision D11) : contrairement a la
  * bibliotheque, elle est unique, finie, et jamais dupliquee. Elle a donc le
- * droit d'etre grande et couteuse — c'est la premiere impression du site.
+ * droit d'etre grande et couteuse : c'est la premiere impression du site.
  *
  * L'echelle vient des images de reference : le dome ecrase le visiteur, les
  * cypres qui le ceinturent font a peine quelques pixels a cote.
@@ -47,7 +47,7 @@ export const CYPRESS_RADIUS = 0.95
 /** L'escalier unique qui monte a l'entree. */
 /*
  * La volee tombe JUSTE sur la terrasse haute : 36 x 0,5 m = 18 m, soit
- * exactement la base du dome. Ce n'est pas de la coquetterie — c'est desormais
+ * exactement la base du dome. Ce n'est pas de la coquetterie : c'est desormais
  * le visiteur lui-meme qui monte ces marches, et un demi-metre d'ecart entre
  * le sommet de l'escalier et le parvis se verrait immediatement.
  */

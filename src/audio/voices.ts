@@ -2,8 +2,8 @@
  * La composition du son d'ambiance, en chiffres.
  *
  * Aucun fichier audio n'est charge : l'ambiance est SYNTHETISEE, comme le
- * reste du site. C'est cohérent avec le projet — rien n'est stocke, tout est
- * calcule — et cela evite d'imposer plusieurs mega-octets a un visiteur qui
+ * reste du site. C'est cohérent avec le projet : rien n'est stocke, tout est
+ * calcule, et cela evite d'imposer plusieurs mega-octets a un visiteur qui
  * n'a peut-etre pas envie de son.
  *
  * Ce module ne decrit que la recette. Il ne touche pas au navigateur, et se

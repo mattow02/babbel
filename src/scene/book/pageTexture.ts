@@ -59,7 +59,7 @@ export function paintPage(
    * On dessine caractere par caractere, a une position calculee.
    *
    * Ecrire la ligne entiere laisserait le navigateur choisir son crenage, et
-   * les colonnes ne seraient plus alignees d'une ligne a l'autre — ce qui
+   * les colonnes ne seraient plus alignees d'une ligne a l'autre : ce qui
    * detruirait la grille de quatre-vingts colonnes, qui est le format meme du
    * livre chez Borges.
    */

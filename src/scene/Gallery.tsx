@@ -92,7 +92,7 @@ function Scene({
    *     ce qu'on regarde, pas ce que survole un curseur ;
    *   - la touche « E » et le clic bref deviennent le meme geste ;
    *   - cela ne depend plus d'aucune plomberie d'evenements, et devient donc
-   *     verifiable depuis l'exterieur — ce qui manquait depuis la phase 5.
+   *     verifiable depuis l'exterieur : ce qui manquait depuis la phase 5.
    */
   const player = usePlayer()
 

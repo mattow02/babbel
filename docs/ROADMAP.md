@@ -1,4 +1,4 @@
-# Roadmap — Babbel
+# Roadmap : Babbel
 
 État : **Roadmap terminée, chantiers repris, audit fait ET corrigé.** Voir [`docs/AUDIT.md`](AUDIT.md).
 Mise à jour : 2026-08-29
@@ -8,7 +8,7 @@ On ne passe pas à la suivante « à peu près ».
 
 ---
 
-## Phase 0 — Cadrage ✅ (recherche) / ⏳ (décisions)
+## Phase 0 : Cadrage ✅ (recherche) / ⏳ (décisions)
 - [x] Spécifications canoniques de Borges établies et sourcées
 - [x] Compréhension de l'algorithme de libraryofbabel.info
 - [x] Limites physiques et techniques identifiées
@@ -19,14 +19,14 @@ On ne passe pas à la suivante « à peu près ».
 - [x] Direction artistique établie d'après la vidéo de référence (D16, DIRECTION-ARTISTIQUE.md)
 - [x] **Phase 0 close. Plus aucune question ouverte.**
 
-## Phase 1 — Le cœur mathématique ✅ (2026-08-29)
+## Phase 1 : Le cœur mathématique ✅ (2026-08-29)
 Pur TypeScript, aucun rendu. C'est la fondation.
-- [x] `core/layout.ts` — constantes Borges
-- [x] `core/alphabet.ts` — 25 symboles, encode/decode
-- [x] `core/address.ts` — Address <-> emplacement <-> URL
-- [x] `core/bijection.ts` — permutation inversible par **cycle walking**
-- [x] `core/page.ts` — address -> 3 200 caractères, et `locate` en sens inverse
-- [x] `core/index.ts` — API publique
+- [x] `core/layout.ts` : constantes Borges
+- [x] `core/alphabet.ts` : 25 symboles, encode/decode
+- [x] `core/address.ts` : Address <-> emplacement <-> URL
+- [x] `core/bijection.ts` : permutation inversible par **cycle walking**
+- [x] `core/page.ts` : address -> 3 200 caractères, et `locate` en sens inverse
+- [x] `core/index.ts` : API publique
 - [x] 48 tests Vitest, verts
 - [x] Socle Vite + TypeScript strict, `npm run check` vert
 
@@ -46,14 +46,14 @@ la même page ; `locate(texte)` retrouve son adresse, vérifié bout en bout.
 
 **Écart au plan :** la Phase 1 devait utiliser un LCG inversible façon
 libraryofbabel.info. Le cycle walking (Black & Rogaway) s'est révélé plus propre
-— voir la décision D17.
+- voir la décision D17.
 
-## Phase 2 — Génération asynchrone ✅ (2026-08-29)
-- [x] `workers/page.worker.ts` — sans état, une seule responsabilité
-- [x] `workers/engine.ts` — worker réel, moteur direct de repli, moteur injectable
-- [x] `workers/cache.ts` — LRU en 60 lignes, sur la seule propriété d'ordre de `Map`
-- [x] `workers/client.ts` — `PageLibrary` : `peek` / `read` / `prefetch`, déduplication
-- [x] `workers/neighbourhood.ts` — quelles pages précharger, et dans quel ordre
+## Phase 2 : Génération asynchrone ✅ (2026-08-29)
+- [x] `workers/page.worker.ts`, sans état, une seule responsabilité
+- [x] `workers/engine.ts` : worker réel, moteur direct de repli, moteur injectable
+- [x] `workers/cache.ts` : LRU en 60 lignes, sur la seule propriété d'ordre de `Map`
+- [x] `workers/client.ts`, `PageLibrary` : `peek` / `read` / `prefetch`, déduplication
+- [x] `workers/neighbourhood.ts`, quelles pages précharger, et dans quel ordre
 - [x] 26 tests supplémentaires (74 au total)
 
 **Sortie atteinte, et vérifiée dans un vrai navigateur** (Chromium, build de
@@ -83,11 +83,11 @@ réveiller pendant l'écran d'entrée, pas au moment où le visiteur ouvre un li
   près de 1 % d'une image, à chaque consultation. `Map` compare les BigInt par
   valeur, donc la clé brute est 300 fois plus rapide.
 
-## Phase 3 — Lecture, sans 3D ✅ (2026-08-29)
+## Phase 3 : Lecture, sans 3D ✅ (2026-08-29)
 - [x] Affichage 410 pages / 40 lignes / 80 colonnes, taille de police **calculée**
       pour tenir en largeur et en hauteur (D22)
 - [x] Navigation clavier : ←/→ une page, Maj ou Pg↑/Pg↓ dix pages, ↑/↓ volume
-      voisin, Début/Fin bords du volume — bornée, testée
+      voisin, Début/Fin bords du volume : bornée, testée
 - [x] Barre d'adresse (galerie tronquée, mur, étagère, volume, page) + copie
 - [x] URL dans le **fragment** (D20), synchronisée dans les deux sens
 - [x] Direction artistique appliquée : noir chaud, calcaire, or, vignettage
@@ -109,9 +109,9 @@ Capture : `docs/captures/phase3-lecteur.png`.
   démarrage relevées en phase 2 sont payées pendant que le visiteur regarde
   l'écran d'entrée.
 
-## Phase 4 — La galerie 3D ✅ (2026-08-29)
+## Phase 4 : La galerie 3D ✅ (2026-08-29)
 - [x] Géométrie de l'hexagone : 6 murs, dont 4 portent 5 étagères de 32 volumes
-      et 2 sont percés d'un couloir — **placement en mathématiques pures**,
+      et 2 sont percés d'un couloir : **placement en mathématiques pures**,
       testable sans GPU (`scene/hexagon/layout3d.ts`, `parts.ts`)
 - [x] 640 volumes (1 920 sur trois galeries) en **un seul appel de rendu**,
       couleur et hauteur de tranche par instance, dérivées de l'indice
@@ -127,11 +127,11 @@ Capture : `docs/captures/phase3-lecteur.png`.
 |---|---|---|
 | Appels de rendu | **27** | < 100 |
 | Coût d'une image | **0,37 ms** | 16,6 ms |
-| Triangles | 173 500 | — |
-| Volumes affichés | 1 920 | — |
+| Triangles | 173 500 | : |
+| Volumes affichés | 1 920 | : |
 
 **Écart au plan assumé :** le « puits central + balustrade + escalier » de la
-roadmap initiale n'est pas fidèle au texte — chez Borges l'escalier en colimaçon
+roadmap initiale n'est pas fidèle au texte : chez Borges l'escalier en colimaçon
 est dans le *couloir*, pas au centre de la salle. Reporté en phase 5 avec la
 navigation verticale, plutôt que d'inventer une géométrie que la nouvelle ne
 décrit pas.
@@ -143,7 +143,7 @@ lightmaps du Seuil (D16) entreront en jeu.
 
 Capture : `docs/captures/phase4-galerie.png`.
 
-## Phase 5 — Navigation et streaming ✅ (2026-08-30)
+## Phase 5 : Navigation et streaming ✅ (2026-08-30)
 - [x] Déplacement à la première personne : souris aux bords pour le regard,
       clic maintenu pour avancer, ZQSD en secours (D28)
 - [x] Collisions et couloirs, en **maths pures** (`navigation/geometry.ts`)
@@ -168,7 +168,7 @@ Capture : `docs/captures/phase4-galerie.png`.
 sont géométriquement identiques et le visiteur est toujours ramené au centre de
 la sienne, donc l'ensemble des galeries visibles ne change jamais. Les maillages
 instanciés sont construits une fois au montage et ne bougent plus. Il n'y a donc
-aucune allocation en cours de marche — pas de fuite possible, non parce qu'on la
+aucune allocation en cours de marche, pas de fuite possible, non parce qu'on la
 prévient mais parce qu'il n'y a rien à allouer. Seules les couleurs des tranches
 suivent le numéro de galerie, pour qu'on sente qu'on avance.
 
@@ -181,7 +181,7 @@ attend une stabilité d'image impossible avec `requestAnimationFrame` bridé.
 
 Captures : `docs/captures/phase5-marche.png`.
 
-## Phase 5bis — Le Seuil ✅ (2026-08-30)
+## Phase 5bis : Le Seuil ✅ (2026-08-30)
 Scène authorée, hors contrainte procédurale. Voir ARCHITECTURE § 9.
 - [x] Extérieur : dôme dans son bassin, deux terrasses plantées de cyprès,
       montagnes en silhouette, ciel en dégradé teal → brume dorée (shader)
@@ -205,29 +205,29 @@ Captures : `docs/captures/phase5bis-seuil.png` et `phase5bis-hall.png`.
 - les caissons de la coupole saillaient comme des plots faute d'inclinaison :
   une boîte instanciée ne pouvait pivoter qu'autour de la verticale (D33).
 
-**Reste pour la phase 6 :** l'éclairage du hall est encore brun et plat — pas
+**Reste pour la phase 6 :** l'éclairage du hall est encore brun et plat, pas
 de faisceau visible sous l'oculus, pas de bloom sur le cube, marbre trop chaud.
 Les montagnes gardent une silhouette trop conique. C'est exactement le contenu
 de la phase suivante.
 
 **Note d'exploitation :** l'éclairage précalculé du Seuil (D16) n'est pas fait.
-L'extérieur n'en a pas besoin — il n'a qu'une source, le soleil. C'est
+L'extérieur n'en a pas besoin : il n'a qu'une source, le soleil. C'est
 l'intérieur du hall qui le réclame, et cela suppose une chaîne de cuisson hors
 ligne : c'est une optimisation de phase 6/7, pas un prérequis.
 
-## Phase 6 — Esthétique ✅ (2026-08-30)
+## Phase 6 : Esthétique ✅ (2026-08-30)
 - [x] Direction artistique arrêtée (voir DIRECTION-ARTISTIQUE.md)
 - [x] **Post-traitement** réglé par ambiance (extérieur / hall / bibliothèque) :
       vignettage, bloom, grain, aberration chromatique, saturation, contraste
 - [x] **Faisceaux de lumière et halos** en volume, par shader additif
-- [x] **Poussière en suspension**, animée entièrement dans le shader — aucune
+- [x] **Poussière en suspension**, animée entièrement dans le shader : aucune
       écriture de tampon par image, coût processeur nul
 - [x] **Son d'ambiance procédural** : bourdon de quatre voix non harmoniques +
       bruit brun filtré, synthétisé dans le navigateur. **Aucun fichier audio.**
 - [x] **Écran d'entrée** : titre, le décompte réel des pages, et le geste qui
       autorise le son et réveille le worker
-- [ ] Lightmaps bakées du hall — reporté, voir ci-dessous
-- [ ] Marbre veiné et sol réfléchissant — reportés en phase 7
+- [ ] Lightmaps bakées du hall : reporté, voir ci-dessous
+- [ ] Marbre veiné et sol réfléchissant : reportés en phase 7
 
 **Sortie atteinte.** Captures : `phase6-seuil.png`, `phase6-bibliotheque.png`.
 
@@ -240,7 +240,7 @@ ligne : c'est une optimisation de phase 6/7, pas un prérequis.
 
 **Deux défauts de conception attrapés par les tests :**
 - le bourdon était **un accord** : 77,3/38,5 tombait sur une octave exacte. Un
-  test vérifie qu'aucune voix n'est un harmonique d'une autre — on veut une
+  test vérifie qu'aucune voix n'est un harmonique d'une autre : on veut une
   rumeur de pierre, pas de la musique. Fréquences reprises ;
 - le relevé de performance affichait « 1 appel » : avec un composeur, `gl.info`
   est remis à zéro **à chaque passe**. Corrigé en désactivant la remise à zéro
@@ -250,8 +250,8 @@ ligne : c'est une optimisation de phase 6/7, pas un prérequis.
 de cuisson hors ligne et n'est pas fait ; le marbre veiné et le sol réfléchissant
 non plus. Les montagnes gardent une silhouette un peu conique.
 
-## Phase 7 — Finition ✅ (2026-08-30)
-- [x] **Recherche par texte** — la contrepartie de la bijection, promise en
+## Phase 7 : Finition ✅ (2026-08-30)
+- [x] **Recherche par texte** : la contrepartie de la bijection, promise en
       phase 1 (D14). Le calcul passe par le worker (D39)
 - [x] **Transcription dans l'alphabet de Borges** (D40) : « Kafka » → « cafca »,
       « bibliothèque » → « bibliotheque », accents retirés, j/k/w/x transcrits
@@ -262,8 +262,8 @@ non plus. Les montagnes gardent une silhouette un peu conique.
 
 **Vérifié dans Chromium, de bout en bout :** on tape « Kafka a écrit dans la
 bibliothèque », le site l'écrit « cafca a ecrit dans la bibliotheque » en
-expliquant pourquoi, puis **calcule** son adresse — galerie `70ze8o0zbtso…`,
-mur 3, étagère 1, volume 29, page 241 — et ouvre la page. La phrase est sur la
+expliquant pourquoi, puis **calcule** son adresse : galerie `70ze8o0zbtso…`,
+mur 3, étagère 1, volume 29, page 241, et ouvre la page. La phrase est sur la
 première ligne, le reste est blanc, le format reste 40 × 80, l'URL de 2 902
 caractères est partageable.
 
@@ -273,7 +273,7 @@ vit dans le fragment (D20). `npm run build` puis servir `dist/`, n'importe où.
 
 ---
 
-## Phase 8 — Après la roadmap ✅ (2026-08-30)
+## Phase 8 : Après la roadmap ✅ (2026-08-30)
 
 Deux chantiers de la liste « ce qui n'est pas fait » ont été repris.
 
@@ -289,12 +289,12 @@ au lieu de dépendre du système d'événements de R3F. Trois gains :
 
 **Le trou de vérification ouvert depuis la phase 5 est comblé.** Mesuré dans
 Chromium : le visiteur marche jusqu'à une étagère, vise, appuie sur <kbd>E</kbd>,
-la caméra fait son travelling et la page s'ouvre — `#/0/3/3/30/1`, mur 4,
+la caméra fait son travelling et la page s'ouvre : `#/0/3/3/30/1`, mur 4,
 étagère 4, volume 31, 40 lignes × 80 colonnes.
 
 ### La bibliothèque a des étages (D43)
 Elle n'est plus une ligne de galeries : c'est un volume. Sans ajouter la
-moindre coordonnée — **le même entier est lu dans deux dimensions** :
+moindre coordonnée : **le même entier est lu dans deux dimensions** :
 
 ```
 galerie = étage × 25^800 + colonne
@@ -305,26 +305,26 @@ Monter d'un étage ajoute une foulée, avancer dans un couloir ajoute un. Un
 cents signes, soit environ 10^1118. L'escalier en colimaçon, décoratif depuis
 la phase 5, sert enfin.
 
-Mesuré dans Chromium : étages **0 → 1 → 2 → 0**, la colonne ne bouge pas — on
+Mesuré dans Chromium : étages **0 → 1 → 2 → 0**, la colonne ne bouge pas, on
 monte bien à la verticale.
 
 **216 tests.** Zéro avertissement de lint.
 
 ---
 
-## Phase 9 — Les chantiers restants, et l'audit ✅ (2026-08-31)
+## Phase 9 : Les chantiers restants, et l'audit ✅ (2026-08-31)
 
 Toute la liste « ce qui n'est pas fait » a été reprise.
 
 ### Le zaguán : la bibliothèque a enfin le vertige (D44)
-L'escalier ne pouvait pas tenir dans un couloir sans le boucher — les cotes le
+L'escalier ne pouvait pas tenir dans un couloir sans le boucher : les cotes le
 disaient. La bonne réponse était celle de Borges lui-même : le **zaguán**, un
 vestibule carré entre deux galeries, percé en son centre d'une **trémie**. On
 marche sur un anneau autour du puits, et l'on voit l'escalier s'abîmer et
 s'élever au-delà de ce que la lampe éclaire.
 
 ### Matériaux (D45)
-Marbre veiné **calculé** — aucune texture — greffé sur le matériau standard pour
+Marbre veiné **calculé** : aucune texture, greffé sur le matériau standard pour
 conserver éclairage, ombres et brouillard. Sol du hall réellement réfléchissant.
 Éclairage d'environnement rendu **une fois** au démarrage : l'équivalent le plus
 proche de lightmaps disponible dans un navigateur.
@@ -336,14 +336,14 @@ silhouette brisée, lisibilité mobile, secours sans WebGL, worker résilient.
 **227 tests**, zéro avertissement.
 
 ### Audit
-Voir **[`docs/AUDIT.md`](AUDIT.md)**. Sept défauts corrigés pendant l'audit —
+Voir **[`docs/AUDIT.md`](AUDIT.md)**. Sept défauts corrigés pendant l'audit,
 dont une **régression de performance qui faisait passer la bibliothèque
 au-dessus du budget d'image**, invisible au compte des appels de rendu. Quatre
 constats P1 et cinq P2 restent ouverts, avec un ordre de traitement recommandé.
 
 ---
 
-## Phase 10 — Correction de l'audit ✅ (2026-08-31)
+## Phase 10 : Correction de l'audit ✅ (2026-08-31)
 
 **Tous les constats P1 et P2 de l'audit sont corrigés**, chacun vérifié.
 
@@ -353,7 +353,7 @@ constats P1 et cinq P2 restent ouverts, avec un ordre de traitement recommandé.
 - **Accessibilité** : la modale tient le focus qu'elle annonce ; le lecteur ne
   fait plus énoncer 3 200 caractères au hasard mais un résumé.
 - **`useSyncExternalStore`** pour lire le cache, et comparaison des adresses
-  **par valeur** — un défaut trouvé en écrivant le test.
+  **par valeur** : un défaut trouvé en écrivant le test.
 - **Sonde de mesure** derrière `?sonde`, **licence** MIT, conversions `as
   unknown as` ramenées de 8 à 2.
 - **React est testé** : jsdom et Testing Library, 29 tests de composants.
@@ -362,7 +362,7 @@ constats P1 et cinq P2 restent ouverts, avec un ordre de traitement recommandé.
 
 ---
 
-## Phase 11 — Le lieu, sur retours (2026-08-31)
+## Phase 11 : Le lieu, sur retours (2026-08-31)
 
 Cinq reproches, cinq chantiers. Le fil commun : **le site se regardait au lieu
 de se visiter.**

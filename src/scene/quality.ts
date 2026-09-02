@@ -7,8 +7,8 @@
  * classement sans appareil et sans navigateur.
  *
  * Le principe : on ne mesure pas la puissance (aucune API ne la donne
- * honnetement), on lit des indices — pointeur grossier, memoire annoncee,
- * nombre de coeurs, largeur d'ecran — et on choisit prudemment. Mieux vaut un
+ * honnetement), on lit des indices : pointeur grossier, memoire annoncee,
+ * nombre de coeurs, largeur d'ecran, et on choisit prudemment. Mieux vaut un
  * telephone qui affiche moins mais reste fluide qu'un telephone qui rame.
  */
 

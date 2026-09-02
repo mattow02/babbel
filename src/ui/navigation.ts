@@ -3,7 +3,7 @@
  *
  * Tout est borne : on ne sort jamais d'un livre par les pages, ni d'une
  * etagere par les volumes. Franchir ces limites releve de la navigation dans
- * la galerie, qui viendra avec la 3D — pas du fait de tourner une page.
+ * la galerie, qui viendra avec la 3D, pas du fait de tourner une page.
  */
 
 import { PAGES_PER_BOOK, VOLUMES_PER_SHELF, type Address } from '../core/index.ts'

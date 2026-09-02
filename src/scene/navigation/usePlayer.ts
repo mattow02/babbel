@@ -131,7 +131,7 @@ export function usePlayer(world: World = LIBRARY_WORLD): PlayerHandle {
    * Cap initial : face au couloir.
    *
    * La direction du regard est (-sin(lacet), -cos(lacet)) dans le plan (x, z).
-   * Pour regarder le long de l'axe des galeries, il faut donc ce lacet-la —
+   * Pour regarder le long de l'axe des galeries, il faut donc ce lacet-la,
    * et surtout pas une valeur choisie a vue, sous peine de demarrer nez au mur
    * et de ne pas pouvoir avancer d'un pas.
    */
@@ -140,8 +140,8 @@ export function usePlayer(world: World = LIBRARY_WORLD): PlayerHandle {
   /*
    * `null` tant que le visiteur n'a pas bouge la souris.
    *
-   * Sans cela, le curseur vaudrait (0, 0) — le coin haut-gauche, c'est-a-dire
-   * un braquage maximal — et la vue se mettrait a tourner toute seule avant
+   * Sans cela, le curseur vaudrait (0, 0) : le coin haut-gauche, c'est-a-dire
+   * un braquage maximal, et la vue se mettrait a tourner toute seule avant
    * meme qu'on ait touche a quoi que ce soit.
    */
   const cursor = useRef<{ x: number; y: number } | null>(null)
@@ -177,7 +177,7 @@ export function usePlayer(world: World = LIBRARY_WORLD): PlayerHandle {
     const onKeyDown = (event: KeyboardEvent): void => {
       const touche = event.key.toLowerCase()
       // « E » designe ce qui se trouve sous le reticule. Le meme geste que le
-      // clic bref, pour ceux qui preferent le clavier — et le seul chemin qui
+      // clic bref, pour ceux qui preferent le clavier, et le seul chemin qui
       // ne depende d'aucun systeme d'evenements de rendu.
       if (touche === 'e') {
         if (!fige.current) interact.current()
@@ -215,7 +215,7 @@ export function usePlayer(world: World = LIBRARY_WORLD): PlayerHandle {
 
   /*
    * En mode sonde uniquement : de quoi se rendre a un endroit precis du lieu.
-   * Voir scene/PerfProbe.tsx pour la raison — un navigateur pilote ne rend
+   * Voir scene/PerfProbe.tsx pour la raison : un navigateur pilote ne rend
    * qu'une image par seconde, on ne peut pas « marcher jusque la-bas ».
    */
   useEffect(() => {

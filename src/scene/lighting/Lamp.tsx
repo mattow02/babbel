@@ -30,7 +30,7 @@ export function Lamps({
             La lampe du zaguan.
             Sans elle le vestibule est un trou noir : on ne voit ni la tremie,
             ni l'escalier, ni la galerie suivante. Elle est plus faible que
-            celle des salles — on ne s'attarde pas dans un couloir.
+            celle des salles : on ne s'attarde pas dans un couloir.
           */}
           <mesh>
             <sphereGeometry args={[LAMP_RADIUS * 0.7, 16, 12]} />

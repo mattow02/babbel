@@ -2,8 +2,8 @@
  * Les courbes du livre : quand il vole, quand il s'ouvre, quand il se tourne.
  *
  * Fonctions pures, sans three.js. Ce sont elles qui donnent au geste son poids
- * — un livre qui arrive a vitesse constante puis s'arrete net n'a l'air de
- * rien — et ce sont elles qu'on peut verifier.
+ * - un livre qui arrive a vitesse constante puis s'arrete net n'a l'air de
+ * rien, et ce sont elles qu'on peut verifier.
  */
 
 /**

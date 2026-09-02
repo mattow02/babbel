@@ -12,7 +12,7 @@ export interface PageState {
  *
  * L'etat n'est PAS recopie depuis le cache : il en est LU, par abonnement.
  * Une page deja generee s'affiche donc dans le rendu meme ou elle est
- * demandee — sans clignotement, et sans le rendu en cascade qu'imposerait un
+ * demandee, sans clignotement, et sans le rendu en cascade qu'imposerait un
  * `setState` dans un effet.
  *
  * On passe par `useSyncExternalStore` plutot que par un simple appel pendant
@@ -21,7 +21,7 @@ export interface PageState {
  * exactement ce a quoi sert cette API.
  *
  * L'effet, lui, ne fait que ce pour quoi les effets existent : parler a un
- * systeme exterieur — demander la generation, precharger les voisines.
+ * systeme exterieur : demander la generation, precharger les voisines.
  */
 export function usePageText(library: PageLibrary, address: Address): PageState {
   /*
@@ -30,7 +30,7 @@ export function usePageText(library: PageLibrary, address: Address): PageState {
    * Le numero d'emplacement identifie une page sans ambiguite, et deux BigInt
    * egaux le sont pour `===`. Se fier a l'identite de l'objet rendrait ce hook
    * dependant de la discipline de son appelant : un parent qui reconstruit
-   * l'adresse a chaque rendu ferait disparaitre les erreurs — et relancerait
+   * l'adresse a chaque rendu ferait disparaitre les erreurs, et relancerait
    * l'effet en boucle, donc la generation.
    */
   const key = locationOf(address)

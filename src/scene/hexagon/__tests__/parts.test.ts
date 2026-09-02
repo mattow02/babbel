@@ -23,8 +23,8 @@ const at = (u: number, v: number): Point2 => ({
 /**
  * Le point est-il DANS cette boite ?
  *
- * On ramene le point dans le repere de la boite — rotation inverse autour de
- * la verticale — puis on compare aux demi-dimensions.
+ * On ramene le point dans le repere de la boite : rotation inverse autour de
+ * la verticale, puis on compare aux demi-dimensions.
  */
 function insideBox(point: { x: number; y: number; z: number }, box: Box): boolean {
   const dx = point.x - box.x
@@ -73,7 +73,7 @@ describe('la maconnerie', () => {
    *
    * Les collisions (navigation/geometry.ts) et la construction (parts.ts) sont
    * deux descriptions independantes du meme lieu. Rien ne garantit qu'elles
-   * s'accordent — sauf de les confronter. Un mur pose la ou l'on a le droit de
+   * s'accordent, sauf de les confronter. Un mur pose la ou l'on a le droit de
    * marcher est invisible a la lecture du code et se paye par un visiteur
    * encastre dans la pierre.
    */
@@ -120,7 +120,7 @@ describe('la maconnerie', () => {
     const p = at(centre, 0)
     /*
      * On ne regarde que la MACONNERIE : l'escalier, lui, traverse la tremie de
-     * part en part — c'est sa raison d'etre. Ce qu'on verifie, c'est qu'aucune
+     * part en part : c'est sa raison d'etre. Ce qu'on verifie, c'est qu'aucune
      * dalle ne rebouche le puits.
      */
     for (const y of [-0.09, 3.09]) {

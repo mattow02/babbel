@@ -59,7 +59,7 @@ export interface PageLibraryStats {
  * Cle de cache : le numero d'emplacement lui-meme, en BigInt.
  *
  * Surtout pas sa representation textuelle. `peek` est appele a chaque image,
- * et convertir un entier de 14 861 bits en base 36 coute 0,14 ms — soit pres
+ * et convertir un entier de 14 861 bits en base 36 coute 0,14 ms, soit pres
  * de 1 % du budget d'une image, pour une simple recherche dans un cache.
  * `Map` compare les BigInt par valeur : la cle brute est 300 fois plus rapide,
  * et le code est plus court.
@@ -93,7 +93,7 @@ export class PageLibrary {
    * Prevenir quand le cache change.
    *
    * Le cache est un etat mutable exterieur a React. Le lire pendant le rendu
-   * « marche » tant que le rendu n'est pas interrompu — mais rien ne le
+   * « marche » tant que le rendu n'est pas interrompu, mais rien ne le
    * garantit. Un abonnement permet a React de le lire correctement, via
    * `useSyncExternalStore`, et de rester coherent s'il reprend un rendu.
    *

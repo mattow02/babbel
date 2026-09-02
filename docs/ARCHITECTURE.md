@@ -1,7 +1,7 @@
-# Architecture — Babbel
+# Architecture : Babbel
 
 > Proposition d'architecture. À valider avant la première ligne de code applicatif.
-> Version 0.1 — 2026-08-29
+> Version 0.1 : 2026-08-29
 
 ## 1. Principe directeur
 
@@ -70,7 +70,7 @@ Babbel/
     │   └── client.ts          # PageLibrary : peek / read / prefetch
     │
     ├── scene/                 # tout le three.js
-    │   ├── threshold/          # LE SEUIL — scène authorée, non procédurale
+    │   ├── threshold/          # LE SEUIL : scène authorée, non procédurale
     │   │   ├── Threshold.tsx   # racine de la séquence d'arrivée
     │   │   ├── Exterior.tsx    # le dôme (demi-sphère) vu du dehors
     │   │   ├── Stairs.tsx      # les marches vers l'entrée unique
@@ -205,8 +205,8 @@ Bibliothèque est aussi le moment naturel pour précharger les premiers chunks.
 ## 10. Navigation (décision D12, schéma à trancher)
 
 Première personne retenue, ZQSD écarté. Le schéma doit satisfaire :
-- **une seule main, une souris ou un trackpad** — c'est un site web, pas un jeu ;
-- **aucun apprentissage** — le visiteur comprend en trois secondes ;
+- **une seule main, une souris ou un trackpad** : c'est un site web, pas un jeu ;
+- **aucun apprentissage** : le visiteur comprend en trois secondes ;
 - **transposable au tactile** sans réécrire la logique ;
-- **peu de mal des transports** — accélérations douces, pas de secousses,
+- **peu de mal des transports** : accélérations douces, pas de secousses,
   FOV modéré (55–65°), respect de `prefers-reduced-motion`.

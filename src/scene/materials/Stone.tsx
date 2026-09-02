@@ -8,13 +8,13 @@ import { Color, type Material } from 'three'
  * qu'il faut dehors. Une facade de calcaire ne se lit pas a ses veines mais a
  * trois choses, et ce sont exactement les trois que ce shader ajoute :
  *
- *  1. les ASSISES — les lits horizontaux entre blocs. Sans elles, un dome de
+ *  1. les ASSISES : les lits horizontaux entre blocs. Sans elles, un dome de
  *     quarante-six metres n'a plus d'echelle : il pourrait aussi bien faire
  *     trois metres, rien dans l'image ne le dit ;
- *  2. la VARIATION de bloc a bloc — deux pierres du meme banc ne sont jamais
+ *  2. la VARIATION de bloc a bloc : deux pierres du meme banc ne sont jamais
  *     exactement de la meme couleur, et c'est ce qui distingue un mur bati
  *     d'une surface peinte ;
- *  3. la PATINE — les surfaces horizontales prennent la poussiere, les pieds de
+ *  3. la PATINE : les surfaces horizontales prennent la poussiere, les pieds de
  *     mur se salissent, les aretes se lavent. C'est ce qui donne l'age.
  *
  * Comme pour le marbre, on ne remplace pas le materiau standard : on lui greffe

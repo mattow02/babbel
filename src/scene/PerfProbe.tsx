@@ -17,8 +17,8 @@ import { useLibraryStore } from '../store/useLibraryStore.ts'
 /**
  * La sonde est-elle demandee ?
  *
- * Les fonctions de mesure ne sont pas dangereuses — ce site ne sait rien de
- * personne — mais elles n'ont rien a faire sur la page de tout le monde. Elles
+ * Les fonctions de mesure ne sont pas dangereuses : ce site ne sait rien de
+ * personne, mais elles n'ont rien a faire sur la page de tout le monde. Elles
  * ne s'installent donc que sur demande explicite : `?sonde` dans l'URL, ou en
  * developpement.
  *

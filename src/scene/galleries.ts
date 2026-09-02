@@ -6,7 +6,7 @@
  * suggere l'infini sans avoir a le construire.
  *
  * La phase 4 en pose un nombre FIXE. Les charger et les decharger au fil du
- * deplacement, c'est la phase 5 — mais rien d'autre n'aura a changer : il
+ * deplacement, c'est la phase 5, mais rien d'autre n'aura a changer : il
  * suffira de faire varier cette liste.
  */
 

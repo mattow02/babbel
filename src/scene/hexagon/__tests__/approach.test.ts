@@ -47,7 +47,7 @@ describe('approachFor', () => {
       const distanceLivre = Math.hypot((a?.lookAt.x ?? 0) - (origin?.x ?? 0), (a?.lookAt.z ?? 0) - (origin?.z ?? 0))
       const distanceArrivee = Math.hypot(relatif.x, relatif.z)
       expect(distanceArrivee).toBeLessThan(distanceLivre)
-      // Borne : le rayon CIRCONSCRIT, pas l'apotheme — un volume en bout
+      // Borne : le rayon CIRCONSCRIT, pas l'apotheme, un volume en bout
       // d'etagere est plus loin du centre que le milieu du mur.
       expect(distanceLivre).toBeLessThanOrEqual(HEXAGON_RADIUS)
     }

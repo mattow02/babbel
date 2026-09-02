@@ -30,7 +30,7 @@ import { PALETTE } from './materials/palette.ts'
  * instancies sont construits une seule fois au montage et ne changent PLUS
  * JAMAIS, quelle que soit la distance parcourue. Pas de gestionnaire de
  * morceaux, pas de reservoir d'objets a recycler, aucune allocation en cours
- * de marche — donc aucune fuite possible.
+ * de marche, donc aucune fuite possible.
  *
  * C'est le genre d'economie qu'on ne trouve qu'en regardant le probleme :
  * l'infini de Borges est parfaitement repetitif, autant s'en servir.
@@ -52,8 +52,8 @@ export function Library({
 
   /*
    * Le calcaire des murs n'est pas uni : il porte de longues veines sourdes.
-   * C'est ce que demande la direction artistique (§ 5) — « calcaire mat,
-   * micro-relief » — et c'est ce qui empeche les grandes surfaces claires de
+   * C'est ce que demande la direction artistique (§ 5) : « calcaire mat,
+   * micro-relief », et c'est ce qui empeche les grandes surfaces claires de
    * ressembler a du carton.
    */
   const calcaire = useMarble({

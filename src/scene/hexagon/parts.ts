@@ -78,7 +78,7 @@ export function stoneBoxes(origin: Origin = ZERO): Box[] {
 
     /*
      * Le chemin vers la galerie voisine : deux passages etroits, et entre eux
-     * le ZAGUAN — un vestibule carre, plus large et plus haut, perce en son
+     * le ZAGUAN : un vestibule carre, plus large et plus haut, perce en son
      * centre d'une tremie. C'est la que se trouve l'escalier, et c'est de la
      * qu'on voit le puits s'abimer et s'elever.
      */
@@ -197,7 +197,7 @@ export function stoneBoxes(origin: Origin = ZERO): Box[] {
         /*
          * Attention a l'orientation : dans `poser`, `sx` est l'extension
          * LATERALE et `sz` l'extension le long de l'axe. Une paroi placee en
-         * u = +R doit donc etre large en v et mince en u — et non l'inverse,
+         * u = +R doit donc etre large en v et mince en u, et non l'inverse,
          * sous peine de reboucher a moitie la tremie qu'elle est censee border.
          */
         poser(STAIRWELL_RADIUS * cote, yPuits, 0, STAIRWELL_RADIUS * 2, SHAFT_DEPTH, WALL_THICKNESS)

@@ -13,14 +13,14 @@
  *
  * Monter d'un etage, c'est ajouter une foulee. Avancer dans un couloir, c'est
  * ajouter un. Il n'y a toujours qu'un seul nombre, et l'adresse d'un livre
- * reste exactement ce qu'elle etait — rien de ce qui precede ne change.
+ * reste exactement ce qu'elle etait : rien de ce qui precede ne change.
  *
  * ------------------------------------------------------------------------
  * POURQUOI CETTE FOULEE-LA
  *
  * 25^800 : le nombre de textes distincts de huit cents caracteres. Un etage
  * est donc long d'autant de galeries qu'il y a de facons de remplir huit cents
- * signes — soit environ 10^1118, un nombre qu'aucun visiteur n'epuisera. Le
+ * signes, soit environ 10^1118, un nombre qu'aucun visiteur n'epuisera. Le
  * choix reste arbitraire, mais il est tire de l'alphabet plutot que du vide.
  */
 

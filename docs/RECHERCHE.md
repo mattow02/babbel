@@ -1,4 +1,4 @@
-# Recherche — La Bibliothèque de Babel
+# Recherche : La Bibliothèque de Babel
 
 > Document de référence factuel. Tout ce qui est décidé ici a une source.
 > Dernière mise à jour : 2026-08-29
@@ -90,20 +90,20 @@ volée à chaque fois que l'utilisateur tourne une page »).
 
 ## 3. Limites physiques et techniques du navigateur
 
-### 3.1 Stockage — limite absolue
+### 3.1 Stockage : limite absolue
 25^1 312 000 livres. Rien n'est stockable, ni côté serveur ni côté client.
 **Tout est procédural, tout est calculé dans le navigateur.** L'hébergeur ne
 sert que des fichiers statiques (HTML/JS/assets). Coût serveur = ~0.
 C'est un déploiement statique (Vercel/Netlify/Cloudflare Pages) sans backend.
 
-### 3.2 Calcul du texte — non bloquant
+### 3.2 Calcul du texte : non bloquant
 - 1 page = 3 200 caractères = 14 861 bits en BigInt. Un `mod-mul` sur cette
   taille est sous la milliseconde en V8.
 - Malgré tout : **génération dans un Web Worker**, jamais sur le thread principal.
   Règle d'or 3D : le thread qui dessine ne calcule pas.
 - Cache LRU des pages déjà générées (une page = 3,2 ko de string).
 
-### 3.3 Rendu 3D — les vraies contraintes
+### 3.3 Rendu 3D : les vraies contraintes
 
 **Draw calls.** C'est le facteur limitant, pas le nombre de polygones.
 1 hexagone = 640 livres. Naïvement = 640 draw calls. Avec `InstancedMesh` :
@@ -148,12 +148,12 @@ résolution de rendu abaissée (`dpr` plafonné à 1.5).
 | Lisibilité du texte | qualité vs coût | troika SDF de près / texture procédurale de loin |
 
 ## Sources
-- [Library of Babel — Googology Wiki](https://googology.fandom.com/wiki/The_Library_of_Babel)
-- [The Library of Babel and the information explosion — Irish Times](https://www.irishtimes.com/news/science/the-library-of-babel-and-the-information-explosion-1.2931731)
-- [The Library of Babel (website) — Wikipedia](https://en.wikipedia.org/wiki/The_Library_of_Babel_(website))
-- [libraryofbabel.info-algo — GitHub](https://github.com/librarianofbabel/libraryofbabel.info-algo)
-- [tdjsnelling/babel — implémentation TypeScript](https://github.com/tdjsnelling/babel)
-- [libraryofbabel.info — Theory](https://libraryofbabel.info/theory4.html)
+- [Library of Babel : Googology Wiki](https://googology.fandom.com/wiki/The_Library_of_Babel)
+- [The Library of Babel and the information explosion : Irish Times](https://www.irishtimes.com/news/science/the-library-of-babel-and-the-information-explosion-1.2931731)
+- [The Library of Babel (website) : Wikipedia](https://en.wikipedia.org/wiki/The_Library_of_Babel_(website))
+- [libraryofbabel.info-algo : GitHub](https://github.com/librarianofbabel/libraryofbabel.info-algo)
+- [tdjsnelling/babel : implémentation TypeScript](https://github.com/tdjsnelling/babel)
+- [libraryofbabel.info : Theory](https://libraryofbabel.info/theory4.html)
 - [100 Three.js Tips That Actually Improve Performance (2026)](https://www.utsubo.com/blog/threejs-best-practices-100-tips)
-- [InstancedMesh — three.js docs](https://threejs.org/docs/pages/InstancedMesh.html)
+- [InstancedMesh : three.js docs](https://threejs.org/docs/pages/InstancedMesh.html)
 - [troika-three-text](https://github.com/protectwise/troika/blob/main/packages/troika-three-text/README.md)

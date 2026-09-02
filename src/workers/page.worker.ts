@@ -3,7 +3,7 @@
  * Le worker de generation.
  *
  * Il repond a deux demandes : rendre le texte d'une adresse, ou calculer
- * l'adresse d'un texte. Aucun etat, aucun cache — le cache vit du cote du
+ * l'adresse d'un texte. Aucun etat, aucun cache : le cache vit du cote du
  * client, ou il est visible et mesurable. Un worker sans etat est un worker
  * qu'on peut tuer et relancer sans rien perdre.
  *
@@ -16,7 +16,7 @@ import type { WorkerRequest, WorkerResponse } from './protocol.ts'
 /*
  * Ce fichier est compile avec la bibliotheque DOM autant qu'avec celle des
  * workers : `self` y est donc type comme une fenetre. La conversion dit ce que
- * la directive `webworker` ci-dessus a deja etabli — c'est le seul endroit du
+ * la directive `webworker` ci-dessus a deja etabli : c'est le seul endroit du
  * projet ou elle est necessaire.
  */
 const scope = self as unknown as DedicatedWorkerGlobalScope

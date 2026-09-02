@@ -131,7 +131,7 @@ export function createInlineEngine(): PageEngine {
  * Le worker si l'environnement en propose un, le calcul direct sinon.
  *
  * On enveloppe la CONSTRUCTION, pas seulement le test d'existence : un worker
- * peut echouer a naitre pour d'autres raisons qu'une absence d'API — une
+ * peut echouer a naitre pour d'autres raisons qu'une absence d'API : une
  * politique de securite de contenu trop stricte, un fichier introuvable. Sans
  * ce filet, l'exception remonterait pendant le rendu et emporterait toute la
  * page, alors que le calcul direct ferait parfaitement l'affaire.

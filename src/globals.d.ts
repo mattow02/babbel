@@ -4,7 +4,7 @@
  * Declarer ces champs plutot que de convertir `window` a chaque usage : les
  * conversions `as unknown as` masquent le compilateur, alors que cette
  * declaration l'informe. Elle dit aussi, noir sur blanc, quelle est la surface
- * exacte ajoutee au navigateur — et elle n'est posee que sur demande (`?sonde`,
+ * exacte ajoutee au navigateur, et elle n'est posee que sur demande (`?sonde`,
  * voir scene/PerfProbe.tsx).
  */
 interface BabbelReleve {

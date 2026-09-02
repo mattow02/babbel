@@ -1,12 +1,12 @@
-# Babbel — La Bibliothèque de Babel en 3D
+# Babbel : La Bibliothèque de Babel en 3D
 
 > Fichier de contexte projet. Chargé automatiquement quand Claude est ouvert
 > depuis `~/projets/Babbel`. À tenir à jour à chaque session notable.
 
 ## Comment fonctionne ce fichier
 Claude Code charge, en cumulant :
-1. `~/.claude/CLAUDE.md` — global, toutes machines/projets ;
-2. **ce fichier**, `~/projets/Babbel/CLAUDE.md` — projet, chargé dès que le
+1. `~/.claude/CLAUDE.md` : global, toutes machines/projets ;
+2. **ce fichier**, `~/projets/Babbel/CLAUDE.md` : projet, chargé dès que le
    répertoire de travail est ici ou en dessous ;
 3. un éventuel `CLAUDE.md` dans un sous-dossier, chargé quand on y touche.
 
@@ -89,7 +89,7 @@ des chantiers restants, par ordre d'importance.
 - Toute logique un peu subtile d'un composant 3D est extraite en module pur et
   testée (`geometry.ts`, `steering.ts`, `picking.ts`, `approach.ts`,
   `landscape.ts`, `sequence.ts`).
-- Pour dérégler un alignement, passer par `scene/hash.ts` — **jamais** par une
+- Pour dérégler un alignement, passer par `scene/hash.ts` : **jamais** par une
   simple multiplication, qui est affine et produit un motif périodique (D32).
 - Ce qui peut être une **fonction du temps** ne doit pas devenir un état : la
   poussière est animée dans le shader, sans coût processeur (D37).
@@ -138,46 +138,46 @@ conservées dans le dépôt ; ce qu'on en a retenu est décrit en mots dans
   le brun-violacé, les lumières vers l'ambre.
 
 **Le levier technique clé (D16) :** le Seuil est statique, donc son éclairage
-sera **précalculé en lightmaps** — c'est ce qui permet d'approcher en WebGL la
+sera **précalculé en lightmaps** : c'est ce qui permet d'approcher en WebGL la
 qualité des rendus offline de référence. La Bibliothèque, procédurale, ne peut
 pas être bakée : elle sera donc sombre, ce qui est justement le parti pris du
 film. La contrainte technique et l'intention esthétique coïncident.
 
 ## Journal
-- **2026-08-29** — Création du projet. Phase 0 : recherche faite (Borges,
+- **2026-08-29**, Création du projet. Phase 0 : recherche faite (Borges,
   algorithme de libraryofbabel.info, limites navigateur), architecture et
   roadmap rédigées. En attente des arbitrages `docs/DECISIONS.md` § ouvertes.
   Aucun code applicatif écrit à ce stade, volontairement.
   Arbitrages rendus dans la foulée : D9 à D15 (voir DECISIONS.md).
   Direction artistique établie d'après la vidéo de référence
   (D16). Plus aucune question ouverte.
-- **2026-08-29 (suite)** — **Phase 1 terminée.** Socle Vite + TS strict monté,
+- **2026-08-29 (suite)** : **Phase 1 terminée.** Socle Vite + TS strict monté,
   `src/core/` écrit et testé : 48 tests verts, `npm run check` vert.
   La bijection utilise le **cycle walking** et non un LCG masqué (D17) : plus
   simple à prouver correct, aucun cas particulier. Une page se génère en 0,6 ms,
   le cœur pèse 2 ko gzip. `locate(texte)` fonctionne déjà de bout en bout.
   Prochaine étape : Phase 2, la génération dans un Web Worker.
-- **2026-08-29 (suite)** — **Phase 2 terminée.** `src/workers/` : worker sans
+- **2026-08-29 (suite)**, **Phase 2 terminée.** `src/workers/` : worker sans
   état, moteur injectable (D18), cache LRU, déduplication, préchargement des
   voisines. 74 tests verts. **Vérifié dans un vrai Chromium** sur le build de
   production : 100 tournages de page ne bloquent le thread principal que
   **2,80 ms au total**, soit 17 % du budget d'UNE image. Clé de cache en BigInt
   et non en chaîne (D19, 300× plus rapide). Prochaine étape : Phase 3, le
   lecteur en HTML nu.
-- **2026-08-29 (suite)** — **Phase 3 terminée.** Lecteur React : 40×80, clavier
+- **2026-08-29 (suite)**, **Phase 3 terminée.** Lecteur React : 40×80, clavier
   borné, barre d'adresse, URL dans le **fragment** (D20 : marche en statique
   sans config, et le serveur ne peut pas savoir ce qu'on lit). DA appliquée.
   90 tests verts. **Vérifié en Chromium** : une adresse de 2 901 caractères
   partagée puis ouverte à froid redonne un texte identique au caractère près.
   Zustand repoussé à la phase 4 (D21).
-- **2026-08-29 (suite)** — **Phase 4 terminée.** Galerie hexagonale en R3F :
+- **2026-08-29 (suite)** : **Phase 4 terminée.** Galerie hexagonale en R3F :
   placement en maths pures et testé sans GPU (D24), tout ramené à une boîte
   unitaire instanciée (D25), murs libres opposés pour que la perspective file
   (D23), lampe sphérique de Borges avec ombres sur une seule galerie (D26),
   sonde de performance maison (D27). 105 tests verts. **Mesuré sur GPU réel :
   27 appels de rendu (budget 100), 0,37 ms par image (budget 16,6 ms)**,
   1 920 volumes affichés.
-- **2026-08-30** — **Phase 5 terminée.** Navigation 1re personne (regard par les
+- **2026-08-30** : **Phase 5 terminée.** Navigation 1re personne (regard par les
   bords de l'écran D28, clic maintenu pour avancer, ZQSD en secours),
   collisions en maths pures, **origine flottante** obligatoire (D30),
   désignation d'un volume → travelling → lecture, escalier en colimaçon dans le
@@ -185,8 +185,8 @@ film. La contrainte technique et l'intention esthétique coïncident.
   (tas 18,5 → 14,0 Mo). **Le ChunkManager prévu s'est révélé inutile** (D29) :
   toutes les galeries étant identiques, il n'y a rien à charger ni décharger.
   ⚠️ L'ouverture d'un volume au clic n'est pas vérifiée de bout en bout dans le
-  navigateur — à tester à la main.
-- **2026-08-30 (suite)** — **Phase 5bis terminée : le Seuil.** Séquence
+  navigateur, à tester à la main.
+- **2026-08-30 (suite)**, **Phase 5bis terminée : le Seuil.** Séquence
   d'arrivée de 29,5 s en plans composés : plaine, dôme dans son bassin, deux
   anneaux de cyprès, montagnes, ciel en dégradé (shader), montée des marches,
   entrée unique (passage traité en **coupe**, D34), grand hall à coupole
@@ -194,39 +194,39 @@ film. La contrainte technique et l'intention esthétique coïncident.
   bibliothèque. 171 tests verts, 20-22 appels de rendu dehors, 6 dans le hall.
   Deux défauts visuels attrapés : hachage affine donnant des motifs périodiques
   (D32) et caissons saillants faute d'inclinaison (D33).
-- **2026-08-30 (suite)** — **Phase 6 terminée : l'esthétique.** Post-traitement
+- **2026-08-30 (suite)**, **Phase 6 terminée : l'esthétique.** Post-traitement
   réglé par ambiance (vignettage, bloom, grain, aberration), faisceaux et halos
   en volume par shader additif (D38), poussière animée entièrement dans le
-  shader (D37), **son d'ambiance synthétisé** — aucun fichier audio (D36) — et
+  shader (D37), **son d'ambiance synthétisé** : aucun fichier audio (D36), et
   écran d'entrée qui autorise le son et réveille le worker. 181 tests verts.
   **39 appels de rendu dehors, 53 dans la bibliothèque, 5,69 ms par image**
   effets compris. Deux défauts attrapés par les tests : le bourdon était un
   accord (octave exacte), et le comptage d'appels était faux avec un composeur
   (D35).
-- **2026-08-30 (suite)** — **Phase 7 terminée. Les sept phases sont faites.**
+- **2026-08-30 (suite)** : **Phase 7 terminée. Les sept phases sont faites.**
   **Recherche par texte** livrée (D39, via le worker) avec **transcription dans
   l'alphabet de Borges** (D40 : « Kafka » → « cafca »). **Mode dégradé** décidé
   par une fonction pure et testée (D41), `prefers-reduced-motion` respecté.
   Déploiement statique documenté. **207 tests verts.**
   Vérifié en Chromium : on tape une phrase, le site calcule son adresse et ouvre
-  la page — première ligne = la phrase, reste blanc, URL partageable.
+  la page : première ligne = la phrase, reste blanc, URL partageable.
   **Ce qui reste ouvert est listé en fin de `docs/ROADMAP.md`.**
-- **2026-08-30 (suite)** — **Reprise après la roadmap.** Deux chantiers repris :
+- **2026-08-30 (suite)** : **Reprise après la roadmap.** Deux chantiers repris :
   (1) **le rayon d'interaction est lancé à la main** depuis le réticule, plus
-  par R3F (D42) — le réticule devient le viseur, <kbd>E</kbd> et le clic bref
+  par R3F (D42) : le réticule devient le viseur, <kbd>E</kbd> et le clic bref
   sont le même geste, et **le trou de vérification ouvert depuis la phase 5 est
   comblé** : ouverture d'un volume vérifiée en Chromium ; (2) **la bibliothèque
-  a des étages** (D43) : `galerie = étage × 25^800 + colonne` — le même entier
+  a des étages** (D43) : `galerie = étage × 25^800 + colonne`, le même entier
   lu dans deux dimensions, sans toucher à la bijection ni aux URL déjà
   partagées. Étages 0 → 1 → 2 → 0 vérifiés. 216 tests, zéro avertissement.
-- **2026-08-31** — **Tous les chantiers restants repris, puis AUDIT.**
+- **2026-08-31** : **Tous les chantiers restants repris, puis AUDIT.**
   Le **zaguán** avec sa trémie (D44) donne enfin le vertige ; marbre veiné
   calculé, sol miroir et éclairage d'environnement (D45) ; secours sans WebGL
   et worker résilient (D46). **227 tests.**
-  **L'audit est dans `docs/AUDIT.md`** : 7 défauts corrigés — dont une
+  **L'audit est dans `docs/AUDIT.md`** : 7 défauts corrigés, dont une
   **régression de performance à 19,45 ms/image**, invisible au compte des
-  appels de rendu et rattrapée à 6,44 ms — et 9 constats P1/P2.
-- **2026-08-31 (suite)** — **Tous les constats de l'audit sont corrigés.**
+  appels de rendu et rattrapée à 6,44 ms, et 9 constats P1/P2.
+- **2026-08-31 (suite)** : **Tous les constats de l'audit sont corrigés.**
   Découpage de code (**347 → 69 Ko gzip** pour lire ; un lien partagé ouvre la
   page sans charger la 3D), intégration continue, piège à focus, lecteur
   audible, `useSyncExternalStore`, sonde derrière `?sonde`, licence MIT,
@@ -234,9 +234,9 @@ film. La contrainte technique et l'intention esthétique coïncident.
   Trois défauts trouvés *en écrivant les tests* : adresses comparées par
   référence, filtre de focus dépendant de la mise en page, seuil de test au
   millième d'une image.
-- **2026-08-31 (retours sur le rendu)** — **Le site cesse d'être une
+- **2026-08-31 (retours sur le rendu)** : **Le site cesse d'être une
   cinématique.** Sur les remarques de l'utilisateur : (1) **l'arrivée s'arrête
-  DEVANT l'entrée** (D51) — plus de traversée des murs, le visiteur marche sur
+  DEVANT l'entrée** (D51), plus de traversée des murs, le visiteur marche sur
   le parvis et franchit le portail lui-même ; (2) **le hall devient une nef**
   (D52) où l'on marche : grande allée, deux files de piliers, bas-côtés,
   **escaliers latéraux** vers les tribunes, cube d'or au bout de l'axe ;
@@ -246,7 +246,7 @@ film. La contrainte technique et l'intention esthétique coïncident.
   assises, patine et grain (D54), montagnes à silhouette brisée dans le vertex
   shader (D55), ciel avec soleil, cirrus, brume dissymétrique et tramage (D56) ;
   (4) **le lecteur est un livre** (D57) : il quitte l'étagère, vient flotter
-  devant nous, s'ouvre, et se tourne au clic — droite pour avancer ;
+  devant nous, s'ouvre, et se tourne au clic : droite pour avancer ;
   (5) **tout le HUD a disparu** (D58) : il ne reste qu'une croix pour refermer.
   Deux pièges trouvés dans le navigateur : **un objet accroché à la caméra n'est
   jamais rendu** (D59), et un tir de réticule pile au centre d'une galerie passe

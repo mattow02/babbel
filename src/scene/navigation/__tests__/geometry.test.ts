@@ -173,8 +173,8 @@ describe('le glissement le long des murs', () => {
      * Il finit par buter dans l'angle du vestibule, parce que ce visiteur-la
      * tient « avancer » sans jamais tourner la tete. C'est le comportement
      * normal de n'importe quelle marche a la premiere personne, et un humain
-     * s'en sort d'un mouvement de souris. Le defaut qu'on voulait exclure —
-     * rester plante DEVANT LE VIDE, sans recours — n'existe plus.
+     * s'en sort d'un mouvement de souris. Le defaut qu'on voulait exclure,
+     * rester plante DEVANT LE VIDE, sans recours : n'existe plus.
      */
     expect(bouge).toBeGreaterThan(35)
     expect(along(position)).toBeGreaterThan(centre + STAIRWELL_RADIUS)

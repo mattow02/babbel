@@ -1,7 +1,7 @@
 /**
  * Le calcul du piege a focus, isole de tout DOM.
  *
- * Le reste — trouver les elements focalisables, poser les ecouteurs — est de
+ * Le reste : trouver les elements focalisables, poser les ecouteurs, est de
  * la plomberie ; ce qui peut se tromper, c'est le choix de l'element suivant
  * aux extremites. C'est donc cela qu'on isole et qu'on teste.
  */

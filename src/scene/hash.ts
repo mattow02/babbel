@@ -8,7 +8,7 @@
  * servir. C'est une erreur, et elle se voit a l'oeil : une multiplication est
  * une fonction AFFINE de l'indice, donc l'ecart entre deux indices consecutifs
  * est constant. Les valeurs sont bien reparties prises isolement, mais elles
- * defilent avec une periode courte — et une rangee de cypres ou de tranches de
+ * defilent avec une periode courte, et une rangee de cypres ou de tranches de
  * livres se met a montrer un motif qui se repete.
  *
  * C'est exactement le probleme que le LCG nu posait dans core/bijection.ts, et

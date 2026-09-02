@@ -5,7 +5,7 @@ import { profileFor, readCapabilities, type Profile } from '../scene/quality.ts'
 /**
  * Le profil de qualite, decide une fois pour toutes au demarrage.
  *
- * Hors navigateur — dans les tests — on prend le profil complet : il n'y a de
+ * Hors navigateur, dans les tests, on prend le profil complet : il n'y a de
  * toute facon rien a afficher.
  */
 function initialProfile(): Profile {

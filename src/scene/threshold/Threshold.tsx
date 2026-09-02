@@ -99,7 +99,7 @@ function Sequence(): React.ReactElement | null {
 /**
  * Le parvis : quelques metres de terrasse, devant le portail.
  *
- * Le sol y est plat — la volee tombe pile sur la base du dome — et l'espace est
+ * Le sol y est plat : la volee tombe pile sur la base du dome, et l'espace est
  * volontairement etroit : il n'y a rien a explorer dehors, il y a une entree a
  * franchir. Le seul evenement possible est de passer le seuil.
  */

@@ -13,7 +13,7 @@ import type { Material } from 'three'
  * sommet est repousse le long de sa normale d'une quantite tiree d'un bruit
  * fractal, d'autant plus forte qu'on est loin du sommet du relief. Le resultat
  * a des aretes, des epaules et des ravines, et il ne coute rien de plus par
- * pixel — seulement quelques instructions par sommet, sur des maillages qui
+ * pixel : seulement quelques instructions par sommet, sur des maillages qui
  * en comptent une poignee.
  *
  * A utiliser avec `flatShading` : ce sont les facettes qui font la roche.

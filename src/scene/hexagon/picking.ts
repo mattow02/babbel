@@ -4,7 +4,7 @@
  * Les volumes sont instancies dans un ordre parfaitement determine : galerie
  * par galerie, puis dans l'ordre des adresses (mur, etagere, volume). Retrouver
  * l'adresse d'un livre designe a la souris n'est donc qu'une division
- * euclidienne — pas besoin de stocker quoi que ce soit par instance.
+ * euclidienne, pas besoin de stocker quoi que ce soit par instance.
  *
  * C'est le point ou la scene 3D et le coeur mathematique se rejoignent :
  * cliquer un livre sur une etagere donne une adresse, et cette adresse donne
