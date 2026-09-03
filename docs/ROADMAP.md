@@ -16,7 +16,7 @@ On ne passe pas à la suivante « à peu près ».
 - [x] Arbitrages : alphabet 25 (Borges), Vite+React+TS, 1re personne sans ZQSD,
       séquence d'arrivée par le Seuil (D9 à D12)
 - [x] Schéma de contrôle, recherche inverse, mobile tranchés (D13 à D15)
-- [x] Direction artistique établie d'après la vidéo de référence (D16, DIRECTION-ARTISTIQUE.md)
+- [x] Direction artistique établie d'après la vidéo de référence (D16 ; le document a ete repris dans CLAUDE.md)
 - [x] **Phase 0 close. Plus aucune question ouverte.**
 
 ## Phase 1 : Le cœur mathématique ✅ (2026-08-29)
@@ -216,7 +216,7 @@ l'intérieur du hall qui le réclame, et cela suppose une chaîne de cuisson hor
 ligne : c'est une optimisation de phase 6/7, pas un prérequis.
 
 ## Phase 6 : Esthétique ✅ (2026-08-30)
-- [x] Direction artistique arrêtée (voir DIRECTION-ARTISTIQUE.md)
+- [x] Direction artistique arrêtée (reprise dans CLAUDE.md)
 - [x] **Post-traitement** réglé par ambiance (extérieur / hall / bibliothèque) :
       vignettage, bloom, grain, aberration chromatique, saturation, contraste
 - [x] **Faisceaux de lumière et halos** en volume, par shader additif

@@ -103,12 +103,9 @@ l'audit qui a suivi est corrigé, y compris une régression de performance à
 
 | Fichier | Contenu |
 |---|---|
-| [`docs/RECHERCHE.md`](docs/RECHERCHE.md) | Les faits sourcés : Borges, l'algorithme, les limites du navigateur |
-| [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) | Pile technique, arborescence, modèle de données, budget de performance |
 | [`docs/DECISIONS.md`](docs/DECISIONS.md) | Chaque choix structurant et sa raison, 59 décisions |
+| [`CLAUDE.md`](CLAUDE.md) | Le projet en un fichier : les faits, l'architecture, l'esthétique, les disciplines |
 | [`docs/ROADMAP.md`](docs/ROADMAP.md) | Les phases et ce qui reste |
-| [`docs/PLAN-ESTHETIQUE.md`](docs/PLAN-ESTHETIQUE.md) | La reprise du rendu : le constat mesuré, les phases et leurs critères |
-| [`docs/DIRECTION-ARTISTIQUE.md`](docs/DIRECTION-ARTISTIQUE.md) | Palette, formes, matériaux, post-traitement |
 
 ## Licence
 
@@ -117,4 +114,4 @@ MIT, voir [`LICENSE`](LICENSE).
 La direction artistique s'est appuyée sur la vidéo *« Viens, je vais te
 Montrer l'Infini »*, dont les images ne sont pas reproduites ici : ce qu'on en
 a retenu est décrit en mots dans
-[`docs/DIRECTION-ARTISTIQUE.md`](docs/DIRECTION-ARTISTIQUE.md).
+[`CLAUDE.md`](CLAUDE.md), qui a repris ce document.
