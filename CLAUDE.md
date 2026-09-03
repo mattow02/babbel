@@ -200,6 +200,21 @@ Dépôt : <https://github.com/mattow02/babbel>, branche `master`.
 - Les **deux petits cabinets** du zaguán ne sont pas dessinés.
 - **Aucun test sur un vrai appareil mobile.**
 
+## Chantier valide, pas commence : le code en anglais
+
+Matteo veut **le code nomme en anglais**, decide le 3 septembre 2026. Portee
+mesuree ici : **18 fichiers** au nom francais et environ **709 identifiants
+declares**. Les dossiers, eux, sont deja neutres (`core`, `ui`, `workers`,
+`audio`, `store`), seul `vue2d` est francais.
+
+Rien de public n'est en jeu : le site n'a pas d'URL en francais, l'adresse
+vivant dans le fragment. C'est donc un renommage purement interne, plus simple
+qu'a Cobaalt.
+
+A faire avec un **plan detaille valide avant de commencer**. `npm run check`
+doit rester vert, et le test `inverse(forward(x)) === x` est le juge de paix.
+Tout code neuf est deja nomme en anglais a partir de maintenant.
+
 ## Les deux journaux qui restent
 
 `docs/ROADMAP.md` tient le journal des phases et des reprises, et sa fin liste
