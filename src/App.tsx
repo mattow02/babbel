@@ -4,11 +4,10 @@ import { useLibraryStore } from './store/useLibraryStore.ts'
 import { Galerie } from './vue2d/Galerie.tsx'
 import { Seuil } from './vue2d/Seuil.tsx'
 import { above, below } from './vue2d/etages.ts'
-import { AddressBar } from './ui/AddressBar.tsx'
 import { Intro } from './ui/Intro.tsx'
-import { Reader } from './ui/Reader.tsx'
+import { Livre } from './ui/Livre.tsx'
 import { Search } from './ui/Search.tsx'
-import { resolveKey } from './ui/navigation.ts'
+import { leafOf, resolveKey } from './ui/navigation.ts'
 import { fromHash } from './ui/route.ts'
 import { useAddress } from './ui/useAddress.ts'
 import { useAmbience } from './ui/useAmbience.ts'
@@ -26,7 +25,6 @@ const ORIGIN: Address = { hexagon: 0n, wall: 0, shelf: 0, volume: 0, page: 1 }
 export function App(): React.ReactElement {
   const library = useLibrary(ORIGIN)
   const [address, goTo] = useAddress(ORIGIN)
-  const state = usePageText(library, address)
 
   const stage = useLibraryStore((store) => store.stage)
   const enterLibrary = useLibraryStore((store) => store.enterLibrary)
@@ -37,6 +35,18 @@ export function App(): React.ReactElement {
   const muted = useLibraryStore((store) => store.muted)
   const toggleMuted = useLibraryStore((store) => store.toggleMuted)
   const ambience = useAmbience()
+
+  /*
+   * Un livre ouvert montre DEUX pages, donc deux textes.
+   *
+   * L'adresse partagee, elle, en designe toujours une seule : c'est celle qui
+   * decide du feuillet, et elle se lit a gauche quand elle est impaire, a
+   * droite sinon. Le surcout est nul, la generation etant en cache et hors du
+   * thread de rendu.
+   */
+  const lu = opened ?? address
+  const gauche = usePageText(library, { ...lu, page: leafOf(lu.page) })
+  const droite = usePageText(library, { ...lu, page: leafOf(lu.page) + 1 })
 
   const [recherche, setRecherche] = useState(false)
   const [partage] = useState(() =>
@@ -156,45 +166,43 @@ export function App(): React.ReactElement {
     )
   }
 
+  /*
+   * La galerie reste montee sous le livre.
+   *
+   * On n'a pas quitte la piece pour lire : on y a pris un volume. Le refermer
+   * ne recharge donc rien, et le lieu reste visible dans le noir derriere le
+   * papier.
+   */
   return (
     <div className="shell shell--scene">
+      <Galerie
+        hexagon={address.hexagon}
+        onOuvrir={(cible) => {
+          open(cible)
+        }}
+        onZaguan={() => {
+          const suivante = address.hexagon + 1n
+          setHexagon(suivante)
+          goTo({ ...address, hexagon: suivante, wall: 0, shelf: 0, volume: 0, page: 1 })
+        }}
+        onEtage={(sens) => {
+          const cible = sens === 1 ? above(address.hexagon) : below(address.hexagon)
+          if (cible === null) return
+          setHexagon(cible)
+          goTo({ ...address, hexagon: cible, wall: 0, shelf: 0, volume: 0, page: 1 })
+        }}
+      />
+
       {opened ? (
-        <div className="lecture">
-          <AddressBar address={address} />
-          <main className="stage">
-            <Reader state={state} />
-          </main>
-        </div>
-      ) : (
-        <Galerie
-          hexagon={address.hexagon}
-          onOuvrir={(cible) => {
+        <Livre
+          address={opened}
+          gauche={gauche}
+          droite={droite}
+          onAller={(cible) => {
             open(cible)
           }}
-          onZaguan={() => {
-            const suivante = address.hexagon + 1n
-            setHexagon(suivante)
-            goTo({ ...address, hexagon: suivante, wall: 0, shelf: 0, volume: 0, page: 1 })
-          }}
-          onEtage={(sens) => {
-            const cible = sens === 1 ? above(address.hexagon) : below(address.hexagon)
-            if (cible === null) return
-            setHexagon(cible)
-            goTo({ ...address, hexagon: cible, wall: 0, shelf: 0, volume: 0, page: 1 })
-          }}
+          onFermer={close}
         />
-      )}
-
-      {/*
-        La seule chose qui s'affiche par-dessus le lieu : de quoi refermer le
-        livre. On ne met pas de tableau de bord dans une bibliotheque.
-      */}
-      {opened ? (
-        <button type="button" className="fermer" onClick={close} aria-label="Fermer le livre">
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M5 5 19 19M19 5 5 19" />
-          </svg>
-        </button>
       ) : null}
 
       {panneau}

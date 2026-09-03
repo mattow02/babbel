@@ -71,127 +71,7 @@ body::after {
 }
 
 /* ---------------------------------------------------------------- adresse */
-
-.address {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 1rem 2rem;
-  padding-bottom: 0.9rem;
-  border-bottom: 1px solid var(--brun-sourd);
-}
-
-.address__coords {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem 2.2rem;
-  margin: 0;
-}
-
-.address__coords div {
-  display: flex;
-  flex-direction: column;
-  gap: 0.15rem;
-}
-
-.address__coords dt {
-  font-size: 0.68rem;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--ombre-chaude);
-}
-
-.address__coords dd {
-  margin: 0;
-  font-variant-numeric: tabular-nums;
-  font-size: 1.05rem;
-  color: var(--creme);
-}
-
-.address__coords .address__page dd {
-  color: var(--soleil);
-}
-
-.address__of {
-  color: var(--ombre-chaude);
-  font-size: 0.8em;
-}
-
-.address__copy {
-  padding: 0.45rem 1.1rem;
-  border: 1px solid var(--brun-sourd);
-  border-radius: 2px;
-  background: transparent;
-  color: var(--sable);
-  font: inherit;
-  font-size: 0.85rem;
-  letter-spacing: 0.05em;
-  cursor: pointer;
-  transition: border-color 220ms ease, color 220ms ease;
-}
-
-.address__copy:hover,
-.address__copy:focus-visible {
-  border-color: var(--or);
-  color: var(--soleil);
-  outline: none;
-}
-
 /* ------------------------------------------------------------------- page */
-
-.stage {
-  display: grid;
-  /*
-   * `minmax(0, 1fr)` et non `auto` : sans cela la colonne se dimensionne sur
-   * son contenu, le `max-width: 100%` de la page ne mord sur rien, et le bloc
-   * pousse toute la mise en page au lieu de defiler dans sa propre boite.
-   */
-  grid-template-columns: minmax(0, 1fr);
-  place-items: center;
-  min-width: 0;
-  min-height: 0;
-}
-
-.page {
-  /*
-   * La page fait exactement 80 caracteres sur 40 lignes. Plutot que d'imposer
-   * une taille de police et d'esperer que ca rentre, on la CALCULE a partir de
-   * la place disponible, dans les deux dimensions, et on garde la plus petite.
-   *
-   * Piege evite : dans un `font-size`, un pourcentage se rapporte a la police
-   * du parent, pas a la largeur. Il faut donc des unites de fenetre.
-   *
-   * 80 caracteres monospace font environ 48em de large ;
-   * 40 lignes a 1,55 d'interligne font 62em de haut.
-   */
-  --dispo-large: min(calc(100vw - 2 * var(--gouttiere)), 66rem);
-  --dispo-haut: calc(100vh - 15rem);
-  --par-largeur: calc(var(--dispo-large) / 48);
-  --par-hauteur: calc(var(--dispo-haut) / 62);
-
-  width: max-content;
-  max-width: 100%;
-  margin: 0;
-  font-family: ui-monospace, 'SF Mono', 'Cascadia Mono', Menlo, Consolas, monospace;
-  /*
-   * Plancher a 9 px.
-   *
-   * Sur un telephone, quatre-vingts colonnes tiennent a 7,5 px, mais ne se
-   * lisent plus. Mieux vaut laisser le bloc deborder et defiler dans sa propre
-   * boite (`overflow-x: auto`) que d'imposer une taille illisible : on lit ici
-   * des caracteres au hasard, la lisibilite prime sur la vue d'ensemble.
-   */
-  font-size: clamp(9px, min(var(--par-largeur), var(--par-hauteur)), 14px);
-  line-height: 1.55;
-  letter-spacing: 0.02em;
-  color: var(--creme);
-  white-space: pre;
-  overflow-x: auto;
-  text-shadow: 0 0 14px rgb(242 192 120 / 12%);
-  transition: opacity 320ms ease;
-}
-
 .page[aria-busy='true'] {
   color: var(--brun-sourd);
   text-shadow: none;
@@ -359,45 +239,6 @@ body::after {
 }
 
 /* -------------------------------------------------------- fermer le livre */
-
-/*
- * La seule chose qui flotte au-dessus du monde.
- *
- * Elle ne s'affiche que lorsqu'un volume est ouvert, elle n'a ni cadre ni
- * fond : dans un lieu, on ne pose pas de barre d'outils.
- */
-.fermer {
-  position: fixed;
-  top: var(--gouttiere);
-  right: var(--gouttiere);
-  z-index: 3;
-  display: grid;
-  place-items: center;
-  width: 2.6rem;
-  height: 2.6rem;
-  padding: 0;
-  border: 0;
-  background: none;
-  color: var(--creme);
-  opacity: 0.42;
-  cursor: pointer;
-  transition: opacity 220ms ease;
-}
-
-.fermer:hover,
-.fermer:focus-visible {
-  opacity: 0.9;
-}
-
-.fermer svg {
-  width: 1.15rem;
-  height: 1.15rem;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 1.4;
-  stroke-linecap: round;
-}
-
 /* ---------------------------------------------------------------------------
    Les lieux dessines
 
@@ -582,7 +423,11 @@ body::after {
 @media (prefers-reduced-motion: reduce) {
   .intro__ligne,
   .intro__invite,
-  .porte__lueur {
+  .porte__lueur,
+  .livre__objet,
+  .feuillet,
+  .feuillet__texte,
+  .livre__souffle {
     animation: none;
   }
 }
@@ -593,11 +438,374 @@ body::after {
 }
 
 /* La lecture recouvre le lieu : on ne lit pas en marchant. */
-.lecture {
+
+/* ------------------------------------------------------------------ livre */
+
+/*
+ * Le volume ouvert.
+ *
+ * Aucun tableau de bord. Ce qu'une barre d'outils affichait, le livre le porte
+ * la ou un livre le porte : l'adresse est le titre courant du verso, les
+ * numeros sont aux angles exterieurs. Et la galerie reste visible derriere,
+ * dans le noir : on n'a pas quitte la piece, on y a pris un livre.
+ */
+.livre {
   position: absolute;
   inset: 0;
+  z-index: 4;
+  display: grid;
+  /*
+   * `minmax(0, 1fr)` et non `auto`.
+   *
+   * Sans cela la colonne se dimensionne sur le livre, le `max-width: 100%` de
+   * l'objet ne mord sur rien, et le volume deborde de la fenetre au lieu de
+   * laisser sa page defiler dans sa propre boite. Le lecteur precedent avait
+   * deja trebuche exactement la.
+   */
+  grid-template-columns: minmax(0, 1fr);
+  place-items: center;
+  padding: var(--gouttiere);
+  background: radial-gradient(
+    ellipse 66% 62% at 50% 47%,
+    rgb(20 14 8 / 62%) 0%,
+    rgb(5 4 3 / 90%) 72%
+  );
+  cursor: zoom-out;
+}
+
+/*
+ * Une seule mesure gouverne tout l'objet : le corps du texte.
+ *
+ * Quatre-vingts caracteres font 48em de large et quarante lignes 52em de haut.
+ * Tout le reste, marges comprises, est exprime dans cette unite, si bien que
+ * le livre se pose dans n'importe quelle fenetre sans jamais deborder ni
+ * demander d'ascenseur.
+ */
+.livre__objet {
+  --corps: min(1.16vh, 0.76vw, 14px);
+
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  max-width: 100%;
+  box-shadow: 0 2.4em 4em rgb(0 0 0 / 62%);
+  font-size: var(--corps);
+  cursor: default;
+  perspective: 170em;
+  transform-style: preserve-3d;
+  animation: livre-pose 760ms cubic-bezier(0.22, 0.8, 0.3, 1) both;
+}
+
+.livre__objet * {
+  box-sizing: border-box;
+}
+
+/* Le chant : une tranche de feuillets, donc des traits et non un aplat. */
+.livre__chant {
+  width: 1.4em;
+  background: repeating-linear-gradient(to right, #c4b491 0 1px, #e7dcbf 1px 2.6px);
+}
+
+.livre__chant--gauche {
+  border-radius: 3px 0 0 3px;
+  box-shadow: inset -0.5em 0 0.7em rgb(60 44 24 / 34%);
+}
+
+.livre__chant--droite {
+  border-radius: 0 3px 3px 0;
+  box-shadow: inset 0.5em 0 0.7em rgb(60 44 24 / 34%);
+}
+
+/* La gouttiere : le pli, la seule ligne ou la lumiere n'entre pas. */
+.livre__gouttiere {
+  width: 1.2em;
+  background: linear-gradient(
+    to right,
+    #7d6a45 0%,
+    #241a10 40%,
+    #170f08 50%,
+    #241a10 60%,
+    #7d6a45 100%
+  );
+}
+
+.feuillet {
+  position: relative;
   display: flex;
   flex-direction: column;
-  background: #0a0806;
-  overflow: auto;
+  min-width: 0;
+  padding: 2.6em 2.9em 2.1em;
+  color: #322a1d;
+  cursor: pointer;
+}
+
+/* Le papier prend l'ombre du pli du cote du pli, et l'usure du cote du chant. */
+.feuillet--verso {
+  transform-origin: right center;
+  background:
+    linear-gradient(to left, rgb(60 44 24 / 30%) 0%, rgb(0 0 0 / 0%) 13%),
+    linear-gradient(to right, rgb(90 68 38 / 13%) 0%, rgb(0 0 0 / 0%) 9%),
+    linear-gradient(158deg, #f5ecd9 0%, #e9dcc1 52%, #d6c8a6 100%);
+  animation: verso-ouvre 780ms cubic-bezier(0.22, 0.8, 0.3, 1) both;
+}
+
+.feuillet--recto {
+  transform-origin: left center;
+  background:
+    linear-gradient(to right, rgb(60 44 24 / 30%) 0%, rgb(0 0 0 / 0%) 13%),
+    linear-gradient(to left, rgb(90 68 38 / 13%) 0%, rgb(0 0 0 / 0%) 9%),
+    linear-gradient(202deg, #f5ecd9 0%, #eaddc3 52%, #d6c8a6 100%);
+  animation: recto-ouvre 780ms cubic-bezier(0.22, 0.8, 0.3, 1) both;
+}
+
+/* Le coin se souleve quand on le survole : un livre dit lui-meme ou l'on tourne. */
+.feuillet::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  width: 3.2em;
+  height: 3.2em;
+  opacity: 0;
+  transition: opacity 220ms ease;
+  pointer-events: none;
+}
+
+.feuillet--recto::after {
+  right: 0;
+  background: linear-gradient(225deg, #f6efdc 0%, #cfbf99 62%, #b5a481 100%);
+  box-shadow: -0.25em -0.25em 0.6em rgb(60 44 24 / 30%);
+  clip-path: polygon(100% 0, 100% 100%, 0 100%);
+}
+
+.feuillet--verso::after {
+  left: 0;
+  background: linear-gradient(135deg, #f6efdc 0%, #cfbf99 62%, #b5a481 100%);
+  box-shadow: 0.25em -0.25em 0.6em rgb(60 44 24 / 30%);
+  clip-path: polygon(0 0, 100% 100%, 0 100%);
+}
+
+.feuillet:hover::after {
+  opacity: 1;
+}
+
+/*
+ * Le titre courant EST l'adresse, et le toucher copie le lien.
+ *
+ * C'est la seule commande du lecteur, et elle n'ajoute rien a l'ecran : le
+ * texte etait deja imprime la.
+ */
+.feuillet__titre {
+  margin: 0 0 1.7em;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: #8d7b5b;
+  font: inherit;
+  font-size: 0.86em;
+  letter-spacing: 0.16em;
+  text-align: left;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: color 200ms ease;
+}
+
+.feuillet__titre:hover,
+.feuillet__titre:focus-visible {
+  color: #5d4e34;
+  outline: none;
+}
+
+.feuillet__titre--recto {
+  text-align: right;
+  cursor: pointer;
+}
+
+.feuillet__texte {
+  flex: 1 1 auto;
+  animation: encre 460ms ease-out both;
+}
+
+.feuillet__folio {
+  margin: 1.5em 0 0;
+  color: #8d7b5b;
+  font-size: 0.95em;
+  letter-spacing: 0.1em;
+}
+
+.feuillet--recto .feuillet__folio {
+  text-align: right;
+}
+
+/* La page : quarante lignes de quatre-vingts caracteres, imprimees. */
+.page {
+  margin: 0;
+  font-family: ui-monospace, 'SF Mono', 'Cascadia Mono', Menlo, Consolas, monospace;
+  font-size: 1em;
+  line-height: 1.3;
+  letter-spacing: 0.01em;
+  color: #322a1d;
+  white-space: pre;
+}
+
+/* Pendant l'attente, le meme bloc exactement, mais en creux : rien ne saute. */
+.page[aria-busy='true'] {
+  color: rgb(50 42 29 / 20%);
+}
+
+/*
+ * Deux choses qui ne sont pas un tableau de bord : un mot qui s'efface au bout
+ * de quelques secondes, et un bouton qui n'existe que pour le clavier.
+ */
+.livre__souffle {
+  position: absolute;
+  bottom: clamp(0.8rem, 3vh, 2.4rem);
+  left: 50%;
+  margin: 0;
+  color: var(--ombre-chaude);
+  font-size: 0.72rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  opacity: 0.5;
+  transform: translateX(-50%);
+  animation: souffle 6.5s ease-out both;
+  pointer-events: none;
+}
+
+.livre__refermer {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  padding: 0.5rem 1.3rem;
+  border: 1px solid var(--or);
+  border-radius: 2px;
+  background: var(--nuit);
+  color: var(--soleil);
+  font: inherit;
+  font-size: 0.8rem;
+  letter-spacing: 0.12em;
+  cursor: pointer;
+  transform: translate(-50%, -220%);
+  transition: transform 200ms ease;
+}
+
+.livre__refermer:focus-visible {
+  outline: none;
+  transform: translate(-50%, 0.8rem);
+}
+
+/*
+ * L'ecran etroit : un seul feuillet.
+ *
+ * Quatre-vingts colonnes sur un telephone ne descendent pas en dessous de huit
+ * pixels sans cesser d'etre lisibles. On garde donc ce plancher et l'on laisse
+ * la page defiler dans sa propre boite, comme le faisait deja le lecteur : ici
+ * on lit des caracteres tires au hasard, mieux vaut en voir peu et bien.
+ */
+@media (max-width: 860px) {
+  .livre__objet {
+    --corps: clamp(8px, min(1.16vh, 1.6vw), 14px);
+
+    max-width: 100%;
+  }
+
+  .livre__gouttiere,
+  .feuillet--recto,
+  .livre__chant--droite {
+    display: none;
+  }
+
+  .livre__chant--gauche {
+    border-radius: 3px 0 0 3px;
+  }
+
+  .feuillet--verso {
+    max-width: 100%;
+    animation: livre-pose 640ms ease-out both;
+  }
+
+  .feuillet--verso .page {
+    overflow-x: auto;
+  }
+
+  /*
+   * Sans survol, le coin ne peut pas se soulever au passage de la souris : il
+   * reste donc leve. C'est la seule chose qui dise qu'on tourne en touchant.
+   */
+  .feuillet--verso::before {
+    content: '';
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 3.2em;
+    height: 3.2em;
+    background: linear-gradient(225deg, #f6efdc 0%, #cfbf99 62%, #b5a481 100%);
+    box-shadow: -0.25em -0.25em 0.6em rgb(60 44 24 / 30%);
+    opacity: 0.85;
+    clip-path: polygon(100% 0, 100% 100%, 0 100%);
+    pointer-events: none;
+  }
+
+  .feuillet--verso::after {
+    opacity: 0.5;
+  }
+}
+
+@keyframes livre-pose {
+  from {
+    opacity: 0;
+    transform: translateY(2.4em) scale(0.965);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes verso-ouvre {
+  from {
+    transform: rotateY(46deg);
+  }
+
+  to {
+    transform: none;
+  }
+}
+
+@keyframes recto-ouvre {
+  from {
+    transform: rotateY(-46deg);
+  }
+
+  to {
+    transform: none;
+  }
+}
+
+@keyframes encre {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes souffle {
+  0% {
+    opacity: 0;
+  }
+
+  10% {
+    opacity: 0.55;
+  }
+
+  68% {
+    opacity: 0.55;
+  }
+
+  100% {
+    opacity: 0;
+  }
 }

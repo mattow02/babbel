@@ -446,6 +446,19 @@ plafond, et l'on y voit la lampe de la galerie du dessus (D67).
 
 **180 tests.** La feuille de style perd 88 lignes devenues orphelines.
 
+## Le livre se suffit (2026-09-03)
+
+La lecture avait une barre d'outils devant elle. Le volume est désormais
+dessiné ouvert, deux pages face à face, et il porte lui-même ce que la barre
+affichait : l'adresse est le titre courant du verso et la toucher copie le
+lien, les numéros sont aux angles extérieurs, on tourne en cliquant la page et
+le coin se soulève au survol, on referme en cliquant à côté (D68). La galerie
+reste montée derrière, dans le noir.
+
+Une seule mesure gouverne l'objet, le corps du texte, si bien qu'il se pose
+dans n'importe quelle fenêtre : 1 182 x 643 px dans 1 440 x 900, et sous
+860 px il n'ouvre qu'un feuillet. **184 tests.**
+
 ## Ce qui n'est pas fait, à jour au 2026-09-03
 
 - Le **Seuil** est une invention : chez Borges, la bibliothèque *est* l'univers,

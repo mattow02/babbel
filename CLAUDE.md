@@ -93,6 +93,9 @@ des chantiers restants, par ordre d'importance.
 - Ce qui peut être une **fonction du temps** ne doit pas devenir un état : la
   poussière est animée dans le shader, sans coût processeur (D37).
 - Rien n'est téléchargé : ni texture, ni police, ni son. Tout est calculé.
+- Une colonne de grille en `auto` se dimensionne sur son contenu : le
+  `max-width: 100%` de l'enfant ne mord alors sur rien et déborde. C'est
+  `minmax(0, 1fr)` qu'il faut. Le piège s'est présenté deux fois.
 - Le test `inverse(forward(x)) === x` est le test le plus important du projet.
   S'il casse, tout est faux. Il vit dans `src/core/__tests__/bijection.test.ts`.
 - `npm run check` (typecheck + lint + tests) doit être vert avant tout commit.

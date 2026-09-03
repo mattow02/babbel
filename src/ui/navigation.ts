@@ -2,8 +2,13 @@
  * Les deplacements du lecteur, en logique pure.
  *
  * Tout est borne : on ne sort jamais d'un livre par les pages, ni d'une
- * etagere par les volumes. Franchir ces limites releve de la navigation dans
- * la galerie, qui viendra avec la 3D, pas du fait de tourner une page.
+ * etagere par les volumes. Franchir ces limites releve de la galerie, pas du
+ * fait de tourner une page.
+ *
+ * Depuis que le livre est dessine ouvert, l'unite de deplacement n'est plus la
+ * page mais le FEUILLET : on en voit deux a la fois, et une fleche en tourne
+ * un. `stepPage` reste la primitive, parce que la recherche et les liens
+ * partages, eux, designent bien une page.
  */
 
 import { PAGES_PER_BOOK, VOLUMES_PER_SHELF, type Address } from '../core/index.ts'
@@ -23,9 +28,25 @@ export function stepVolume(address: Address, delta: number): Address {
   return volume === address.volume ? address : { ...address, volume, page: 1 }
 }
 
-/** Premiere ou derniere page du volume. */
+/**
+ * La page de gauche du feuillet qui porte cette page.
+ *
+ * Les pages vont par deux et la premiere est a gauche : un feuillet commence
+ * donc toujours sur un numero impair. Une page paire, celle qu'a pu designer
+ * un lien partage, se lit sur le feuillet ouvert a la page precedente.
+ */
+export function leafOf(page: number): number {
+  return page % 2 === 1 ? page : page - 1
+}
+
+/** Tourne `delta` feuillets, sans sortir du volume. */
+export function turnLeaf(address: Address, delta: number): Address {
+  return { ...address, page: clamp(leafOf(address.page) + delta * 2, 1, PAGES_PER_BOOK - 1) }
+}
+
+/** Premier ou dernier feuillet du volume. */
 export function jumpToEdge(address: Address, edge: 'first' | 'last'): Address {
-  return { ...address, page: edge === 'first' ? 1 : PAGES_PER_BOOK }
+  return { ...address, page: edge === 'first' ? 1 : PAGES_PER_BOOK - 1 }
 }
 
 /** Traduit une touche en deplacement. Rend `null` si la touche ne nous concerne pas. */
@@ -33,16 +54,16 @@ export function resolveKey(event: {
   key: string
   shiftKey: boolean
 }): ((address: Address) => Address) | null {
-  const big = event.shiftKey ? 10 : 1
+  const feuillets = event.shiftKey ? 5 : 1
   switch (event.key) {
     case 'ArrowRight':
-      return (address) => stepPage(address, big)
+      return (address) => turnLeaf(address, feuillets)
     case 'ArrowLeft':
-      return (address) => stepPage(address, -big)
+      return (address) => turnLeaf(address, -feuillets)
     case 'PageDown':
-      return (address) => stepPage(address, 10)
+      return (address) => turnLeaf(address, 5)
     case 'PageUp':
-      return (address) => stepPage(address, -10)
+      return (address) => turnLeaf(address, -5)
     case 'Home':
       return (address) => jumpToEdge(address, 'first')
     case 'End':

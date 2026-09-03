@@ -771,3 +771,41 @@ Detail de dessin qui a demande deux essais : la trouee est percee APRES le halo
 de notre propre lampe. Dessinee avant, la lumiere la remplissait et l'on y
 voyait une coupole.
 Decide le 2026-09-03.
+
+
+### D68 : Le livre se suffit
+La lecture avait une barre d'outils : six couples etiquette-valeur alignes en
+haut de l'ecran, un bouton « copier l'adresse », une croix pour fermer, et une
+page de texte posee sur du noir. C'etait un panneau de controle devant un
+livre.
+
+Le volume est desormais dessine ouvert, deux pages face a face, et il porte
+lui-meme ce que la barre affichait, la ou un livre le porte :
+- l'adresse est le **titre courant** du verso, et la toucher copie le lien ;
+- les numeros sont aux **angles exterieurs**, comme des folios ;
+- le nombre de pages est le titre courant du recto ;
+- on tourne **en cliquant la page**, a droite pour avancer, et le coin se
+  souleve au survol pour le dire ;
+- on referme en cliquant a cote du livre, ou avec echap.
+
+La galerie reste montee derriere, dans le noir : on n'a pas quitte la piece,
+on y a pris un livre. Refermer ne recharge donc rien.
+
+Une seule mesure gouverne tout l'objet, le corps du texte : quatre-vingts
+caracteres font 48em, quarante lignes 52em, et le reste est exprime dans cette
+unite. Le livre se pose ainsi dans n'importe quelle fenetre sans jamais
+deborder. Sous 860 pixels il n'ouvre plus qu'un feuillet et tourne une page a
+la fois, parce que deux pages de quatre-vingts colonnes cote a cote n'y
+tiennent pas.
+
+Consequence sur la navigation : l'unite de deplacement n'est plus la page mais
+le **feuillet**, deux pages a la fois. Une page paire, celle qu'a pu designer
+un lien partage ou une recherche, se lit sur le feuillet ouvert a la page
+precedente. `stepPage` reste la primitive, parce que les liens, eux, designent
+bien une page.
+
+Le meme piege de mise en page a ete retrouve : une colonne de grille en `auto`
+se dimensionne sur son contenu, et le `max-width: 100%` de l'objet ne mord
+alors sur rien. C'est `minmax(0, 1fr)` qui le corrige, exactement comme dans le
+lecteur precedent.
+Decide le 2026-09-03.
