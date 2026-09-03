@@ -1017,3 +1017,39 @@ et la corniche a maintenant une sous-face sur toute sa longueur.
 Les cretes se brisent enfin en deux ressauts par versant : quatre triangles
 nets se lisaient comme des pyramides posees sur le ciel, pas comme du relief.
 Decide le 2026-09-03.
+
+
+### D78 : L'ordre de dessin est un fait de la scene
+Les ombres des cypres se peignaient sur les cypres. La cause etait un ordre de
+boucle : les arbres etaient dessines un par un, ombre puis feuillage, du plus
+proche au plus lointain. L'ombre d'un arbre lointain passait donc PAR-DESSUS un
+arbre proche, et l'arbre lointain lui-meme passait devant.
+
+Deux passes reglent les deux d'un coup : toutes les ombres, puis tous les
+arbres. Et la liste est triee par profondeur une fois pour toutes, a la
+construction, parce que l'ordre de dessin est un fait de la scene et non une
+affaire de boucle. C'est la meme regle que pour les tranches de la galerie,
+triees par proximite depuis le premier jour ; elle n'avait simplement pas ete
+appliquee ici.
+Decide le 2026-09-03.
+
+
+### D79 : C'est le noir du contact qui pose un batiment
+Le temple avait l'air pose sur rien, et il l'etait : son socle etait une seule
+dalle de seize pixels, de la meme valeur que la terrasse, sans ressaut et sans
+ombre. Rien ne disait ou le batiment finissait et ou le sol commencait.
+
+Trois choses le posent, dans cet ordre d'importance :
+1. **L'ombre de contact.** Un degre de noir au ras du socle, evanoui quinze
+   pixels plus bas. C'est elle qui fait le plus de travail, et de loin.
+2. **Un stereobate**, trois assises qui s'elargissent en descendant, chacune
+   avec son dessus au jour et sa face dans l'ombre. Une dalle unique ne porte
+   rien.
+3. **L'ombre portee.** Le soleil est derriere le monument : son ombre vient
+   donc vers nous et s'etale sur le parvis, en trois nappes de plus en plus
+   etroites et sombres en remontant vers lui. C'est le degrade qui fait la
+   distance, jamais le contour.
+
+Au passage, la face de la terrasse a recu son propre degre : un plan vertical
+s'assombrit en descendant, et un aplat ne se lit pas comme un plan.
+Decide le 2026-09-03.

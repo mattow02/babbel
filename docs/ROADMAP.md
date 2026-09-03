@@ -536,6 +536,19 @@ différemment supposait un point de vue de biais. La masse se lit par les
 ressauts (D77). Crêtes brisées, sous-face de corniche sur toute sa longueur.
 **194 tests**, axes vérifiés à l'écran.
 
+## Le temple posé, les ombres dans l'ordre (2026-09-03)
+
+**Les ombres des cyprès se peignaient sur les cyprès** : les arbres étaient
+dessinés un par un, ombre puis feuillage, du plus proche au plus lointain.
+Deux passes et un tri par profondeur à la construction règlent les deux
+problèmes d'un coup (D78).
+
+**Le temple avait l'air posé sur rien**, et il l'était : son socle était une
+dalle unique de la même valeur que la terrasse, sans ressaut ni ombre. Il a
+maintenant une ombre de contact, un stéréobate à trois assises, et une ombre
+portée qui vient vers nous puisque le soleil est derrière lui (D79).
+**194 tests.**
+
 ## Ce qui n'est pas fait, à jour au 2026-09-03
 
 - Le **Seuil** est une invention : chez Borges, la bibliothèque *est* l'univers,

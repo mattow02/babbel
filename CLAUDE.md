@@ -117,6 +117,11 @@ des chantiers restants, par ordre d'importance.
   aucune retouche de couleur n'y changera rien.
 - Une **élévation frontale ne montre aucune face latérale**. La masse se dit
   par les ressauts, pas par des parallélogrammes de côté.
+- **C'est le noir du contact qui pose un objet** (D79), avant le socle et avant
+  l'ombre portée. Sans lui tout flotte, quel que soit le détail ajouté.
+- L'**ordre de dessin est un fait de la scène**, pas une affaire de boucle
+  (D78) : on trie par profondeur à la construction, et on sépare les ombres des
+  objets en deux passes.
 - Une colonne de grille en `auto` se dimensionne sur son contenu : le
   `max-width: 100%` de l'enfant ne mord alors sur rien et déborde. C'est
   `minmax(0, 1fr)` qu'il faut. Le piège s'est présenté deux fois.

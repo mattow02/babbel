@@ -81,6 +81,40 @@ function Colonne({ x }: { x: number }): React.ReactElement {
   )
 }
 
+/**
+ * Les cypres du parvis.
+ *
+ * Ils se tiennent DEVANT la terrasse, et non plus a cheval sur l'horizon : les
+ * plus proches encadrent donc l'image de deux verticales sombres, ce qui pose
+ * le monument au lieu de le border.
+ *
+ * La liste est triee du fond vers l'avant une fois pour toutes, parce que
+ * l'ordre de dessin est un fait de la scene et non une affaire de boucle.
+ */
+const CYPRES = Array.from({ length: 8 }, (_, i) => {
+  const t = i / 7
+  const ry = 46 - t * 29
+  const ombreY = 500 - t * 40
+  const vert = (a: number, b: number): number => Math.round(a + (b - a) * t)
+  return {
+    ry,
+    ombreY,
+    cy: ombreY - ry,
+    ombreRx: 26 - t * 16,
+    feuille: `rgb(${vert(38, 64)} ${vert(52, 86)} ${vert(40, 70)})`,
+    // Le vent ne souffle pas en cadence : chaque arbre a sa periode, tiree du
+    // hachage et non d'une multiplication, qui redonnerait un motif (D32).
+    souffle: (3.4 + 2.8 * unite(hash32(i * 7919 + 13))).toFixed(2),
+    retard: (-8 * unite(hash32(i * 104729 + 5))).toFixed(2),
+    x: 26 + i * 18.5,
+  }
+})
+  .flatMap((a) => [
+    { ...a, cle: `${a.x}g`, cx: a.x, cote: -1 as const },
+    { ...a, cle: `${a.x}d`, cx: 960 - a.x, cote: 1 as const },
+  ])
+  .sort((a, b) => a.ombreY - b.ombreY)
+
 /** Le contour d'une baie en plein cintre, a la largeur qu'on lui donne. */
 function baie(demi: number, fleche: number): string {
   const { cx, sol, naissance } = PORTAIL
@@ -146,6 +180,16 @@ export function Seuil({ onEntrer }: { onEntrer: () => void }): React.ReactElemen
       <stop offset=".5" stopColor="#ffb15a" stopOpacity=".3"/>
       <stop offset="1" stopColor="#ff9d3c" stopOpacity="0"/>
     </radialGradient>
+    {/* L ombre de contact : noire au ras du socle, evanouie quinze pixels plus bas. */}
+    <linearGradient id="s-contact" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stopColor="#33240f" stopOpacity=".78"/>
+      <stop offset=".5" stopColor="#33240f" stopOpacity=".3"/>
+      <stop offset="1" stopColor="#3d2c18" stopOpacity="0"/>
+    </linearGradient>
+    {/* La face de la terrasse est un plan vertical : elle s assombrit en bas. */}
+    <linearGradient id="s-terrasse" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stopColor="#bda683"/><stop offset="1" stopColor="#9c8462"/>
+    </linearGradient>
     <linearGradient id="s-brume" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0" stopColor="#e8c9a0" stopOpacity="0"/>
       <stop offset="1" stopColor="#e8c9a0" stopOpacity=".55"/>
@@ -242,11 +286,9 @@ export function Seuil({ onEntrer }: { onEntrer: () => void }): React.ReactElemen
     les cypres se tiennent devant, sur le parvis.
   */}
   <rect y="418" width="960" height="202" fill="#c9ae86"/>
-  <rect y="424" width="960" height="26" fill="#b39a74"/>
+  <rect y="424" width="960" height="26" fill="url(#s-terrasse)"/>
   <rect y="418" width="960" height="6" fill="#e8d6b0"/>
-  <rect y="450" width="960" height="6" fill="#8a7458" opacity=".5"/>
-  {/* Le podium saillant porte son ombre sur la face de la terrasse. */}
-  <rect x="162" y="424" width="636" height="10" fill="#7c6647" opacity=".45"/>
+  <rect y="450" width="960" height="14" fill="url(#s-contact)"/>
 
   {/* Le dome, derriere la colonnade */}
   <path d="M294.0 300 A186 168 0 0 1 666.0 300 Z" fill="url(#s-dome)"/>
@@ -351,13 +393,42 @@ export function Seuil({ onEntrer }: { onEntrer: () => void }): React.ReactElemen
     <ellipse key={c.rx} cx="480" cy="486" rx={c.rx} ry={c.ry} fill="none" stroke="#e2cda4" strokeWidth="1.6" opacity={c.o}/>
   ))}
 
-  {/* L ombre du monument sur la terrasse : c est elle qui le pose */}
-  <ellipse cx="480.0" cy="486" rx="392" ry="26" fill="#6b5b42" opacity=".36"/>
-  <ellipse cx="480.0" cy="480" rx="300" ry="16" fill="#584b38" opacity=".4"/>
+  {/*
+    L ombre portee du monument.
 
-  {/* Le stylobate : on en voit le dessus, donc les colonnes posent dessus */}
-  <polygon points="180.0,396 780.0,396 798.0,408 162.0,408" fill="#f0e0bd"/>
-  <rect x="162.0" y="408" width="636" height="16" fill="#cdb894" stroke="#a68d66" strokeWidth="1"/>
+    Le soleil est DERRIERE lui : son ombre vient donc vers nous, et s etale sur
+    le parvis. Trois nappes de plus en plus etroites et de plus en plus sombres
+    en remontant vers le batiment : c est le degrade qui fait la distance, pas
+    le contour.
+  */}
+  <ellipse cx="480.0" cy="498" rx="540" ry="42" fill="#6b5b42" opacity=".2"/>
+  <ellipse cx="480.0" cy="488" rx="404" ry="28" fill="#6b5b42" opacity=".34"/>
+  <ellipse cx="480.0" cy="478" rx="306" ry="17" fill="#503f2b" opacity=".42"/>
+
+  {/*
+    LE STEREOBATE : trois assises, et non une dalle.
+
+    Le temple avait l'air pose sur rien, et il l'etait : son socle etait une
+    seule dalle de seize pixels, de la meme valeur que la terrasse, sans
+    ressaut et sans ombre de contact. Rien ne disait ou le batiment finissait
+    et ou le sol commencait.
+
+    Trois assises qui s'elargissent en descendant, chacune avec son dessus au
+    jour et sa face dans l'ombre, puis une ombre portee qui se colle sous la
+    derniere : c'est le noir du contact qui pose un batiment, plus surement que
+    n'importe quel detail.
+  */}
+  {[
+    { y: 396, x0: 180, x1: 780, dessus: '#f4e6c6', face: '#d6c096' },
+    { y: 405, x0: 171, x1: 789, dessus: '#ead9b5', face: '#c5ae83' },
+    { y: 414, x0: 162, x1: 798, dessus: '#dfcda7', face: '#b19871' },
+  ].map((a) => (
+    <g key={a.y}>
+      <rect x={a.x0} y={a.y} width={a.x1 - a.x0} height="3.4" fill={a.dessus}/>
+      <rect x={a.x0} y={a.y + 3.4} width={a.x1 - a.x0} height="5.6" fill={a.face}/>
+    </g>
+  ))}
+  <rect x="150.0" y="423" width="660" height="18" fill="url(#s-contact)"/>
   {/*
     L escalier.
 
@@ -385,41 +456,40 @@ export function Seuil({ onEntrer }: { onEntrer: () => void }): React.ReactElemen
   })}
 
   {/* Les cypres */}
-  {Array.from({ length: 8 }, (_, i) => {
-    /*
-     * Ils se tiennent sur le PARVIS, devant la terrasse, et non plus a cheval
-     * sur l'horizon. Les plus proches encadrent donc l'image de deux verticales
-     * sombres, ce qui pose le monument au lieu de le border.
-     */
-    const t = i / 7
-    const x = 26 + i * 18.5
-    const ry = 46 - t * 29
-    const ombreY = 500 - t * 40
-    const cy = ombreY - ry
-    const ombreRx = 26 - t * 16
-    const vert = (a: number, b: number): number => Math.round(a + (b - a) * t)
-    const feuille = `rgb(${vert(38, 64)} ${vert(52, 86)} ${vert(40, 70)})`
-    // Le vent ne souffle pas en cadence : chaque arbre a sa periode, tiree du
-    // hachage et non d'une multiplication, qui redonnerait un motif (D32).
-    const souffle = 3.4 + 2.8 * unite(hash32(i * 7919 + 13))
-    const retard = -8 * unite(hash32(i * 104729 + 5))
-    return [x, 960 - x].map((cx, cote) => (
-      <g key={`${i}-${cote}`}>
-        <ellipse cx={cx + (cote ? ombreRx : -ombreRx) * 0.667} cy={ombreY} rx={ombreRx} ry={ombreRx * 0.185} fill="#6b5b42" opacity=".38"/>
-        <ellipse cx={cx} cy={ombreY} rx={ry * 0.2} ry={ry * 0.051} fill="#4a3f2e" opacity=".55"/>
-        <rect x={cx - 1.4} y={ombreY - 5} width="2.8" height="6" fill="#33291d"/>
+  {/*
+    Les cypres : toutes les ombres d'abord, puis les arbres du fond vers
+    l'avant.
+
+    Ils etaient dessines arbre par arbre, du plus proche au plus lointain :
+    l'ombre d'un arbre lointain se peignait donc PAR-DESSUS un arbre proche,
+    et l'arbre lointain lui-meme passait devant. Deux passes reglent les deux
+    d'un coup, et l'ordre est celui de la profondeur, jamais celui de la
+    boucle.
+  */}
+  <g>
+    {CYPRES.map((a) => (
+      <g key={`o${a.cle}`}>
+        <ellipse cx={a.cx + a.cote * a.ombreRx * 0.667} cy={a.ombreY} rx={a.ombreRx} ry={a.ombreRx * 0.185} fill="#6b5b42" opacity=".38"/>
+        <ellipse cx={a.cx} cy={a.ombreY} rx={a.ry * 0.2} ry={a.ry * 0.051} fill="#4a3f2e" opacity=".55"/>
+      </g>
+    ))}
+  </g>
+  <g>
+    {CYPRES.map((a) => (
+      <g key={`a${a.cle}`}>
+        <rect x={a.cx - 1.4} y={a.ombreY - 5} width="2.8" height="6" fill="#33291d"/>
         <ellipse
           className="cypres"
-          cx={cx}
-          cy={cy}
-          rx={ry * 0.23}
-          ry={ry}
-          fill={feuille}
-          style={{ animationDuration: `${souffle.toFixed(2)}s`, animationDelay: `${retard.toFixed(2)}s` }}
+          cx={a.cx}
+          cy={a.cy}
+          rx={a.ry * 0.23}
+          ry={a.ry}
+          fill={a.feuille}
+          style={{ animationDuration: `${a.souffle}s`, animationDelay: `${a.retard}s` }}
         />
       </g>
-    ))
-  })}
+    ))}
+  </g>
 
   {/*
     Deux vasques au pied des marches.
