@@ -1,6 +1,6 @@
 # Roadmap : Babbel
 
-État : **Roadmap terminée, chantiers repris, audit fait ET corrigé.** Voir [`docs/AUDIT.md`](AUDIT.md).
+État : **le site a quitté la 3D.** Les scènes sont dessinées (`src/vue2d/`), le hall a été retiré, et il ne reste que le Seuil et les salles des livres. **194 tests.** L'audit du 31 août 2026 a été supprimé : il mesurait l'architecture three.js, qui n'existe plus. Les décisions, elles, sont toutes dans [`docs/DECISIONS.md`](DECISIONS.md).
 Mise à jour : 2026-08-29
 
 Règle : une phase n'est close que si ses critères de sortie sont vérifiés.
@@ -336,7 +336,7 @@ silhouette brisée, lisibilité mobile, secours sans WebGL, worker résilient.
 **227 tests**, zéro avertissement.
 
 ### Audit
-Voir **[`docs/AUDIT.md`](AUDIT.md)**. Sept défauts corrigés pendant l'audit,
+Voir `docs/AUDIT.md`, depuis supprimé. Sept défauts corrigés pendant l'audit,
 dont une **régression de performance qui faisait passer la bibliothèque
 au-dessus du budget d'image**, invisible au compte des appels de rendu. Quatre
 constats P1 et cinq P2 restent ouverts, avec un ordre de traitement recommandé.
@@ -358,7 +358,7 @@ constats P1 et cinq P2 restent ouverts, avec un ordre de traitement recommandé.
   unknown as` ramenées de 8 à 2.
 - **React est testé** : jsdom et Testing Library, 29 tests de composants.
 
-**256 tests**, zéro avertissement. Détail dans [`docs/AUDIT.md`](AUDIT.md).
+**256 tests**, zéro avertissement. Détail dans `docs/AUDIT.md`, depuis supprimé.
 
 ---
 
