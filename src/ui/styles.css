@@ -319,7 +319,7 @@ body::after {
 
 /* La porte du dehors respire, pour se designer sans une ligne de texte. */
 .porte__lueur {
-  opacity: 0.14;
+  opacity: 0.2;
   transform-box: fill-box;
   transform-origin: center;
   animation: porte-respire 3.6s ease-in-out infinite;
@@ -337,7 +337,7 @@ body::after {
     transform: scale(1);
   }
   50% {
-    transform: scale(1.16);
+    transform: scale(1.26);
   }
 }
 
@@ -420,17 +420,6 @@ body::after {
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .intro__ligne,
-  .intro__invite,
-  .porte__lueur,
-  .livre__objet,
-  .feuillet,
-  .feuillet__texte,
-  .livre__souffle {
-    animation: none;
-  }
-}
 
 .seuil {
   position: absolute;
@@ -807,5 +796,300 @@ body::after {
 
   100% {
     opacity: 0;
+  }
+}
+
+
+/* -------------------------------------------------------------- la vie */
+
+/*
+ * Ce qui bouge.
+ *
+ * Tout passe par `transform` et par `opacity`, donc par le compositeur :
+ * aucune de ces animations ne provoque de calcul de mise en page, et aucune
+ * n'est pilotee par du JavaScript. Il n'y a pas une image a calculer, et la
+ * scene reste un dessin.
+ *
+ * Les periodes sont volontairement premieres entre elles, et plusieurs sont
+ * tirees du hachage : rien ne doit tomber en cadence, sinon le mouvement se
+ * lit comme un mecanisme.
+ */
+
+.soleil {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: soleil-respire 17s ease-in-out infinite alternate;
+}
+
+@keyframes soleil-respire {
+  from {
+    opacity: 0.88;
+    transform: scale(1);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+}
+
+/*
+ * Les nuages derivent, et la boucle fait EXACTEMENT une largeur de cadre :
+ * la couche est dessinee deux fois, la seconde decalee d'autant, si bien que
+ * le retour au depart passe inapercu.
+ */
+.ciel__haut {
+  animation: derive 250s linear infinite;
+}
+
+.ciel__bas {
+  animation: derive 163s linear infinite;
+}
+
+@keyframes derive {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-960px);
+  }
+}
+
+.volee {
+  animation: volee-tourne 43s ease-in-out infinite alternate;
+}
+
+@keyframes volee-tourne {
+  from {
+    transform: translate(-28px, 7px);
+  }
+
+  to {
+    transform: translate(32px, -9px);
+  }
+}
+
+.oiseau {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation-name: bat-des-ailes;
+  animation-iteration-count: infinite;
+  animation-timing-function: ease-in-out;
+}
+
+@keyframes bat-des-ailes {
+  0%,
+  100% {
+    transform: scaleY(1.2);
+  }
+
+  50% {
+    transform: scaleY(0.4);
+  }
+}
+
+/* Un cypres est raide : il ploie a peine, et jamais des deux cotes egalement. */
+.cypres {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation-name: cypres-vent;
+  animation-direction: alternate;
+  animation-iteration-count: infinite;
+  animation-timing-function: ease-in-out;
+}
+
+@keyframes cypres-vent {
+  from {
+    transform: rotate(-0.5deg);
+  }
+
+  to {
+    transform: rotate(1.7deg);
+  }
+}
+
+/* Deux periodes qui ne tombent pas juste : c'est ce qui fait une flamme. */
+.flamme {
+  transform-box: fill-box;
+  transform-origin: 50% 90%;
+  opacity: 0.55;
+  animation:
+    flamme-souffle 2.9s ease-in-out infinite alternate,
+    flamme-scintille 1.13s ease-in-out infinite alternate;
+}
+
+@keyframes flamme-souffle {
+  from {
+    transform: scale(0.84);
+  }
+
+  to {
+    transform: scale(1.14);
+  }
+}
+
+@keyframes flamme-scintille {
+  from {
+    opacity: 0.38;
+  }
+
+  to {
+    opacity: 0.7;
+  }
+}
+
+.rides {
+  opacity: 0.22;
+  animation: rides-glissent 13s ease-in-out infinite alternate;
+}
+
+@keyframes rides-glissent {
+  from {
+    opacity: 0.15;
+    transform: translateX(-13px);
+  }
+
+  to {
+    opacity: 0.29;
+    transform: translateX(13px);
+  }
+}
+
+/* L'appel de la porte : un halo qui s'ouvre et s'efface, sans fin. */
+.porte__appel {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: porte-appelle 3.4s ease-out infinite;
+}
+
+@keyframes porte-appelle {
+  0% {
+    opacity: 0.45;
+    transform: scale(0.5);
+  }
+
+  70% {
+    opacity: 0.07;
+  }
+
+  100% {
+    opacity: 0;
+    transform: scale(1.8);
+  }
+}
+
+.galerie2d .halo {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: halo-respire 9.3s ease-in-out infinite alternate;
+}
+
+@keyframes halo-respire {
+  from {
+    opacity: 0.9;
+    transform: scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1.035);
+  }
+}
+
+.galerie2d .globe {
+  animation: globe-vacille 4.3s ease-in-out infinite alternate;
+}
+
+@keyframes globe-vacille {
+  from {
+    opacity: 0.88;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+/* Les lampes des galeries voisines, hors de phase : c'est ce qui les eloigne. */
+.galerie2d .lointaine {
+  opacity: 0.55;
+  animation: lointaine-vacille 6.7s ease-in-out infinite alternate;
+}
+
+@keyframes lointaine-vacille {
+  from {
+    opacity: 0.28;
+  }
+
+  to {
+    opacity: 0.82;
+  }
+}
+
+/*
+ * La poussiere dans la lumiere : la seule chose qui bouge dans une salle ou
+ * il ne se passe rien, et c'est ce qui la rend habitee.
+ */
+.galerie2d .poussiere circle {
+  opacity: 0;
+  animation-name: poussiere-monte;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+}
+
+@keyframes poussiere-monte {
+  0% {
+    opacity: 0;
+    transform: translate(0, 18px);
+  }
+
+  16% {
+    opacity: 0.5;
+  }
+
+  76% {
+    opacity: 0.4;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(7px, -48px);
+  }
+}
+
+/*
+ * Le mouvement reduit, en DERNIER.
+ *
+ * Une regle placee avant les animations qu'elle doit eteindre ne les eteint
+ * pas : a specificite egale, c'est la derniere ecrite qui gagne. Le bloc a
+ * donc sa place ici, et nulle part ailleurs.
+ */
+@media (prefers-reduced-motion: reduce) {
+  .intro__ligne,
+  .intro__invite,
+  .porte__lueur,
+  .porte__appel,
+  .livre__objet,
+  .feuillet,
+  .feuillet__texte,
+  .livre__souffle,
+  .soleil,
+  .ciel__haut,
+  .ciel__bas,
+  .volee,
+  .oiseau,
+  .cypres,
+  .flamme,
+  .rides,
+  .galerie2d .halo,
+  .galerie2d .globe,
+  .galerie2d .lointaine {
+    animation: none;
+  }
+
+  /* Une poussiere figee en l'air serait un defaut, pas une sobriete. */
+  .galerie2d .poussiere {
+    display: none;
   }
 }

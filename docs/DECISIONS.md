@@ -857,3 +857,52 @@ Cinq ajouts, tous serieux, aucun decoratif :
   au sol. Le defaut avait deja ete releve pour les arbres : sans ombre, tout
   flotte.
 Decide le 2026-09-03.
+
+
+### D71 : L'escalier ne menait nulle part
+Il s'arretait a 424, c'est-a-dire contre la face du stylobate : on montait sept
+marches pour se cogner a un mur de seize pixels sur toute la largeur, et le
+parvis ne menait donc a rien. Il monte maintenant jusqu'au niveau ou posent les
+colonnes, en tranchant la face du podium, ce que fait tout escalier monumental.
+
+Chaque marche est en deux temps, la contremarche dans l'ombre et le nez qui
+prend le jour. Sans cela, sept rectangles empiles font des rayures et pas des
+marches : c'est l'ecart de valeur entre deux surfaces qui dit qu'il y a une
+arete, jamais le trait qui les separe.
+Decide le 2026-09-03.
+
+
+### D72 : Ce qui bouge, et ce qui ne bouge pas
+Les scenes etaient justes et mortes. Le mouvement ajoute est partout le meme :
+une propriete `transform` ou `opacity` animee par la feuille de style, donc par
+le compositeur. Aucune image n'est calculee, aucun JavaScript ne tourne, et le
+cout est nul : le site reste un dessin.
+
+Dehors : les cirrus derivent sur deux couches a deux vitesses (c'est l'ecart
+entre elles qui donne la profondeur du ciel, pas la vitesse) ; une volee
+d'oiseaux tourne et bat des ailes ; les cypres ploient au vent ; les vasques
+scintillent ; l'eau du bassin glisse ; le soleil respire ; la porte appelle par
+un halo qui s'ouvre et s'efface.
+
+Dedans : la lampe respire, son globe vacille, les deux lampes des galeries
+voisines vacillent hors de phase (c'est ce qui les eloigne), et la poussiere
+monte dans la lumiere. C'est la seule chose qui bouge dans une salle ou il ne
+se passe rien, et c'est ce qui la rend habitee.
+
+Trois regles apprises en le faisant :
+1. **Une boucle doit se refermer sur elle-meme.** Les nuages sont dessines deux
+   fois, la seconde decalee d'une largeur de cadre, et l'ensemble glisse
+   d'exactement cette largeur : on ne voit jamais le retour au depart.
+2. **Rien ne doit tomber en cadence.** Les periodes sont premieres entre elles
+   et plusieurs sont tirees du hachage (D32), sinon le mouvement se lit comme
+   un mecanisme. La flamme des vasques est deux animations de periodes
+   incommensurables, ce qui suffit a faire une flamme.
+3. **Un grain de poussiere n'est visible que dans la lumiere.** Son eclat suit
+   sa distance a la lampe : sans cela on voit des points brillants au fond du
+   noir, ce qui n'est pas de la poussiere mais une erreur.
+
+Et un piege de feuille de style, retrouve a la verification : le bloc
+`prefers-reduced-motion` etait ecrit AVANT les animations qu'il devait
+eteindre. A specificite egale, c'est la derniere regle qui gagne : il ne les
+eteignait donc plus. Sa place est en fin de fichier, et nulle part ailleurs.
+Decide le 2026-09-03.

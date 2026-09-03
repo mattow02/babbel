@@ -15,6 +15,8 @@
  * l'air d'un lieu, pas d'une application. La porte est donc une cible pour de
  * vrai, avec sa lueur qui respire et sa reponse au survol.
  */
+import { hash32, unitOf as unite } from './hash.ts'
+
 export function Seuil({ onEntrer }: { onEntrer: () => void }): React.ReactElement {
   return (
     <div className="seuil">
@@ -57,29 +59,45 @@ export function Seuil({ onEntrer }: { onEntrer: () => void }): React.ReactElemen
   </defs>
 
   <rect width="960" height="620" fill="url(#s-ciel)"/>
-  <ellipse cx="480.0" cy="352" rx="300" ry="215" fill="url(#s-soleil)"/>
+  <ellipse className="soleil" cx="480.0" cy="352" rx="300" ry="215" fill="url(#s-soleil)"/>
 
   {/*
-    Les cirrus.
+    Les cirrus, qui derivent.
 
-    Le ciel occupait le tiers haut de l'image sans rien y mettre. Des bandes
-    tres etirees et tres pales suffisent : elles donnent l'echelle du ciel sans
-    concurrencer le monument, et elles chauffent en descendant vers le soleil.
+    Deux couches a deux vitesses : c'est la difference entre les deux qui
+    donne la profondeur du ciel, pas la vitesse elle-meme.
+
+    Chaque couche est dessinee DEUX FOIS, la seconde decalee d'une largeur de
+    cadre, et l'ensemble glisse d'exactement cette largeur : la boucle se
+    referme sur elle-meme, et l'on ne voit jamais de raccord.
   */}
-  {[
-    { y: 74, rx: 250, ry: 5.5, x: 300, o: 0.13 },
-    { y: 96, rx: 170, ry: 4, x: 690, o: 0.1 },
-    { y: 132, rx: 120, ry: 3.4, x: 150, o: 0.12 },
-    { y: 158, rx: 210, ry: 4.6, x: 800, o: 0.14 },
-    { y: 196, rx: 140, ry: 3.8, x: 120, o: 0.16 },
-    { y: 214, rx: 190, ry: 4.2, x: 760, o: 0.15 },
-    { y: 246, rx: 110, ry: 3, x: 220, o: 0.18 },
-  ].map((c) => (
-    <ellipse key={`${c.x}-${c.y}`} cx={c.x} cy={c.y} rx={c.rx} ry={c.ry} fill="#f2ddba" opacity={c.o}/>
+  {([
+    ['ciel__haut', [
+      { y: 74, rx: 250, ry: 5.5, x: 300, o: 0.13 },
+      { y: 96, rx: 170, ry: 4, x: 690, o: 0.1 },
+      { y: 132, rx: 120, ry: 3.4, x: 150, o: 0.12 },
+      { y: 158, rx: 210, ry: 4.6, x: 800, o: 0.14 },
+    ]],
+    ['ciel__bas', [
+      { y: 196, rx: 140, ry: 3.8, x: 120, o: 0.16 },
+      { y: 214, rx: 190, ry: 4.2, x: 760, o: 0.15 },
+      { y: 246, rx: 110, ry: 3, x: 220, o: 0.18 },
+    ]],
+  ] as const).map(([couche, bandes]) => (
+    <g key={couche} className={couche}>
+      {[0, 960].map((decalage) =>
+        bandes.map((c) => (
+          <ellipse key={`${decalage}-${c.x}-${c.y}`} cx={c.x + decalage} cy={c.y} rx={c.rx} ry={c.ry} fill="#f2ddba" opacity={c.o}/>
+        )),
+      )}
+    </g>
   ))}
 
-  {/* Une volee d'oiseaux, minuscule : c'est elle qui donne sa taille au ciel. */}
-  <g stroke="#22343c" strokeWidth="1.4" fill="none" opacity=".42" strokeLinecap="round">
+  {/*
+    Une volee d'oiseaux, minuscule : c'est elle qui donne sa taille au ciel.
+    Elle tourne lentement, et chacun bat des ailes a son rythme.
+  */}
+  <g className="volee" stroke="#22343c" strokeWidth="1.4" fill="none" opacity=".42" strokeLinecap="round">
     {[
       { x: 196, y: 128, t: 5.5 },
       { x: 224, y: 143, t: 4.4 },
@@ -88,8 +106,16 @@ export function Seuil({ onEntrer }: { onEntrer: () => void }): React.ReactElemen
       { x: 292, y: 134, t: 3.2 },
       { x: 168, y: 156, t: 4 },
       { x: 312, y: 160, t: 2.8 },
-    ].map((o) => (
-      <path key={`${o.x}-${o.y}`} d={`M${o.x - o.t} ${o.y} q${o.t} ${-o.t * 0.62} ${o.t} 0 q0 ${-o.t * 0.62} ${o.t} 0`}/>
+    ].map((o, i) => (
+      <path
+        key={`${o.x}-${o.y}`}
+        className="oiseau"
+        d={`M${o.x - o.t} ${o.y} q${o.t} ${-o.t * 0.62} ${o.t} 0 q0 ${-o.t * 0.62} ${o.t} 0`}
+        style={{
+          animationDuration: `${(0.34 + 0.22 * unite(hash32(i * 2654435761 + 17))).toFixed(2)}s`,
+          animationDelay: `${(-1.4 * unite(hash32(i * 40503 + 3))).toFixed(2)}s`,
+        }}
+      />
     ))}
   </g>
 
@@ -175,10 +201,63 @@ export function Seuil({ onEntrer }: { onEntrer: () => void }): React.ReactElemen
   {/* Le stylobate : on en voit le dessus, donc les colonnes posent dessus */}
   <polygon points="180.0,396 780.0,396 798.0,408 162.0,408" fill="#f0e0bd"/>
   <rect x="162.0" y="408" width="636" height="16" fill="#cdb894" stroke="#a68d66" strokeWidth="1"/>
-  <rect x="354" y="424" width="252" height="9" fill="#e6d3ac" stroke="#b39a70" strokeWidth="1"/><rect x="334" y="432" width="292" height="9" fill="#dcc79c" stroke="#b39a70" strokeWidth="1"/><rect x="314" y="440" width="332" height="9" fill="#e6d3ac" stroke="#b39a70" strokeWidth="1"/><rect x="294" y="448" width="372" height="9" fill="#dcc79c" stroke="#b39a70" strokeWidth="1"/><rect x="274" y="456" width="412" height="9" fill="#e6d3ac" stroke="#b39a70" strokeWidth="1"/><rect x="254" y="464" width="452" height="9" fill="#dcc79c" stroke="#b39a70" strokeWidth="1"/><rect x="234" y="472" width="492" height="9" fill="#e6d3ac" stroke="#b39a70" strokeWidth="1"/>
+  {/*
+    L escalier.
+
+    Il s arretait a 424, c est-a-dire contre la face du stylobate : on montait
+    sept marches pour se cogner a un mur de seize pixels, et le parvis ne
+    menait nulle part. Il monte maintenant jusqu au niveau ou posent les
+    colonnes, en tranchant la face du podium, ce qui est exactement ce que
+    fait un escalier monumental.
+
+    Chaque marche est en deux temps, la contremarche dans l ombre et le nez
+    qui prend le jour : sans cela sept rectangles empiles font des rayures,
+    pas des marches.
+  */}
+  {Array.from({ length: 9 }, (_, i) => {
+    const y = 396 + (8 - i) * 10.6
+    const x0 = 234 + i * 15
+    const large = 726 - i * 15 - x0
+    return (
+      <g key={i}>
+        <rect x={x0} y={y + 3.2} width={large} height={7.8} fill="#c9b389"/>
+        <rect x={x0} y={y} width={large} height={3.6} fill="#f4e7c6"/>
+        <rect x={x0} y={y + 10.6} width={large} height={1} fill="#a68d66" opacity=".5"/>
+      </g>
+    )
+  })}
 
   {/* Les cypres */}
-  <ellipse cx="13.2" cy="462.0" rx="22.2" ry="4.1" fill="#6b5b42" opacity=".38"/><ellipse cx="28.0" cy="462.0" rx="7.4" ry="1.9" fill="#4a3f2e" opacity=".55"/><ellipse cx="28.0" cy="425.0" rx="8.5" ry="37.0" fill="#263428"/><rect x="26.6" y="457.0" width="2.8" height="6" fill="#33291d"/><ellipse cx="946.8" cy="462.0" rx="22.2" ry="4.1" fill="#6b5b42" opacity=".38"/><ellipse cx="932.0" cy="462.0" rx="7.4" ry="1.9" fill="#4a3f2e" opacity=".55"/><ellipse cx="932.0" cy="425.0" rx="8.5" ry="37.0" fill="#263428"/><rect x="930.6" y="457.0" width="2.8" height="6" fill="#33291d"/><ellipse cx="33.0" cy="457.1" rx="20.3" ry="3.7" fill="#6b5b42" opacity=".38"/><ellipse cx="46.6" cy="457.1" rx="6.8" ry="1.8" fill="#4a3f2e" opacity=".55"/><ellipse cx="46.6" cy="423.3" rx="7.8" ry="33.9" fill="#29382c"/><rect x="45.2" y="452.1" width="2.8" height="6" fill="#33291d"/><ellipse cx="927.0" cy="457.1" rx="20.3" ry="3.7" fill="#6b5b42" opacity=".38"/><ellipse cx="913.4" cy="457.1" rx="6.8" ry="1.8" fill="#4a3f2e" opacity=".55"/><ellipse cx="913.4" cy="423.3" rx="7.8" ry="33.9" fill="#29382c"/><rect x="912.0" y="452.1" width="2.8" height="6" fill="#33291d"/><ellipse cx="52.9" cy="452.3" rx="18.4" ry="3.4" fill="#6b5b42" opacity=".38"/><ellipse cx="65.1" cy="452.3" rx="6.1" ry="1.6" fill="#4a3f2e" opacity=".55"/><ellipse cx="65.1" cy="421.6" rx="7.1" ry="30.7" fill="#2d3d30"/><rect x="63.7" y="447.3" width="2.8" height="6" fill="#33291d"/><ellipse cx="907.1" cy="452.3" rx="18.4" ry="3.4" fill="#6b5b42" opacity=".38"/><ellipse cx="894.9" cy="452.3" rx="6.1" ry="1.6" fill="#4a3f2e" opacity=".55"/><ellipse cx="894.9" cy="421.6" rx="7.1" ry="30.7" fill="#2d3d30"/><rect x="893.5" y="447.3" width="2.8" height="6" fill="#33291d"/><ellipse cx="72.7" cy="447.4" rx="16.5" ry="3.0" fill="#6b5b42" opacity=".38"/><ellipse cx="83.7" cy="447.4" rx="5.5" ry="1.4" fill="#4a3f2e" opacity=".55"/><ellipse cx="83.7" cy="419.9" rx="6.3" ry="27.6" fill="#314234"/><rect x="82.3" y="442.4" width="2.8" height="6" fill="#33291d"/><ellipse cx="887.3" cy="447.4" rx="16.5" ry="3.0" fill="#6b5b42" opacity=".38"/><ellipse cx="876.3" cy="447.4" rx="5.5" ry="1.4" fill="#4a3f2e" opacity=".55"/><ellipse cx="876.3" cy="419.9" rx="6.3" ry="27.6" fill="#314234"/><rect x="874.9" y="442.4" width="2.8" height="6" fill="#33291d"/><ellipse cx="92.5" cy="442.6" rx="14.7" ry="2.7" fill="#6b5b42" opacity=".38"/><ellipse cx="102.3" cy="442.6" rx="4.9" ry="1.3" fill="#4a3f2e" opacity=".55"/><ellipse cx="102.3" cy="418.1" rx="5.6" ry="24.4" fill="#344739"/><rect x="100.9" y="437.6" width="2.8" height="6" fill="#33291d"/><ellipse cx="867.5" cy="442.6" rx="14.7" ry="2.7" fill="#6b5b42" opacity=".38"/><ellipse cx="857.7" cy="442.6" rx="4.9" ry="1.3" fill="#4a3f2e" opacity=".55"/><ellipse cx="857.7" cy="418.1" rx="5.6" ry="24.4" fill="#344739"/><rect x="856.3" y="437.6" width="2.8" height="6" fill="#33291d"/><ellipse cx="112.3" cy="437.7" rx="12.8" ry="2.3" fill="#6b5b42" opacity=".38"/><ellipse cx="120.9" cy="437.7" rx="4.3" ry="1.1" fill="#4a3f2e" opacity=".55"/><ellipse cx="120.9" cy="416.4" rx="4.9" ry="21.3" fill="#384c3d"/><rect x="119.5" y="432.7" width="2.8" height="6" fill="#33291d"/><ellipse cx="847.7" cy="437.7" rx="12.8" ry="2.3" fill="#6b5b42" opacity=".38"/><ellipse cx="839.1" cy="437.7" rx="4.3" ry="1.1" fill="#4a3f2e" opacity=".55"/><ellipse cx="839.1" cy="416.4" rx="4.9" ry="21.3" fill="#384c3d"/><rect x="837.7" y="432.7" width="2.8" height="6" fill="#33291d"/><ellipse cx="132.2" cy="432.9" rx="10.9" ry="2.0" fill="#6b5b42" opacity=".38"/><ellipse cx="139.4" cy="432.9" rx="3.6" ry="0.9" fill="#4a3f2e" opacity=".55"/><ellipse cx="139.4" cy="414.7" rx="4.2" ry="18.1" fill="#3c5141"/><rect x="138.0" y="427.9" width="2.8" height="6" fill="#33291d"/><ellipse cx="827.8" cy="432.9" rx="10.9" ry="2.0" fill="#6b5b42" opacity=".38"/><ellipse cx="820.6" cy="432.9" rx="3.6" ry="0.9" fill="#4a3f2e" opacity=".55"/><ellipse cx="820.6" cy="414.7" rx="4.2" ry="18.1" fill="#3c5141"/><rect x="819.2" y="427.9" width="2.8" height="6" fill="#33291d"/><ellipse cx="152.0" cy="428.0" rx="9.0" ry="1.6" fill="#6b5b42" opacity=".38"/><ellipse cx="158.0" cy="428.0" rx="3.0" ry="0.8" fill="#4a3f2e" opacity=".55"/><ellipse cx="158.0" cy="413.0" rx="3.5" ry="15.0" fill="#405646"/><rect x="156.6" y="423.0" width="2.8" height="6" fill="#33291d"/><ellipse cx="808.0" cy="428.0" rx="9.0" ry="1.6" fill="#6b5b42" opacity=".38"/><ellipse cx="802.0" cy="428.0" rx="3.0" ry="0.8" fill="#4a3f2e" opacity=".55"/><ellipse cx="802.0" cy="413.0" rx="3.5" ry="15.0" fill="#405646"/><rect x="800.6" y="423.0" width="2.8" height="6" fill="#33291d"/>
+  {Array.from({ length: 8 }, (_, i) => {
+    const t = i / 7
+    const x = 28 + i * 18.571
+    const ry = 37 - t * 22
+    const cy = 425 - t * 12
+    const ombreY = 462 - t * 34
+    const ombreRx = 22.2 - t * 13.2
+    const vert = (a: number, b: number): number => Math.round(a + (b - a) * t)
+    const feuille = `rgb(${vert(38, 64)} ${vert(52, 86)} ${vert(40, 70)})`
+    // Le vent ne souffle pas en cadence : chaque arbre a sa periode, tiree du
+    // hachage et non d'une multiplication, qui redonnerait un motif (D32).
+    const souffle = 3.4 + 2.8 * unite(hash32(i * 7919 + 13))
+    const retard = -8 * unite(hash32(i * 104729 + 5))
+    return [x, 960 - x].map((cx, cote) => (
+      <g key={`${i}-${cote}`}>
+        <ellipse cx={cx + (cote ? ombreRx : -ombreRx) * 0.667} cy={ombreY} rx={ombreRx} ry={ombreRx * 0.185} fill="#6b5b42" opacity=".38"/>
+        <ellipse cx={cx} cy={ombreY} rx={ry * 0.2} ry={ry * 0.051} fill="#4a3f2e" opacity=".55"/>
+        <rect x={cx - 1.4} y={ombreY - 5} width="2.8" height="6" fill="#33291d"/>
+        <ellipse
+          className="cypres"
+          cx={cx}
+          cy={cy}
+          rx={ry * 0.23}
+          ry={ry}
+          fill={feuille}
+          style={{ animationDuration: `${souffle.toFixed(2)}s`, animationDelay: `${retard.toFixed(2)}s` }}
+        />
+      </g>
+    ))
+  })}
 
   {/*
     Deux vasques au pied des marches.
@@ -194,7 +273,7 @@ export function Seuil({ onEntrer }: { onEntrer: () => void }): React.ReactElemen
       <rect x={x - 17} y="446" width="34" height="7" fill="#efdfbc" stroke="#a68d66" strokeWidth="1"/>
       <path d={`M${x - 22} 440 a22 15 0 0 0 44 0 z`} fill="#c9b183" stroke="#a68d66" strokeWidth="1"/>
       <ellipse cx={x} cy="438" rx="22" ry="5" fill="#8a7250"/>
-      <ellipse cx={x} cy="432" rx="26" ry="18" fill="url(#s-porte)" opacity=".55"/>
+      <ellipse className="flamme" cx={x} cy="432" rx="26" ry="18" fill="url(#s-porte)" style={{ animationDelay: x === 200 ? "0s" : "-1.7s" }}/>
     </g>
   ))}
 
@@ -230,8 +309,11 @@ export function Seuil({ onEntrer }: { onEntrer: () => void }): React.ReactElemen
     <rect x="808" y="378" width="152" height="46" fill="#8f7a56"/>
   </g>
   <rect y="512" width="960" height="108" fill="url(#s-bassin)"/>
-  <g stroke="#f0dcb4" strokeWidth="1.2" opacity=".22" fill="none">
-    <path d="M60 540h840M120 562h720M180 584h600M240 604h480"/>
+  <g className="rides" stroke="#f0dcb4" strokeWidth="1.2" fill="none">
+    <path d="M60 540h840"/>
+    <path d="M120 562h720"/>
+    <path d="M180 584h600"/>
+    <path d="M240 604h480"/>
   </g>
   <rect y="508" width="960" height="4" fill="#9a8a6c"/>
   <rect y="504" width="960" height="4" fill="#c4b18c"/>
@@ -260,6 +342,7 @@ export function Seuil({ onEntrer }: { onEntrer: () => void }): React.ReactElemen
     >
       <title>Entrer dans la bibliothèque</title>
     </path>
+    <ellipse className="porte__appel" cx="480.0" cy="372" rx="46" ry="40" fill="url(#s-porte)"/>
     <ellipse className="porte__lueur" cx="480.0" cy="372" rx="46" ry="40" fill="url(#s-porte)"/>
   </g>
 

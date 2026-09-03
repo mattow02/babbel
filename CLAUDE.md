@@ -95,6 +95,13 @@ des chantiers restants, par ordre d'importance.
 - Rien ne flotte : tout ce qui touche le sol a son ombre au sol. Le défaut a
   été relevé trois fois, sur les arbres, les piliers puis les silhouettes.
 - Rien n'est téléchargé : ni texture, ni police, ni son. Tout est calculé.
+- Ce qui bouge bouge par `transform` ou `opacity` dans la feuille de style,
+  jamais par du JavaScript : aucune image n'est calculée (D72). Une boucle se
+  referme sur elle-même (le motif est dessiné deux fois), et les périodes ne
+  tombent jamais en cadence, sinon le mouvement se lit comme un mécanisme.
+- Le bloc `prefers-reduced-motion` va en **fin** de feuille de style : à
+  spécificité égale, c'est la dernière règle écrite qui gagne, et placé avant
+  les animations il ne les éteint pas.
 - Une colonne de grille en `auto` se dimensionne sur son contenu : le
   `max-width: 100%` de l'enfant ne mord alors sur rien et déborde. C'est
   `minmax(0, 1fr)` qu'il faut. Le piège s'est présenté deux fois.

@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 import type { Address } from '../core/index.ts'
 import { COULEURS, dosDe, teinter, usureDe } from './couleurs.ts'
+import { hash32, unitOf } from './hash.ts'
 import { galerie, puits, type Tranche } from './perspective.ts'
 
 /**
@@ -69,6 +70,38 @@ export function Galerie({
       event.preventDefault()
       action()
     }
+
+  /*
+   * La poussiere dans la lumiere.
+   *
+   * C'est la seule chose qui bouge dans une salle ou il ne se passe rien, et
+   * c'est ce qui la rend habitee. Elle ne coute rien : les positions sont
+   * tirees une fois du hachage, et la derive est une animation de la feuille
+   * de style, donc du compositeur, jamais du processeur.
+   */
+  const poussiere = useMemo(
+    () =>
+      Array.from({ length: 24 }, (_, i) => {
+        const u = (k: number): number => unitOf(hash32(i * 6151 + k))
+        const x = fuite.x + (u(1) - 0.5) * g.largeur * 0.44
+        const y = fuite.y + (u(2) - 0.42) * g.hauteur * 0.46
+        // Un grain n'est visible que s'il est dans la lumiere : son eclat suit
+        // sa distance a la lampe, sinon on voit des points brillants au fond
+        // du noir, ce qui n'est pas de la poussiere mais une erreur.
+        const dx = (x - fuite.x) / (g.largeur * 0.3)
+        const dy = (y - (fuite.y - g.hauteur * 0.163)) / (g.hauteur * 0.33)
+        const eclat = Math.max(0.08, 1 - Math.hypot(dx, dy))
+        return {
+          x,
+          y,
+          r: 0.8 + 1.6 * u(3),
+          eclat,
+          duree: 11 + 14 * u(4),
+          retard: -26 * u(5),
+        }
+      }),
+    [fuite.x, fuite.y, g.largeur, g.hauteur],
+  )
 
   // La balustrade : la moitie lointaine passe derriere les montants, la proche
   // devant. Deux arcs, donc, et non une ellipse.
@@ -183,7 +216,7 @@ export function Galerie({
       </g>
 
       {/* La lampe spherique, juste au-dessus de la tete */}
-      <ellipse cx={fuite.x} cy={fuite.y - g.hauteur * 0.16} rx={g.largeur * 0.3} ry={g.hauteur * 0.33} fill="url(#g2d-lampe)" />
+      <ellipse className="halo" cx={fuite.x} cy={fuite.y - g.hauteur * 0.16} rx={g.largeur * 0.3} ry={g.hauteur * 0.33} fill="url(#g2d-lampe)" />
 
       {/*
         Le puits traverse AUSSI le plafond.
@@ -216,7 +249,7 @@ export function Galerie({
 
       {/* Et sa lampe, minuscule : c'est elle qui dit « interminablement ». */}
       <ellipse cx={fuite.x} cy={haut.y - g.hauteur * 0.014} rx={g.largeur * 0.055} ry={g.hauteur * 0.05} fill="url(#g2d-lampe)" opacity={0.5} />
-      <circle cx={fuite.x} cy={haut.y - g.hauteur * 0.014} r={g.hauteur * 0.008} fill={COULEURS.lampe} opacity={0.8} />
+      <circle className="lointaine" cx={fuite.x} cy={haut.y - g.hauteur * 0.014} r={g.hauteur * 0.008} fill={COULEURS.lampe} style={{ animationDelay: '-2.6s' }} />
 
       {/* Le tour de la trouee : epais et sombre, sauf au bord proche que notre
           lampe eclaire par en dessous. */}
@@ -230,7 +263,7 @@ export function Galerie({
       />
 
       <line x1={fuite.x} y1={fuite.y - g.hauteur * 0.245} x2={fuite.x} y2={fuite.y - g.hauteur * 0.195} stroke="#3a2e21" strokeWidth={2} />
-      <circle cx={fuite.x} cy={fuite.y - g.hauteur * 0.163} r={g.hauteur * 0.034} fill={COULEURS.lampe} />
+      <circle className="globe" cx={fuite.x} cy={fuite.y - g.hauteur * 0.163} r={g.hauteur * 0.034} fill={COULEURS.lampe} />
       <circle cx={fuite.x} cy={fuite.y - g.hauteur * 0.163} r={g.hauteur * 0.034} fill="none" stroke={COULEURS.trait} strokeWidth={2} />
 
       {/*
@@ -248,7 +281,7 @@ export function Galerie({
         <ellipse cx={pz.centre.x} cy={pz.centre.y + pz.ry * 0.14} rx={pz.rx * 0.74} ry={pz.ry * 0.64} fill="#000" opacity={0.72} />
         {/* La lampe de la galerie du dessous, tres loin. */}
         <ellipse cx={pz.centre.x} cy={pz.centre.y + pz.ry * 0.12} rx={pz.rx * 0.24} ry={pz.ry * 0.34} fill="url(#g2d-lampe)" opacity={0.3} />
-        <circle cx={pz.centre.x} cy={pz.centre.y + pz.ry * 0.12} r={g.hauteur * 0.005} fill={COULEURS.lampe} opacity={0.5} />
+        <circle className="lointaine" cx={pz.centre.x} cy={pz.centre.y + pz.ry * 0.12} r={g.hauteur * 0.005} fill={COULEURS.lampe} style={{ animationDelay: '-5.9s' }} />
       </g>
 
       <g className="rambarde">
@@ -275,6 +308,20 @@ export function Galerie({
         <path d={rampePres} fill="none" stroke="#0e0a07" strokeWidth={8.5} />
         <path d={rampePres} fill="none" stroke={COULEURS.rambarde} strokeWidth={4.2} />
         <path d={rampePres} fill="none" stroke="#d8b47a" strokeWidth={1.3} opacity={0.5} transform="translate(0,-1.5)" />
+      </g>
+
+      <g className="poussiere">
+        {poussiere.map((p, i) => (
+          <circle
+            key={i}
+            cx={p.x}
+            cy={p.y}
+            r={p.r}
+            fill="#ffe7bd"
+            fillOpacity={p.eclat.toFixed(2)}
+            style={{ animationDuration: `${p.duree.toFixed(1)}s`, animationDelay: `${p.retard.toFixed(1)}s` }}
+          />
+        ))}
       </g>
 
       <rect width={g.largeur} height={g.hauteur} fill="url(#g2d-chute)" />

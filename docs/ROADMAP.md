@@ -476,6 +476,22 @@ passant derrière les montants, et 34 montants dont l'épaisseur suit la distanc
 refends, deux vasques au pied des marches, dallage en cercles, trois
 silhouettes avec leur ombre. **190 tests.**
 
+## L'escalier, et la vie dans les scènes (2026-09-03)
+
+**L'escalier ne menait nulle part** : il s'arrêtait contre la face du
+stylobate, on montait sept marches pour se cogner à un mur. Il monte
+maintenant jusqu'au niveau où posent les colonnes, en tranchant la face du
+podium, et chaque marche a sa contremarche dans l'ombre et son nez au jour
+(D71).
+
+**Les scènes bougent** (D72), et tout passe par `transform` ou `opacity`, donc
+par le compositeur : aucune image calculée, aucun JavaScript. Dehors, cirrus
+sur deux couches à deux vitesses, volée d'oiseaux qui bat des ailes, cyprès au
+vent, vasques qui scintillent, eau qui glisse, soleil qui respire, porte qui
+appelle. Dedans, lampe qui respire, lampes voisines hors de phase, et
+poussière qui monte dans la lumière. **190 tests**, et `prefers-reduced-motion`
+éteint tout.
+
 ## Ce qui n'est pas fait, à jour au 2026-09-03
 
 - Le **Seuil** est une invention : chez Borges, la bibliothèque *est* l'univers,
