@@ -582,3 +582,17 @@ une silhouette a besoin de quelque chose derrière elle et de rien devant.
 - Les **deux petits cabinets** du zaguán (un pour dormir debout, un pour les
   besoins) ne sont pas dessinés.
 - Aucun test sur un vrai appareil mobile.
+
+## Le hall retire (2026-09-03)
+
+Annulation de la journee : le hall monte le matin est **supprime**, avec sa
+geometrie (`hall.ts`), son composant (`Hall.tsx`), ses tests et sa capture.
+Le chantier en cours, un atlas de motifs (`atlas.ts`) qui n'existait que pour
+lui, est abandonne avant d'avoir servi.
+
+Le seuil ouvre desormais directement sur les salles des livres. La raison est
+dans D82 : la bibliotheque de Borges *est* l'univers, elle n'a pas de
+vestibule, et le hall etait le seul endroit du site ou l'on ne faisait que
+regarder.
+
+`Stage` retombe a deux valeurs, `seuil` et `library`.

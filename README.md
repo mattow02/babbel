@@ -9,9 +9,9 @@ moment où vous tournez la page, par une bijection déterministe entre une adres
 dans la bibliothèque et son contenu. Rien n'est stocké nulle part : il y a
 25^1 312 000 livres possibles, soit un nombre à plus de 1,8 million de chiffres.
 
-| Le grand hall | Le zaguán et sa trémie | La recherche |
+| Une salle des livres | Le zaguán et sa trémie | La recherche |
 |---|---|---|
-| ![](docs/captures/phase8-hall.png) | ![](docs/captures/phase8-final.png) | ![](docs/captures/phase3-lecteur.png) |
+| ![](docs/captures/phase8-marbre.png) | ![](docs/captures/phase8-final.png) | ![](docs/captures/phase3-lecteur.png) |
 
 La troisième image est le cœur du projet : on écrit une phrase, et le site
 calcule **où** elle se trouve. La bijection s'inverse, donc « viens, on va te

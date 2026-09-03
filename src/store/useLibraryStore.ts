@@ -14,17 +14,17 @@ import type { Address } from '../core/index.ts'
  *
  * `seuil`   : le dehors, au soleil rasant. C'est la premiere image du site :
  *             il n'y a plus de page d'accueil, on arrive devant la porte.
- * `hall`    : le sas. On a pousse la porte, on n'est pas encore dans la
- *             bibliotheque : une nef, et le cube d'or au bout de l'axe.
  * `library` : la bibliotheque infinie, ou l'on lit.
  *
- * Un geste entre chaque : pousser la porte, puis toucher le cube.
+ * Un seul geste entre les deux : pousser la porte. Il y a eu un hall entre
+ * les deux, un sas ou l'on ne faisait que regarder ; il a ete retire. La
+ * bibliotheque est l'univers, et un vestibule de monument la faisait passer
+ * pour un batiment qu'on visite.
  */
-export type Stage = 'seuil' | 'hall' | 'library'
+export type Stage = 'seuil' | 'library'
 
 interface LibraryState {
   stage: Stage
-  enterHall: () => void
   enterLibrary: () => void
 
   muted: boolean
@@ -44,9 +44,6 @@ interface LibraryState {
 
 export const useLibraryStore = create<LibraryState>((set) => ({
   stage: 'seuil',
-  enterHall: () => {
-    set({ stage: 'hall' })
-  },
   enterLibrary: () => {
     set({ stage: 'library' })
   },

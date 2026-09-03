@@ -1117,3 +1117,22 @@ Un piege attrape par un test ecrit dans la foulee : en montant la voute, le
 puits de lumiere est sorti du cadre par le haut, et rien ne le signalait
 puisqu'un SVG se contente de ne pas dessiner ce qui deborde.
 Decide le 2026-09-03.
+
+### D82 : Le hall est retire, le seuil ouvre sur la bibliotheque
+
+D80 et D81 sont annulees. Le hall etait un vestibule de monument : nef, deux
+files de six piliers, voute a caissons, puits de lumiere, cube d'or, colosse.
+C'etait beau et c'etait faux.
+
+**Le motif.** Chez Borges la bibliotheque *est* l'univers. Un vestibule
+suppose un dehors, une entree, un batiment qu'on visite : trois choses que le
+texte refuse. Le hall etait par ailleurs le seul endroit du site ou il ne se
+passait rien d'autre que de regarder, et il s'interposait entre le visiteur et
+la seule chose qu'il vient chercher, un livre.
+
+**Ce qui reste.** Le seuil, garde comme seuil de fiction et assume comme tel,
+et les salles des livres. Un seul geste entre les deux : pousser la porte.
+`Stage` perd son etat intermediaire et retombe a deux valeurs, ce qui supprime
+aussi l'action `enterHall`.
+
+Retire le 2026-09-03, a la demande de Matteo.
