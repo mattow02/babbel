@@ -159,5 +159,84 @@ export function galerie(cadre: Cadre = CADRE): Galerie {
   return { largeur, hauteur, fuite, pans, etageres, tranches, zaguan }
 }
 
+/** Un balustre : deux points, et de quoi savoir a quelle distance il se tient. */
+export interface Balustre {
+  readonly bas: Point
+  readonly haut: Point
+  readonly largeur: number
+  /** De 0 (au fond) a 1 (devant) : sert a l'epaisseur et a l'ordre de dessin. */
+  readonly proximite: number
+}
+
+/** Le puits d'aeration au milieu de la galerie, et sa balustrade tres basse. */
+export interface Puits {
+  readonly centre: Point
+  readonly rx: number
+  readonly ry: number
+  /** La main courante : meme rayon horizontal, mais plus haute et plus plate. */
+  readonly rampeY: number
+  readonly rampeRy: number
+  readonly balustres: readonly Balustre[]
+}
+
+/** Combien de balustres font le tour. Assez pour que la courbe se lise. */
+const BALUSTRES = 34
+
+/** Ou commence et ou finit la trouee, en fraction du sol visible. */
+const BORD_FOND = 0.25
+const BORD_PRES = 0.67
+/** Quelle part de la largeur de la salle elle prend, a sa hauteur. */
+const EMPRISE = 0.7
+/** La hauteur de la balustrade, en projection, au bord lointain puis au bord proche. */
+const RAMPE_FOND = 0.16
+const RAMPE_PRES = 0.36
+
+/**
+ * Le puits, deduit de la salle.
+ *
+ * Il ne s'ecrit pas en coordonnees mais en fractions du sol visible, et c'est
+ * ce qui permet de verifier la seule chose qui compte ici : la trouee est dans
+ * la piece. Elle l'avait quitte. La balustrade montait plus haut que la ligne
+ * de sol du mur du fond, et la porte semblait donc flotter au-dessus d'elle.
+ */
+export function puits(g: Galerie): Puits {
+  const solFond = g.zaguan[0].y
+  const profondeur = g.hauteur - solFond
+
+  const fond = solFond + BORD_FOND * profondeur
+  const pres = solFond + BORD_PRES * profondeur
+  const cy = (fond + pres) / 2
+  const ry = (pres - fond) / 2
+
+  // La salle s'evase vers nous : sa demi-largeur a la hauteur du puits se lit
+  // sur le sol, entre le mur du fond et le bas du cadre.
+  const t = (cy - solFond) / profondeur
+  const demiFond = g.largeur / 2 - g.zaguan[0].x
+  const demiSalle = demiFond + (g.largeur / 2 - demiFond) * t
+  const rx = EMPRISE * demiSalle
+
+  const rampeFond = fond - RAMPE_FOND * (pres - fond)
+  const rampePres = pres - RAMPE_PRES * (pres - fond)
+  const rampeY = (rampeFond + rampePres) / 2
+  const rampeRy = (rampePres - rampeFond) / 2
+
+  const balustres: Balustre[] = []
+  for (let i = 0; i < BALUSTRES; i += 1) {
+    const a = (2 * Math.PI * i) / BALUSTRES
+    const x = g.largeur / 2 + rx * Math.cos(a)
+    // Un montant est vertical, et le reste en perspective a un point : les
+    // deux ellipses partagent donc le meme rayon horizontal.
+    const proximite = (Math.sin(a) + 1) / 2
+    balustres.push({
+      bas: { x, y: cy + ry * Math.sin(a) },
+      haut: { x, y: rampeY + rampeRy * Math.sin(a) },
+      largeur: 2.6 + 4.4 * proximite,
+      proximite,
+    })
+  }
+
+  return { centre: { x: g.largeur / 2, y: cy }, rx, ry, rampeY, rampeRy, balustres }
+}
+
 /** Le nombre de volumes qu'une galerie montre. Tous, et pas un de plus. */
 export const TRANCHES_ATTENDUES = WALLS_PER_HEXAGON * SHELVES_PER_WALL * VOLUMES_PER_SHELF

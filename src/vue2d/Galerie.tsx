@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import type { Address } from '../core/index.ts'
 import { COULEURS, dosDe, teinter, usureDe } from './couleurs.ts'
-import { galerie, type Tranche } from './perspective.ts'
+import { galerie, puits, type Tranche } from './perspective.ts'
 
 /**
  * La galerie, dessinee.
@@ -26,6 +26,7 @@ export function Galerie({
   onEtage: (sens: 1 | -1) => void
 }): React.ReactElement {
   const g = useMemo(() => galerie(), [])
+  const pz = useMemo(() => puits(g), [g])
 
   /*
    * Les couleurs dependent de la GALERIE autant que de la place du volume :
@@ -68,6 +69,15 @@ export function Galerie({
       event.preventDefault()
       action()
     }
+
+  // La balustrade : la moitie lointaine passe derriere les montants, la proche
+  // devant. Deux arcs, donc, et non une ellipse.
+  const bordGauche = `${(pz.centre.x - pz.rx).toFixed(1)} ${pz.rampeY.toFixed(1)}`
+  const bordDroit = `${(pz.centre.x + pz.rx).toFixed(1)} ${pz.rampeY.toFixed(1)}`
+  const rayons = `${pz.rx.toFixed(1)} ${pz.rampeRy.toFixed(1)}`
+  const rampeLoin = `M${bordGauche} A${rayons} 0 0 1 ${bordDroit}`
+  const rampePres = `M${bordGauche} A${rayons} 0 0 0 ${bordDroit}`
+  const montants = [...pz.balustres].sort((a, b) => a.proximite - b.proximite)
 
   // La trouee du plafond, decrite une fois : le dessin et la cible ne peuvent
   // pas se desaccorder.
@@ -223,36 +233,48 @@ export function Galerie({
       <circle cx={fuite.x} cy={fuite.y - g.hauteur * 0.163} r={g.hauteur * 0.034} fill={COULEURS.lampe} />
       <circle cx={fuite.x} cy={fuite.y - g.hauteur * 0.163} r={g.hauteur * 0.034} fill="none" stroke={COULEURS.trait} strokeWidth={2} />
 
-      {/* Le puits d'aeration, et sa balustrade tres basse */}
+      {/*
+        Le puits d'aeration, au MILIEU de la salle.
+
+        Il y etait mal pose : sa balustrade montait plus haut que la ligne de
+        sol du mur du fond, ce qui est impossible pour un trou creuse dans le
+        plancher, et la porte du fond semblait donc flotter au-dessus d'elle.
+        La geometrie vit maintenant dans `perspective.ts`, ou un test interdit
+        a la trouee de sortir de la piece.
+      */}
       <g className="puits">
-        <ellipse cx={fuite.x} cy={fuite.y + g.hauteur * 0.28} rx={g.largeur * 0.184} ry={g.hauteur * 0.094} fill="url(#g2d-puits)" />
-        <ellipse cx={fuite.x} cy={fuite.y + g.hauteur * 0.28} rx={g.largeur * 0.184} ry={g.hauteur * 0.094} fill="none" stroke="#0a0705" strokeWidth={6} />
-        <ellipse cx={fuite.x} cy={fuite.y + g.hauteur * 0.265} rx={g.largeur * 0.13} ry={g.hauteur * 0.055} fill="#000" opacity={0.75} />
+        <ellipse cx={pz.centre.x} cy={pz.centre.y} rx={pz.rx} ry={pz.ry} fill="url(#g2d-puits)" />
+        <ellipse cx={pz.centre.x} cy={pz.centre.y} rx={pz.rx} ry={pz.ry} fill="none" stroke="#0a0705" strokeWidth={7} />
+        <ellipse cx={pz.centre.x} cy={pz.centre.y + pz.ry * 0.14} rx={pz.rx * 0.74} ry={pz.ry * 0.64} fill="#000" opacity={0.72} />
         {/* La lampe de la galerie du dessous, tres loin. */}
-        <ellipse cx={fuite.x} cy={fuite.y + g.hauteur * 0.272} rx={g.largeur * 0.04} ry={g.hauteur * 0.03} fill="url(#g2d-lampe)" opacity={0.3} />
-        <circle cx={fuite.x} cy={fuite.y + g.hauteur * 0.272} r={g.hauteur * 0.005} fill={COULEURS.lampe} opacity={0.5} />
+        <ellipse cx={pz.centre.x} cy={pz.centre.y + pz.ry * 0.12} rx={pz.rx * 0.24} ry={pz.ry * 0.34} fill="url(#g2d-lampe)" opacity={0.3} />
+        <circle cx={pz.centre.x} cy={pz.centre.y + pz.ry * 0.12} r={g.hauteur * 0.005} fill={COULEURS.lampe} opacity={0.5} />
       </g>
-      <g>
-        <ellipse cx={fuite.x} cy={fuite.y + g.hauteur * 0.24} rx={g.largeur * 0.198} ry={g.hauteur * 0.102} fill="none" stroke="#0e0a07" strokeWidth={9} />
-        <ellipse cx={fuite.x} cy={fuite.y + g.hauteur * 0.24} rx={g.largeur * 0.198} ry={g.hauteur * 0.102} fill="none" stroke={COULEURS.rambarde} strokeWidth={5} />
-        {Array.from({ length: 15 }, (_, i) => {
-          const a = (Math.PI * i) / 14
-          const dx = g.largeur * 0.198 * Math.cos(a)
-          const dy = g.hauteur * 0.102 * Math.sin(a)
-          return (
-            <rect
-              key={i}
-              x={fuite.x + dx - 3.5}
-              y={fuite.y + g.hauteur * 0.24 + dy}
-              width={7}
-              height={17 + 11 * Math.sin(a)}
-              rx={2.5}
-              fill="#6b5334"
-              stroke="#0e0a07"
-              strokeWidth={1.4}
-            />
-          )
-        })}
+
+      <g className="rambarde">
+        {/* La main courante, au fond : elle passe derriere tout le reste. */}
+        <path d={rampeLoin} fill="none" stroke="#0e0a07" strokeWidth={5.5} />
+        <path d={rampeLoin} fill="none" stroke={COULEURS.rambarde} strokeWidth={2.4} opacity={0.45} />
+
+        {/* Les montants, du fond vers l'avant : ils epaississent en approchant. */}
+        {montants.map((b, i) => (
+          <rect
+            key={i}
+            x={b.bas.x - b.largeur / 2}
+            y={b.haut.y}
+            width={b.largeur}
+            height={b.bas.y - b.haut.y}
+            rx={b.largeur * 0.34}
+            fill={teinter(COULEURS.rambarde, 0.3 + 0.7 * b.proximite)}
+            stroke="#0e0a07"
+            strokeWidth={0.9}
+          />
+        ))}
+
+        {/* Et devant : plus epaisse, avec un filet de lumiere sur le dessus. */}
+        <path d={rampePres} fill="none" stroke="#0e0a07" strokeWidth={8.5} />
+        <path d={rampePres} fill="none" stroke={COULEURS.rambarde} strokeWidth={4.2} />
+        <path d={rampePres} fill="none" stroke="#d8b47a" strokeWidth={1.3} opacity={0.5} transform="translate(0,-1.5)" />
       </g>
 
       <rect width={g.largeur} height={g.hauteur} fill="url(#g2d-chute)" />
@@ -300,10 +322,10 @@ export function Galerie({
         </ellipse>
         <ellipse
           className="cible"
-          cx={fuite.x}
-          cy={fuite.y + g.hauteur * 0.28}
-          rx={g.largeur * 0.184}
-          ry={g.hauteur * 0.094}
+          cx={pz.centre.x}
+          cy={pz.centre.y}
+          rx={pz.rx}
+          ry={pz.ry}
           role="button"
           tabIndex={0}
           aria-label="Descendre d’un étage"

@@ -459,6 +459,23 @@ Une seule mesure gouverne l'objet, le corps du texte, si bien qu'il se pose
 dans n'importe quelle fenêtre : 1 182 x 643 px dans 1 440 x 900, et sous
 860 px il n'ouvre qu'un feuillet. **184 tests.**
 
+## Le puits remis dans la pièce, le Seuil peuplé (2026-09-03)
+
+**La balustrade était hors de la pièce.** Elle montait 33 px au-dessus de la
+ligne de sol du mur du fond, ce qui est impossible pour un garde-corps posé sur
+un trou creusé dans le plancher : elle amputait le bas de la porte, qui
+paraissait donc posée sur elle. La géométrie du puits vit maintenant dans
+`perspective.ts`, en fractions du sol visible, avec un test qui lui interdit de
+sortir de la pièce (D69). Mesuré à l'écran : 54 px d'écart.
+
+**Le dessin de la balustrade** n'était qu'une ellipse et quinze rectangles de
+largeur constante. C'est une main courante coupée en deux arcs, celui du fond
+passant derrière les montants, et 34 montants dont l'épaisseur suit la distance.
+
+**Le Seuil se peuple** (D70) : cirrus et volée d'oiseaux, mur d'enceinte à
+refends, deux vasques au pied des marches, dallage en cercles, trois
+silhouettes avec leur ombre. **190 tests.**
+
 ## Ce qui n'est pas fait, à jour au 2026-09-03
 
 - Le **Seuil** est une invention : chez Borges, la bibliothèque *est* l'univers,

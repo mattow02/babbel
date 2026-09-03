@@ -809,3 +809,51 @@ se dimensionne sur son contenu, et le `max-width: 100%` de l'objet ne mord
 alors sur rien. C'est `minmax(0, 1fr)` qui le corrige, exactement comme dans le
 lecteur precedent.
 Decide le 2026-09-03.
+
+
+### D69 : La balustrade etait hors de la piece
+Le defaut se voyait sans se nommer : la porte du fond paraissait posee sur la
+rambarde. La cause n'etait pas dans la porte. La balustrade montait a 358 dans
+un cadre ou la ligne de sol du mur du fond est a 391 : elle depassait donc de
+trente-trois pixels le pied du mur le plus lointain, ce qui est impossible pour
+un garde-corps pose sur un trou creuse dans le plancher. Elle mordait sur le
+bas de la porte et l'amputait.
+
+La geometrie du puits vit desormais dans `perspective.ts`, en fractions du sol
+visible et non en coordonnees, avec un test qui interdit a la trouee comme a sa
+balustrade de sortir de la piece. La verification a l'ecran donne cinquante-
+quatre pixels d'ecart entre le bas de la porte et le haut de la rambarde.
+
+Le dessin de la balustrade suit la meme correction. Ce n'etait qu'une ellipse
+tracee et quinze rectangles de largeur constante ; c'est maintenant une main
+courante coupee en deux arcs, celui du fond passant DERRIERE les montants et
+celui de devant par-dessus, et trente-quatre montants verticaux dont l'epaisseur
+et la teinte suivent la distance. Un montant reste vertical en perspective a un
+point : les deux ellipses partagent donc le meme rayon horizontal, et c'est ce
+qui rend le calcul aussi court.
+Decide le 2026-09-03.
+
+
+### D70 : Le Seuil se peuple
+Le dehors etait juste : monument, marches, cypres, bassin. Il etait aussi vide,
+et c'est un defaut different d'une erreur. Un ciel qui occupe le tiers haut de
+l'image sans rien y mettre ne dit pas l'espace, il dit l'inachevement.
+
+Cinq ajouts, tous serieux, aucun decoratif :
+- des **cirrus** tres etires et tres pales, qui chauffent en descendant vers le
+  soleil, et une **volee d'oiseaux** minuscule : c'est elle qui donne sa taille
+  au ciel ;
+- un **mur d'enceinte** a refends qui prolonge le monument jusqu'au bord du
+  cadre. Pose bas, il disparaissait entierement derriere les cypres ; il monte
+  donc plus haut que leur pied, et les verticales sombres des arbres se
+  detachent sur une surface claire, ce qui vaut mieux que les deux a plat sur
+  le ciel ;
+- deux **vasques** au pied des marches, seules taches chaudes du dehors : elles
+  annoncent la lumiere qu'on trouvera dedans, et reprennent le bol de la
+  direction artistique ;
+- un **dallage en cercles** sur le parvis, qui etait un aplat sans rien pour
+  mesurer la distance ;
+- **trois silhouettes** a trois distances au lieu d'une, chacune avec son ombre
+  au sol. Le defaut avait deja ete releve pour les arbres : sans ombre, tout
+  flotte.
+Decide le 2026-09-03.

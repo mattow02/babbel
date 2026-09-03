@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { SHELVES_PER_WALL, VOLUMES_PER_SHELF, WALLS_PER_HEXAGON } from '../../core/index.ts'
-import { TRANCHES_ATTENDUES, galerie } from '../perspective.ts'
+import { TRANCHES_ATTENDUES, galerie, puits } from '../perspective.ts'
 
 const G = galerie()
 
@@ -59,5 +59,63 @@ describe('la galerie dessinee', () => {
     const petite = galerie({ largeur: 360, hauteur: 640, regard: 0.44 })
     expect(petite.largeur).toBe(360)
     expect(Math.max(...petite.tranches.flatMap((t) => t.coins.map((c) => c.x)))).toBeLessThanOrEqual(360)
+  })
+})
+
+describe('le puits', () => {
+  const g = galerie()
+  const p = puits(g)
+  const solFond = g.zaguan[0].y
+
+  /*
+   * LE test de ce module.
+   *
+   * Une trouee dans le sol ne peut pas remonter au-dela du pied du mur du
+   * fond, et une balustrade posee dessus encore moins. Quand elle le faisait,
+   * la porte du fond paraissait flotter au-dessus de la rambarde : c'est
+   * exactement le defaut qu'on a vu a l'ecran.
+   */
+  it('reste dans la piece, balustrade comprise', () => {
+    expect(p.centre.y - p.ry).toBeGreaterThan(solFond)
+    expect(p.rampeY - p.rampeRy).toBeGreaterThan(solFond)
+    for (const b of p.balustres) {
+      expect(b.haut.y).toBeGreaterThan(solFond)
+    }
+  })
+
+  it('ne deborde pas non plus par le bas du cadre', () => {
+    expect(p.centre.y + p.ry).toBeLessThan(g.hauteur)
+  })
+
+  it('tient dans la largeur du sol a sa hauteur', () => {
+    // Le sol s'evase du mur du fond jusqu'au bas du cadre : on relit la meme
+    // interpolation, et le puits doit rester dedans.
+    const t = (p.centre.y - solFond) / (g.hauteur - solFond)
+    const demi = g.largeur / 2 - g.zaguan[0].x + (g.zaguan[0].x - 0) * t
+    expect(p.rx).toBeLessThan(demi)
+    expect(p.rx).toBeGreaterThan(demi * 0.5)
+  })
+
+  it('a une balustrade basse : elle monte moins que la trouee n’est profonde', () => {
+    expect(p.rampeY).toBeLessThan(p.centre.y)
+    expect(p.centre.y - p.rampeY).toBeLessThan(p.ry)
+  })
+
+  it('dresse des montants, tous vers le haut et tous verticaux', () => {
+    expect(p.balustres).toHaveLength(34)
+    for (const b of p.balustres) {
+      expect(b.haut.y).toBeLessThan(b.bas.y)
+      expect(b.haut.x).toBeCloseTo(b.bas.x, 6)
+    }
+  })
+
+  it('epaissit les montants proches, et les garde symetriques', () => {
+    const proche = p.balustres.reduce((a, b) => (b.proximite > a.proximite ? b : a))
+    const loin = p.balustres.reduce((a, b) => (b.proximite < a.proximite ? b : a))
+    expect(proche.largeur).toBeGreaterThan(loin.largeur * 2)
+
+    const gauche = p.balustres.filter((b) => b.bas.x < g.largeur / 2 - 1)
+    const droite = p.balustres.filter((b) => b.bas.x > g.largeur / 2 + 1)
+    expect(gauche).toHaveLength(droite.length)
   })
 })

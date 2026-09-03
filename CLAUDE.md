@@ -92,6 +92,8 @@ des chantiers restants, par ordre d'importance.
   simple multiplication, qui est affine et produit un motif périodique (D32).
 - Ce qui peut être une **fonction du temps** ne doit pas devenir un état : la
   poussière est animée dans le shader, sans coût processeur (D37).
+- Rien ne flotte : tout ce qui touche le sol a son ombre au sol. Le défaut a
+  été relevé trois fois, sur les arbres, les piliers puis les silhouettes.
 - Rien n'est téléchargé : ni texture, ni police, ni son. Tout est calculé.
 - Une colonne de grille en `auto` se dimensionne sur son contenu : le
   `max-width: 100%` de l'enfant ne mord alors sur rien et déborde. C'est
