@@ -112,6 +112,11 @@ des chantiers restants, par ordre d'importance.
   répondait plus à rien sans qu'aucun élément ne paraisse faux (D76).
 - Une porte n'est pas un trou : il lui faut un encadrement, un seuil, et
   surtout une **épaisseur** de mur visible en coupe (D75).
+- **Rien ne pose au-dessus de la ligne d'horizon** (D77) : ce qui est plus haut
+  qu'elle est au-delà de l'infini. Un élément dont la base y monte flotte, et
+  aucune retouche de couleur n'y changera rien.
+- Une **élévation frontale ne montre aucune face latérale**. La masse se dit
+  par les ressauts, pas par des parallélogrammes de côté.
 - Une colonne de grille en `auto` se dimensionne sur son contenu : le
   `max-width: 100%` de l'enfant ne mord alors sur rien et déborde. C'est
   `minmax(0, 1fr)` qu'il faut. Le piège s'est présenté deux fois.

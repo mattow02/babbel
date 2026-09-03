@@ -213,15 +213,40 @@ export function Seuil({ onEntrer }: { onEntrer: () => void }): React.ReactElemen
     ))}
   </g>
 
-  {/* Les montagnes, en plans qui s effacent */}
-  <polygon points="-30,430 130,300 300,430" fill="#7f8f92" opacity=".38"/>
-  <polygon points="660,430 830,286 1000,430" fill="#7f8f92" opacity=".38"/>
-  <polygon points="90,430 270,326 450,430" fill="#77858a" opacity=".55"/>
-  <polygon points="520,430 700,318 880,430" fill="#77858a" opacity=".55"/>
-  <rect y="330" width="960" height="78" fill="url(#s-brume)"/>
+  {/*
+    Les montagnes, en plans qui s effacent, et a silhouette BRISEE.
 
-  {/* Le sol */}
-  <rect y="430" width="960" height="190" fill="#c9ae86"/>
+    Quatre triangles nets se lisaient comme des pyramides posees sur le ciel.
+    Une crete se casse : deux ressauts par versant suffisent a la faire lire
+    comme du relief plutot que comme une figure.
+  */}
+  <polygon points="-40,419 60,354 132,300 206,348 300,419" fill="#7f8f92" opacity=".26"/>
+  <polygon points="640,419 748,332 830,286 902,342 1010,419" fill="#7f8f92" opacity=".26"/>
+  <polygon points="72,419 172,364 270,326 342,370 462,419" fill="#77858a" opacity=".4"/>
+  <polygon points="498,419 620,360 700,318 792,366 902,419" fill="#77858a" opacity=".4"/>
+  <rect y="330" width="960" height="90" fill="url(#s-brume)"/>
+
+  {/*
+    LA TERRASSE, et c'est elle qui remet tout d'aplomb.
+
+    Il y avait la une incoherence de fond : le socle du monument et le muret
+    d'enceinte avaient leur base A 424 et 426, donc AU-DESSUS de la ligne
+    d'horizon, qui etait a 430. Or ce qui est au-dessus de l'horizon est
+    au-dela de l'infini : un mur ne peut pas y poser. C'est ce qui produisait
+    la bande claire, plate et flottante, qui courait sous le batiment.
+
+    Le monument se tient donc sur une terrasse surelevee dont on ne voit,
+    frontalement, que la face. Cette face court d'un bord a l'autre du cadre :
+    elle cache l'horizon, elle DEVIENT l'horizon, et il n'y a plus rien a
+    empiler derriere. Les montagnes butent dessus, l'escalier la traverse, et
+    les cypres se tiennent devant, sur le parvis.
+  */}
+  <rect y="418" width="960" height="202" fill="#c9ae86"/>
+  <rect y="424" width="960" height="26" fill="#b39a74"/>
+  <rect y="418" width="960" height="6" fill="#e8d6b0"/>
+  <rect y="450" width="960" height="6" fill="#8a7458" opacity=".5"/>
+  {/* Le podium saillant porte son ombre sur la face de la terrasse. */}
+  <rect x="162" y="424" width="636" height="10" fill="#7c6647" opacity=".45"/>
 
   {/* Le dome, derriere la colonnade */}
   <path d="M294.0 300 A186 168 0 0 1 666.0 300 Z" fill="url(#s-dome)"/>
@@ -257,38 +282,11 @@ export function Seuil({ onEntrer }: { onEntrer: () => void }): React.ReactElemen
     </g>
   ))}
 
-  {/*
-    Le mur d'enceinte.
-
-    Le monument posait sur une plaine vide : de part et d'autre il ne se
-    passait rien, et le batiment flottait. Un mur a refends le prolonge
-    jusqu'au bord du cadre.
-
-    Il monte plus haut que le pied des cypres, et c'est la seule facon de le
-    voir : pose plus bas, il disparaissait entierement derriere eux. Les
-    verticales sombres des arbres se detachent maintenant sur une surface
-    claire, ce qui vaut mieux que les deux a plat sur le ciel.
-  */}
-  {([[0, 152, '#b9a078', '#cdb489'], [808, 960, '#8f7a56', '#a28c65']] as const).map(([x0, x1, corps, clair]) => (
-    <g key={x0}>
-      <rect x={x0} y="384" width={x1 - x0} height="40" fill={corps}/>
-      <rect x={x0} y="378" width={x1 - x0} height="7" fill={clair}/>
-      <rect x={x0} y="420" width={x1 - x0} height="6" fill="#6f5c3f"/>
-      {Array.from({ length: Math.ceil((x1 - x0) / 44) }, (_, i) => (
-        <rect key={i} x={x0 + 12 + i * 44} y="378" width="12" height="44" fill={clair} opacity=".7"/>
-      ))}
-    </g>
-  ))}
-
-  {/* Les retours lateraux : le batiment a des coins, donc une epaisseur */}
-  <polygon points="188.0,292 150.0,304 150.0,404 188.0,396" fill="#b9a078"/>
-  <polygon points="772.0,292 810.0,304 810.0,404 772.0,396" fill="#8f7a56"/>
-
   {/* L entablement et la colonnade */}
   <rect x="180.0" y="276" width="600" height="18" fill="#f2e2bf" stroke="#a68d66"/>
   <rect x="172.0" y="262" width="616" height="14" fill="#e2cda3" stroke="#a68d66"/>
   <rect x="172.0" y="276" width="616" height="3" fill="#a68d66" opacity=".45"/>
-  <rect x="180.0" y="294" width="600" height="5" fill="#a68d66" opacity=".6"/>
+  <rect x="172.0" y="294" width="616" height="5" fill="#8f7a56" opacity=".7"/>
   {COLONNES.map((x) => (
     <Colonne key={x} x={x}/>
   ))}
@@ -388,12 +386,17 @@ export function Seuil({ onEntrer }: { onEntrer: () => void }): React.ReactElemen
 
   {/* Les cypres */}
   {Array.from({ length: 8 }, (_, i) => {
+    /*
+     * Ils se tiennent sur le PARVIS, devant la terrasse, et non plus a cheval
+     * sur l'horizon. Les plus proches encadrent donc l'image de deux verticales
+     * sombres, ce qui pose le monument au lieu de le border.
+     */
     const t = i / 7
-    const x = 28 + i * 18.571
-    const ry = 37 - t * 22
-    const cy = 425 - t * 12
-    const ombreY = 462 - t * 34
-    const ombreRx = 22.2 - t * 13.2
+    const x = 26 + i * 18.5
+    const ry = 46 - t * 29
+    const ombreY = 500 - t * 40
+    const cy = ombreY - ry
+    const ombreRx = 26 - t * 16
     const vert = (a: number, b: number): number => Math.round(a + (b - a) * t)
     const feuille = `rgb(${vert(38, 64)} ${vert(52, 86)} ${vert(40, 70)})`
     // Le vent ne souffle pas en cadence : chaque arbre a sa periode, tiree du
@@ -466,8 +469,7 @@ export function Seuil({ onEntrer }: { onEntrer: () => void }): React.ReactElemen
       <Colonne key={x} x={x}/>
     ))}
     <rect x="427" y="298" width="106" height="98" fill="#1a1209"/>
-    <rect x="0" y="378" width="152" height="46" fill="#b9a078"/>
-    <rect x="808" y="378" width="152" height="46" fill="#8f7a56"/>
+    <rect y="418" width="960" height="32" fill="#b39a74"/>
   </g>
   <rect y="512" width="960" height="108" fill="url(#s-bassin)"/>
   <g className="rides" stroke="#f0dcb4" strokeWidth="1.2" fill="none">

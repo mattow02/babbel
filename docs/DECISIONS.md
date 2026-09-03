@@ -987,3 +987,33 @@ Ajoute au passage ce qui manquait a la silhouette : la coupole repose sur un
 socle a deux ressauts au lieu de pousser hors du toit, et la corniche prend une
 ombre sous son larmier.
 Decide le 2026-09-03.
+
+
+### D77 : Rien ne pose au-dessus de l'horizon
+Deux defauts signales par l'utilisateur, une seule cause.
+
+La « bande grise » qui courait sous le batiment etait le muret d'enceinte : un
+rectangle plat, de 378 a 426, pose au ras de la ligne d'horizon qui etait a
+430. Le socle du monument avait le meme probleme, sa base tombant a 424. Or ce
+qui est au-dessus de l'horizon est au-dela de l'infini : rien ne peut y poser.
+Les deux flottaient donc, et aucune retouche de couleur n'y aurait rien change.
+
+Le monument se tient desormais sur une TERRASSE surelevee dont on ne voit,
+frontalement, que la face. Cette face court d'un bord a l'autre du cadre : elle
+cache l'horizon, elle le devient, et il n'y a plus rien a empiler derriere.
+L'escalier la traverse, les montagnes butent dessus, et les cypres se tiennent
+devant, sur le parvis, les plus proches encadrant l'image de deux verticales
+sombres au lieu de la border.
+
+Les « rectangles pour faire de la profondeur » etaient les retours lateraux,
+deux parallelogrammes, l'un clair a gauche et l'autre sombre a droite. Ils
+etaient faux deux fois : une elevation strictement frontale ne montre aucune
+face laterale, et donner du jour a l'une et de l'ombre a l'autre supposait un
+point de vue de biais que tout le reste du dessin contredit. Ils sont
+supprimes. La masse se lit par les RESSAUTS, corniche qui saille, mur en
+retrait, podium qui ressort : c'est ainsi qu'une elevation dit son epaisseur,
+et la corniche a maintenant une sous-face sur toute sa longueur.
+
+Les cretes se brisent enfin en deux ressauts par versant : quatre triangles
+nets se lisaient comme des pyramides posees sur le ciel, pas comme du relief.
+Decide le 2026-09-03.

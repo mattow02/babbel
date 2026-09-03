@@ -521,6 +521,21 @@ partir de l'axe, symétrique par construction, avec un entrecolonnement central
 tombent sur la même abscisse. **194 tests**, entrée par la porte vérifiée sur
 6 points d'essai sur 6.
 
+## Revue du Seuil : rien ne pose au-dessus de l'horizon (2026-09-03)
+
+Deux défauts signalés, une seule cause. La **bande claire** qui courait sous le
+bâtiment était le muret d'enceinte, posé au ras de la ligne d'horizon ; le
+socle du monument avait le même problème. Ce qui est au-dessus de l'horizon est
+au-delà de l'infini : rien ne peut y poser, et les deux flottaient.
+
+Le monument se tient maintenant sur une **terrasse** dont on ne voit,
+frontalement, que la face. Elle court d'un bord à l'autre, cache l'horizon et
+le devient. Les **retours latéraux** sont supprimés : une élévation
+strictement frontale ne montre aucune face latérale, et les éclairer
+différemment supposait un point de vue de biais. La masse se lit par les
+ressauts (D77). Crêtes brisées, sous-face de corniche sur toute sa longueur.
+**194 tests**, axes vérifiés à l'écran.
+
 ## Ce qui n'est pas fait, à jour au 2026-09-03
 
 - Le **Seuil** est une invention : chez Borges, la bibliothèque *est* l'univers,
