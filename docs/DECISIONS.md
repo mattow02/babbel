@@ -938,3 +938,52 @@ s'ouvre devant la porte, et l'on garde la lumiere qui respire : la lampe, son
 globe, les lampes des galeries voisines, les vasques, le reflet de l'eau et la
 porte. Les animations concernees ont chacune une variante en opacite seule.
 Decide le 2026-09-03.
+
+
+### D75 : Une porte n'est pas un trou
+Elle avait l'air posee sur le dessin, et c'etait exact : c'etait un rectangle
+noir surmonte d'un demi-cercle, sans encadrement, sans epaisseur de mur, sans
+seuil, pose sur une bande d'ombre plate. Trois choses lui manquaient, et la
+troisieme est la plus importante.
+
+1. **Un encadrement.** Chambranle en pierre claire, joints de claveaux qui
+   disent que l'arc est appareille, et une clef qui saille : c'est elle qui
+   centre le monument.
+2. **Un seuil.** Une dalle plus claire, un peu plus large que le chambranle, ou
+   l'escalier arrive.
+3. **Une epaisseur.** L'embrasement montre le mur en coupe, joue eclairee d'un
+   cote et noire de l'autre. C'est lui qui fait le plus de travail : sans lui,
+   une porte reste une decoupe, quelle que soit la richesse du cadre.
+
+Le mur qui la porte a change aussi. Une ombre ne doit pas etre un aplat, sinon
+elle n'a pas de matiere et tout ce qu'on y pose a l'air colle dessus : la cella
+a donc ses assises, sa plinthe, son lit d'ombre sous l'entablement et ses antes
+aux extremites.
+
+Et le portail TIENT DANS LE MUR. L'ancien montait a 250 quand le mur commence a
+292 : son arc passait donc par-dessus l'entablement, ce qui suffisait a lui
+seul a le detacher du batiment. Toutes ses parties, cible du clic comprise,
+decoulent maintenant de six nombres declares une fois.
+Decide le 2026-09-03.
+
+
+### D76 : La colonnade n'etait pas dans l'axe
+Trouve en verifiant le portail, et invisible autrement : les colonnes etaient
+ecrites de 204 a 780, donc centrees sur 492, quand la coupole, l'entablement,
+le stylobate et l'entree sont centres sur 480. Douze pixels. Aucun element ne
+paraissait faux isolement, mais rien ne repondait a rien, et l'entree ne
+tombait pas au milieu de son entrecolonnement.
+
+Les colonnes se calculent maintenant a partir de l'axe, cinq de chaque cote au
+meme pas, symetriques par construction, avec un entrecolonnement central plus
+large que les autres : c'est la regle pour une entree monumentale, et cela
+laisse au portail vingt-trois pixels de mur de chaque cote. Le meme dessin sert
+dehors et dans le reflet du bassin, ce qui interdit aux deux de diverger.
+
+Verifie a l'ecran : colonnade, portail, coupole et milieu du cadre tombent tous
+sur la meme abscisse.
+
+Ajoute au passage ce qui manquait a la silhouette : la coupole repose sur un
+socle a deux ressauts au lieu de pousser hors du toit, et la corniche prend une
+ombre sous son larmier.
+Decide le 2026-09-03.

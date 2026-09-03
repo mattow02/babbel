@@ -107,6 +107,11 @@ des chantiers restants, par ordre d'importance.
   bureau et n'y signale aucun trouble, tout couper est une réponse trop large.
 - L'URL ne s'écrit qu'au **premier geste** qui la justifie (D73) : au
   chargement, on est devant le monument, pas dans un livre.
+- Ce qui est répété ou symétrique se **calcule à partir de l'axe**, jamais à la
+  main : la colonnade écrite en dur était décentrée de douze pixels, et rien ne
+  répondait plus à rien sans qu'aucun élément ne paraisse faux (D76).
+- Une porte n'est pas un trou : il lui faut un encadrement, un seuil, et
+  surtout une **épaisseur** de mur visible en coupe (D75).
 - Une colonne de grille en `auto` se dimensionne sur son contenu : le
   `max-width: 100%` de l'enfant ne mord alors sur rien et déborde. C'est
   `minmax(0, 1fr)` qu'il faut. Le piège s'est présenté deux fois.

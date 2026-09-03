@@ -505,6 +505,22 @@ en opacité seule (D74).
 qu'on n'avait pas ouvert. Elle ne s'écrit plus qu'au premier geste qui la
 justifie, et un test le tient (D73). **194 tests.**
 
+## Le portail bâti, et l'axe retrouvé (2026-09-03)
+
+**La porte avait l'air posée sur le dessin**, et c'était exact : un rectangle
+noir sans encadrement, sans épaisseur de mur et sans seuil, sur une bande
+d'ombre plate. Elle est bâtie : chambranle, joints de claveaux, clef qui
+saille, seuil, et surtout **embrasement** qui montre le mur en coupe, la seule
+chose qui empêche une porte de rester une découpe (D75). Le mur de la cella a
+ses assises, sa plinthe et ses antes.
+
+**La colonnade n'était pas dans l'axe** (D76), trouvé en vérifiant le portail :
+centrée sur 492 quand tout le reste l'est sur 480. Elle se calcule désormais à
+partir de l'axe, symétrique par construction, avec un entrecolonnement central
+élargi. Vérifié à l'écran : colonnade, portail, coupole et milieu du cadre
+tombent sur la même abscisse. **194 tests**, entrée par la porte vérifiée sur
+6 points d'essai sur 6.
+
 ## Ce qui n'est pas fait, à jour au 2026-09-03
 
 - Le **Seuil** est une invention : chez Borges, la bibliothèque *est* l'univers,

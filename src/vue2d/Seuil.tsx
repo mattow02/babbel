@@ -17,7 +17,86 @@
  */
 import { hash32, unitOf as unite } from './hash.ts'
 
+/**
+ * Le portail, decrit une seule fois.
+ *
+ * Il etait un rectangle noir pose sur le dessin : pas d'encadrement, pas
+ * d'epaisseur de mur, pas de seuil. Une porte n'est pas un trou, c'est une
+ * piece d'architecture, et elle se construit comme telle. Toutes ses parties
+ * decoulent de ces six nombres, et la cible du clic aussi : le dessin et la
+ * zone cliquable ne peuvent donc plus se desaccorder.
+ */
+const PORTAIL = {
+  cx: 480,
+  /** Demi-largeur de l'ouverture. */
+  demi: 40,
+  /** Le niveau du portique, ou l'escalier arrive. */
+  sol: 396,
+  /**
+   * Ou l'arc commence a tourner.
+   *
+   * Le mur de la cella fait cent quatre pixels, de 292 a 396 : le portail doit
+   * TENIR DEDANS, chambranle et clef compris. C'est ce qui fixe tout le reste,
+   * et c'est ce qui manquait : l'arc montait jusqu'a 250 et passait donc
+   * par-dessus l'entablement, ce qui est une des raisons pour lesquelles la
+   * porte avait l'air posee sur le dessin.
+   */
+  naissance: 351,
+  /** La hauteur de l'arc : egale a la demi-largeur, donc un plein cintre. */
+  fleche: 40,
+  /** La largeur du chambranle. */
+  cadre: 13,
+  /** L'epaisseur du mur, vue de biais dans l'embrasure. */
+  ebrasement: 8,
+} as const
+
+/**
+ * Les colonnes.
+ *
+ * Elles n'etaient PAS dans l'axe : ecrites de 204 a 780, leur centre tombait a
+ * 492 quand celui de la coupole, du portail, de l'entablement et du stylobate
+ * tombe a 480. Douze pixels de decalage, invisibles isolement, mais qui
+ * faisaient que rien ne repondait a rien.
+ *
+ * Elles se calculent donc a partir de l'axe, et non plus a la main : cinq de
+ * chaque cote, au meme pas, symetriques par construction. L'entrecolonnement
+ * central est plus large que les autres, ce qui est la regle pour une entree
+ * monumentale et ce qui laisse la place au portail.
+ */
+const AXE = 480
+const PAS = 42
+const COLONNES: readonly number[] = [0, 1, 2, 3, 4].flatMap((i) => [
+  AXE - 106 - PAS * (4 - i),
+  AXE + 76 + PAS * i,
+])
+
+/** Une colonne : abaque, fut, base. Le meme dessin dehors et dans le reflet. */
+function Colonne({ x }: { x: number }): React.ReactElement {
+  return (
+    <g>
+      <rect x={x} y="292" width="30" height="8" fill="#efdfbc" stroke="#a68d66" strokeWidth="1"/>
+      <rect x={x + 3} y="300" width="24" height="86" fill="url(#s-fut)"/>
+      <rect x={x - 1} y="386" width="32" height="10" fill="#e8d6b0" stroke="#a68d66" strokeWidth="1"/>
+    </g>
+  )
+}
+
+/** Le contour d'une baie en plein cintre, a la largeur qu'on lui donne. */
+function baie(demi: number, fleche: number): string {
+  const { cx, sol, naissance } = PORTAIL
+  return [
+    `M${cx - demi} ${sol}`,
+    `L${cx - demi} ${naissance}`,
+    `A${demi} ${fleche} 0 0 1 ${cx + demi} ${naissance}`,
+    `L${cx + demi} ${sol}`,
+    'Z',
+  ].join(' ')
+}
+
 export function Seuil({ onEntrer }: { onEntrer: () => void }): React.ReactElement {
+  const { cx, demi, sol, naissance, fleche, cadre, ebrasement } = PORTAIL
+  const ouverture = baie(demi, fleche)
+
   return (
     <div className="seuil">
       <svg viewBox="0 0 960 620" preserveAspectRatio="xMidYMid slice" role="group"
@@ -45,6 +124,21 @@ export function Seuil({ onEntrer }: { onEntrer: () => void }): React.ReactElemen
       <stop offset="0" stopColor="#c7b48f" stopOpacity=".62"/>
       <stop offset=".45" stopColor="#8a7d63" stopOpacity=".3"/>
       <stop offset="1" stopColor="#3d3529" stopOpacity=".05"/>
+    </linearGradient>
+    {/* Le chambranle prend le jour a gauche et le perd a droite. */}
+    <linearGradient id="s-chambranle" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stopColor="#f0e1bd"/><stop offset=".45" stopColor="#dcc9a1"/>
+      <stop offset="1" stopColor="#b39a74"/>
+    </linearGradient>
+    {/* L embrasement : la joue eclairee d un cote, l autre dans le noir. */}
+    <linearGradient id="s-embrasement" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stopColor="#6b5335"/><stop offset=".5" stopColor="#3a2a19"/>
+      <stop offset="1" stopColor="#241a10"/>
+    </linearGradient>
+    {/* Le vestibule : noir en haut, un peu de sol eclaire en bas. */}
+    <linearGradient id="s-vestibule" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stopColor="#0b0805"/><stop offset=".62" stopColor="#140e08"/>
+      <stop offset="1" stopColor="#33240f"/>
     </linearGradient>
     {/* La lueur de la porte : un degrade, pas un disque. Une lumiere n'a pas de bord. */}
     <radialGradient id="s-porte" cx="50%" cy="50%">
@@ -134,13 +228,34 @@ export function Seuil({ onEntrer }: { onEntrer: () => void }): React.ReactElemen
   <path d="M294.0 300 A186 168 0 0 1 666.0 300" fill="none" stroke="#8f7a56" strokeWidth="2"/>
   <ellipse cx="480.0" cy="134" rx="16" ry="10" fill="#f6e8c6" stroke="#8f7a56"/>
 
+  {/* Le socle de la coupole : elle repose sur quelque chose, elle ne pousse
+      pas hors du toit. */}
+  <rect x="286.0" y="252" width="388" height="10" fill="#d9c49b" stroke="#a68d66" strokeWidth="1"/>
+  <rect x="296.0" y="244" width="368" height="8" fill="#c7b088" stroke="#a68d66" strokeWidth="1"/>
+
   {/* LE FOND DU PORTIQUE, en ombre.
        Sans lui, on voit le dome eclaire entre les colonnes et la colonnade se
        lit comme un decor decoupe pose devant. C est l ombre derriere qui la
        fait tenir : chaque entrecolonnement devient une fente noire. */}
   <rect x="188.0" y="292" width="584" height="104" fill="#2a2016"/>
-  <rect x="188.0" y="292" width="584" height="16" fill="#1a130c"/>
-  <rect x="188.0" y="380" width="584" height="16" fill="#3b2e20"/>
+
+  {/* Les assises : une ombre ne doit pas etre un aplat, sinon le mur n'a pas
+      de matiere et tout ce qu'on y pose a l'air colle dessus. */}
+  {[306, 320, 334, 348, 362, 376].map((y) => (
+    <rect key={y} x="188.0" y={y} width="584" height="1.4" fill="#1d150e"/>
+  ))}
+
+  <rect x="188.0" y="292" width="584" height="15" fill="#191209"/>
+  <rect x="188.0" y="380" width="584" height="16" fill="#3a2d1f"/>
+  <rect x="188.0" y="378" width="584" height="2.5" fill="#4a3a28"/>
+
+  {/* Les antes, aux extremites : elles donnent des bords au mur. */}
+  {[188, 760].map((x) => (
+    <g key={x}>
+      <rect x={x} y="292" width="12" height="104" fill="#33281c"/>
+      <rect x={x} y="292" width="12" height="4" fill="#4a3a28"/>
+    </g>
+  ))}
 
   {/*
     Le mur d'enceinte.
@@ -172,12 +287,56 @@ export function Seuil({ onEntrer }: { onEntrer: () => void }): React.ReactElemen
   {/* L entablement et la colonnade */}
   <rect x="180.0" y="276" width="600" height="18" fill="#f2e2bf" stroke="#a68d66"/>
   <rect x="172.0" y="262" width="616" height="14" fill="#e2cda3" stroke="#a68d66"/>
+  <rect x="172.0" y="276" width="616" height="3" fill="#a68d66" opacity=".45"/>
   <rect x="180.0" y="294" width="600" height="5" fill="#a68d66" opacity=".6"/>
-  <rect x="204" y="292" width="30" height="8" fill="#efdfbc" stroke="#a68d66" strokeWidth="1"/><rect x="207" y="300" width="24" height="86" fill="url(#s-fut)"/><rect x="203" y="386" width="32" height="10" fill="#e8d6b0" stroke="#a68d66" strokeWidth="1"/><rect x="246" y="292" width="30" height="8" fill="#efdfbc" stroke="#a68d66" strokeWidth="1"/><rect x="249" y="300" width="24" height="86" fill="url(#s-fut)"/><rect x="245" y="386" width="32" height="10" fill="#e8d6b0" stroke="#a68d66" strokeWidth="1"/><rect x="288" y="292" width="30" height="8" fill="#efdfbc" stroke="#a68d66" strokeWidth="1"/><rect x="291" y="300" width="24" height="86" fill="url(#s-fut)"/><rect x="287" y="386" width="32" height="10" fill="#e8d6b0" stroke="#a68d66" strokeWidth="1"/><rect x="330" y="292" width="30" height="8" fill="#efdfbc" stroke="#a68d66" strokeWidth="1"/><rect x="333" y="300" width="24" height="86" fill="url(#s-fut)"/><rect x="329" y="386" width="32" height="10" fill="#e8d6b0" stroke="#a68d66" strokeWidth="1"/><rect x="372" y="292" width="30" height="8" fill="#efdfbc" stroke="#a68d66" strokeWidth="1"/><rect x="375" y="300" width="24" height="86" fill="url(#s-fut)"/><rect x="371" y="386" width="32" height="10" fill="#e8d6b0" stroke="#a68d66" strokeWidth="1"/><rect x="582" y="292" width="30" height="8" fill="#efdfbc" stroke="#a68d66" strokeWidth="1"/><rect x="585" y="300" width="24" height="86" fill="url(#s-fut)"/><rect x="581" y="386" width="32" height="10" fill="#e8d6b0" stroke="#a68d66" strokeWidth="1"/><rect x="624" y="292" width="30" height="8" fill="#efdfbc" stroke="#a68d66" strokeWidth="1"/><rect x="627" y="300" width="24" height="86" fill="url(#s-fut)"/><rect x="623" y="386" width="32" height="10" fill="#e8d6b0" stroke="#a68d66" strokeWidth="1"/><rect x="666" y="292" width="30" height="8" fill="#efdfbc" stroke="#a68d66" strokeWidth="1"/><rect x="669" y="300" width="24" height="86" fill="url(#s-fut)"/><rect x="665" y="386" width="32" height="10" fill="#e8d6b0" stroke="#a68d66" strokeWidth="1"/><rect x="708" y="292" width="30" height="8" fill="#efdfbc" stroke="#a68d66" strokeWidth="1"/><rect x="711" y="300" width="24" height="86" fill="url(#s-fut)"/><rect x="707" y="386" width="32" height="10" fill="#e8d6b0" stroke="#a68d66" strokeWidth="1"/><rect x="750" y="292" width="30" height="8" fill="#efdfbc" stroke="#a68d66" strokeWidth="1"/><rect x="753" y="300" width="24" height="86" fill="url(#s-fut)"/><rect x="749" y="386" width="32" height="10" fill="#e8d6b0" stroke="#a68d66" strokeWidth="1"/>
+  {COLONNES.map((x) => (
+    <Colonne key={x} x={x}/>
+  ))}
 
-  {/* L entree unique, en ombre franche */}
-  <rect x="428.0" y="296" width="104" height="100" fill="#1a1209"/>
-  <path d="M428.0 316 A52 46 0 0 1 532.0 316" fill="#1a1209"/>
+  {/*
+    L ENTREE UNIQUE, batie.
+
+    De l exterieur vers l interieur : le chambranle qui saille du mur, la clef
+    qui le couronne, l embrasement qui montre l epaisseur du mur, puis le
+    vestibule. C est l embrasement qui fait le plus de travail : sans lui, la
+    porte reste une decoupe, quelle que soit la richesse du cadre.
+  */}
+  <path d={baie(demi + cadre + 3, fleche + cadre + 3)} fill="#241a10"/>
+  <path d={baie(demi + cadre, fleche + cadre)} fill="url(#s-chambranle)"/>
+
+  {/* Les claveaux, qui disent que l arc est appareille. */}
+  {[-58, -35, -12, 12, 35, 58].map((deg) => {
+    const a = ((deg - 90) * Math.PI) / 180
+    const dx = Math.cos(a)
+    const dy = Math.sin(a)
+    return (
+      <line
+        key={deg}
+        x1={cx + dx * demi}
+        y1={naissance + dy * fleche}
+        x2={cx + dx * (demi + cadre)}
+        y2={naissance + dy * (fleche + cadre)}
+        stroke="#a68d66"
+        strokeWidth="1"
+        opacity=".55"
+      />
+    )
+  })}
+
+  {/* La clef, qui saille un peu : c est elle qui centre tout le monument. */}
+  <path
+    d={`M${cx - 10} ${naissance - fleche - cadre - 4} L${cx + 10} ${naissance - fleche - cadre - 4} L${cx + 7.5} ${naissance - fleche + 8} L${cx - 7.5} ${naissance - fleche + 8} Z`}
+    fill="#f3e5c4"
+    stroke="#a68d66"
+    strokeWidth="1"
+  />
+
+  {/* L embrasement : le mur a une epaisseur, et on la voit. */}
+  <path d={ouverture} fill="url(#s-embrasement)"/>
+  <path d={baie(demi - ebrasement, fleche - ebrasement)} fill="url(#s-vestibule)"/>
+
+  {/* Le seuil, sur lequel l escalier arrive. */}
+  <rect x={cx - demi - cadre - 5} y={sol - 6} width={2 * (demi + cadre + 5)} height="7" fill="#efdfbc" stroke="#a68d66" strokeWidth="1"/>
 
   {/*
     Le dallage du parvis, en cercles.
@@ -303,8 +462,10 @@ export function Seuil({ onEntrer }: { onEntrer: () => void }): React.ReactElemen
   <g opacity=".32" transform="translate(0,768.0) scale(1,-0.5)">
     <path d="M294.0 300 A186 168 0 0 1 666.0 300 Z" fill="#e0caa2"/>
     <rect x="188.0" y="276" width="584" height="18" fill="#f2e2bf"/>
-    <rect x="204" y="292" width="30" height="8" fill="#efdfbc" stroke="#a68d66" strokeWidth="1"/><rect x="207" y="300" width="24" height="86" fill="url(#s-fut)"/><rect x="203" y="386" width="32" height="10" fill="#e8d6b0" stroke="#a68d66" strokeWidth="1"/><rect x="246" y="292" width="30" height="8" fill="#efdfbc" stroke="#a68d66" strokeWidth="1"/><rect x="249" y="300" width="24" height="86" fill="url(#s-fut)"/><rect x="245" y="386" width="32" height="10" fill="#e8d6b0" stroke="#a68d66" strokeWidth="1"/><rect x="288" y="292" width="30" height="8" fill="#efdfbc" stroke="#a68d66" strokeWidth="1"/><rect x="291" y="300" width="24" height="86" fill="url(#s-fut)"/><rect x="287" y="386" width="32" height="10" fill="#e8d6b0" stroke="#a68d66" strokeWidth="1"/><rect x="330" y="292" width="30" height="8" fill="#efdfbc" stroke="#a68d66" strokeWidth="1"/><rect x="333" y="300" width="24" height="86" fill="url(#s-fut)"/><rect x="329" y="386" width="32" height="10" fill="#e8d6b0" stroke="#a68d66" strokeWidth="1"/><rect x="372" y="292" width="30" height="8" fill="#efdfbc" stroke="#a68d66" strokeWidth="1"/><rect x="375" y="300" width="24" height="86" fill="url(#s-fut)"/><rect x="371" y="386" width="32" height="10" fill="#e8d6b0" stroke="#a68d66" strokeWidth="1"/><rect x="582" y="292" width="30" height="8" fill="#efdfbc" stroke="#a68d66" strokeWidth="1"/><rect x="585" y="300" width="24" height="86" fill="url(#s-fut)"/><rect x="581" y="386" width="32" height="10" fill="#e8d6b0" stroke="#a68d66" strokeWidth="1"/><rect x="624" y="292" width="30" height="8" fill="#efdfbc" stroke="#a68d66" strokeWidth="1"/><rect x="627" y="300" width="24" height="86" fill="url(#s-fut)"/><rect x="623" y="386" width="32" height="10" fill="#e8d6b0" stroke="#a68d66" strokeWidth="1"/><rect x="666" y="292" width="30" height="8" fill="#efdfbc" stroke="#a68d66" strokeWidth="1"/><rect x="669" y="300" width="24" height="86" fill="url(#s-fut)"/><rect x="665" y="386" width="32" height="10" fill="#e8d6b0" stroke="#a68d66" strokeWidth="1"/><rect x="708" y="292" width="30" height="8" fill="#efdfbc" stroke="#a68d66" strokeWidth="1"/><rect x="711" y="300" width="24" height="86" fill="url(#s-fut)"/><rect x="707" y="386" width="32" height="10" fill="#e8d6b0" stroke="#a68d66" strokeWidth="1"/><rect x="750" y="292" width="30" height="8" fill="#efdfbc" stroke="#a68d66" strokeWidth="1"/><rect x="753" y="300" width="24" height="86" fill="url(#s-fut)"/><rect x="749" y="386" width="32" height="10" fill="#e8d6b0" stroke="#a68d66" strokeWidth="1"/>
-    <rect x="428.0" y="296" width="104" height="100" fill="#1a1209"/>
+    {COLONNES.map((x) => (
+      <Colonne key={x} x={x}/>
+    ))}
+    <rect x="427" y="298" width="106" height="98" fill="#1a1209"/>
     <rect x="0" y="378" width="152" height="46" fill="#b9a078"/>
     <rect x="808" y="378" width="152" height="46" fill="#8f7a56"/>
   </g>
@@ -329,7 +490,7 @@ export function Seuil({ onEntrer }: { onEntrer: () => void }): React.ReactElemen
   <g className="porte">
     <path
       className="cible"
-      d="M428 400 L428 316 A52 46 0 0 1 532 316 L532 400 Z"
+      d={baie(demi + cadre, fleche + cadre)}
       role="button"
       tabIndex={0}
       aria-label="Entrer dans la bibliothèque"
@@ -342,8 +503,8 @@ export function Seuil({ onEntrer }: { onEntrer: () => void }): React.ReactElemen
     >
       <title>Entrer dans la bibliothèque</title>
     </path>
-    <ellipse className="porte__appel" cx="480.0" cy="372" rx="46" ry="40" fill="url(#s-porte)"/>
-    <ellipse className="porte__lueur" cx="480.0" cy="372" rx="46" ry="40" fill="url(#s-porte)"/>
+    <ellipse className="porte__appel" cx={cx} cy={sol - 24} rx="36" ry="32" fill="url(#s-porte)"/>
+    <ellipse className="porte__lueur" cx={cx} cy={sol - 24} rx="36" ry="32" fill="url(#s-porte)"/>
   </g>
 
       </svg>
