@@ -122,6 +122,11 @@ des chantiers restants, par ordre d'importance.
 - L'**ordre de dessin est un fait de la scène**, pas une affaire de boucle
   (D78) : on trie par profondeur à la construction, et on sépare les ombres des
   objets en deux passes.
+- Un **membre est une ligne épaissie**, jamais une surface dessinée contour par
+  contour : sinon l'épaisseur du coude finit par égaler la longueur du bras
+  (D81).
+- Une **silhouette** a besoin de quelque chose derrière elle et de rien devant :
+  un voile de lumière peint par-dessus la ramène à la valeur du fond (D81).
 - Une colonne de grille en `auto` se dimensionne sur son contenu : le
   `max-width: 100%` de l'enfant ne mord alors sur rien et déborde. C'est
   `minmax(0, 1fr)` qu'il faut. Le piège s'est présenté deux fois.

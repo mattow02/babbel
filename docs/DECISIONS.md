@@ -1079,3 +1079,41 @@ Deux details tires du dessin :
 - un arc trace au fil se lit comme un fil. L'arcade est faite de bandeaux dont
   l'epaisseur suit la distance, comme les montants de la balustrade (D69).
 Decide le 2026-09-03.
+
+
+### D81 : Le hall, repris en entier
+Premiere version montree, premiers retours : le cube ne flottait pas assez, les
+cotes etaient mal faits, il manquait un puits de lumiere et une statue au fond,
+et l'ensemble manquait de majeste. Cinq corrections, et trois d'entre elles
+sont des regles.
+
+**La majeste vient de la hauteur.** La voute monte desormais tres au-dessus du
+cadre : on ne voit pas le haut des piliers du premier plan, et cela ecrase
+celui qui entre. C'est aussi ce qui a libere le fond de la nef : la statue
+etait bridee par un plafond bas, et aucun agrandissement ne pouvait la sauver
+tant que la salle restait basse.
+
+**Les bas-cotes ne sont pas des trous noirs.** Ils portent des rayonnages, et
+c'est deja la bibliotheque qu'on apercoit derriere l'arcade. Les piliers ont
+une base et un chapiteau plus larges que leur fut, sinon ils n'ont ni pied ni
+tete.
+
+**Un arc trace au fil se lit comme un fil**, et une courbe de Bezier a un seul
+point de controle fait une parabole, donc une pointe : l'arcade se lisait comme
+une file de capuchons. Deux points de controle donnent le plein cintre, et le
+bandeau a une epaisseur qui suit la distance.
+
+**Un membre est une ligne, pas une surface.** Dessine contour par contour, un
+bras devient un losange : l'epaisseur qu'on donne au coude finit par egaler la
+longueur du bras. Une polyligne epaissie garde son epaisseur partout et se plie
+ou on lui dit. C'est ce qui a rendu la statue lisible apres trois essais rates.
+
+**Une silhouette doit avoir quelque chose derriere elle, et rien devant.** Le
+faisceau de lumiere etait peint par-dessus la statue et la ramenait a la valeur
+du mur : elle disparaissait. Il passe maintenant DERRIERE elle, et le mur du
+fond a ete eclairci. Une silhouette se lit par contraste, pas par dessin.
+
+Un piege attrape par un test ecrit dans la foulee : en montant la voute, le
+puits de lumiere est sorti du cadre par le haut, et rien ne le signalait
+puisqu'un SVG se contente de ne pas dessiner ce qui deborde.
+Decide le 2026-09-03.

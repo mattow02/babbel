@@ -560,6 +560,20 @@ la salle et la seule chose qui se clique.
 La géométrie vit dans `hall.ts` avec la même discipline que la galerie, et le
 test qui compte est celui de la symétrie pilier par pilier. **207 tests.**
 
+## Le hall, repris en entier (2026-09-03)
+
+Sur les premiers retours : voûte montée très au-dessus du cadre (c'est de là
+que vient la majesté, et c'est ce qui a libéré la place pour la statue),
+bas-côtés garnis de **rayonnages** au lieu de noir, piliers à base et
+chapiteau, arcade en **plein cintre** à bandeaux, **puits de lumière** percé
+dans la voûte avec son faisceau, cube qui **flotte franchement** au-dessus de
+son socle, et au fond **le colosse qui porte le monde**, en silhouette (D81).
+
+Trois règles tirées de la reprise : un arc tracé au fil se lit comme un fil ;
+un membre est une ligne épaissie, pas une surface dessinée contour par contour ;
+une silhouette a besoin de quelque chose derrière elle et de rien devant.
+**214 tests.**
+
 ## Ce qui n'est pas fait, à jour au 2026-09-03
 
 - Le **Seuil** est une invention : chez Borges, la bibliothèque *est* l'univers,
