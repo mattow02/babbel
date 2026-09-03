@@ -549,6 +549,17 @@ maintenant une ombre de contact, un stéréobate à trois assises, et une ombre
 portée qui vient vers nous puisque le soleil est derrière lui (D79).
 **194 tests.**
 
+## Le hall (2026-09-03)
+
+On passait du plein soleil aux ténèbres en un clic. Il y a maintenant un sas :
+une nef, deux files de six piliers, des bas-côtés noirs, un plafond à caissons,
+un faisceau qui tombe de la voûte, et au bout de l'axe **le cube d'or** en
+lévitation au-dessus de son socle (D80). Le cube est la seule chose claire de
+la salle et la seule chose qui se clique.
+
+La géométrie vit dans `hall.ts` avec la même discipline que la galerie, et le
+test qui compte est celui de la symétrie pilier par pilier. **207 tests.**
+
 ## Ce qui n'est pas fait, à jour au 2026-09-03
 
 - Le **Seuil** est une invention : chez Borges, la bibliothèque *est* l'univers,

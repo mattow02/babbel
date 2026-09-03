@@ -67,7 +67,14 @@ const CADRE: Cadre = { largeur: 1000, hauteur: 620, regard: 0.44 }
 const ECARTS = [1.0, 0.66, 0.4] as const
 const PROFONDEURS = [0, 0.36, 0.66] as const
 
-function fuir(p: Point, t: number, fuite: Point): Point {
+/**
+ * Le meme point, vu depuis `t` fois plus loin.
+ *
+ * C'est toute la perspective a un point du site : `t` va de 0 (au premier
+ * plan) a 1 (au point de fuite). Exporte parce que le hall s'en sert aussi :
+ * il n'y a qu'une projection dans ce projet, et elle s'ecrit une fois.
+ */
+export function fuir(p: Point, t: number, fuite: Point): Point {
   return { x: fuite.x + (p.x - fuite.x) * (1 - t), y: fuite.y + (p.y - fuite.y) * (1 - t) }
 }
 

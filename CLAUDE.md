@@ -146,6 +146,9 @@ des chantiers restants, par ordre d'importance.
 - **Le rendu est en 2D dessinée** (D62, 2026-09-03) : le moteur 3D a été retiré.
   Les décisions D23 à D61 qui parlent de three.js sont **historiques** : elles
   disent pourquoi le projet a été construit ainsi, pas ce qu'il est aujourd'hui.
+- **Trois lieux** : *le Seuil* (dehors, au soleil), *le Hall* (le sas, la nef
+  et le cube d'or, D80), et *la Bibliothèque* (procédurale, infinie). Un geste
+  entre chaque : pousser la porte, puis toucher le cube.
 - **Deux mondes distincts** (D11) : *le Seuil*, scène authorée à la main
   (extérieur → dôme → marches → entrée unique → grand hall → cube flottant),
   et *la Bibliothèque*, procédurale et infinie. Budgets et dossiers séparés.

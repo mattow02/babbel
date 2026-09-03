@@ -287,7 +287,7 @@ body::after {
  * plus specifique que le rallumage, et gagnerait. C'est exactement ce qui
  * s'est produit la premiere fois.
  */
-:where(.galerie2d, .seuil svg) * {
+:where(.galerie2d, .hall2d, .seuil svg) * {
   pointer-events: none;
 }
 
@@ -1058,6 +1058,105 @@ body::after {
   }
 }
 
+/* --------------------------------------------------------------- le hall */
+
+/*
+ * Le sas.
+ *
+ * On a pousse la porte, on n'est pas encore dans la bibliotheque. Le cube est
+ * la seule chose claire de la salle, et la seule chose qui se clique : il n'a
+ * donc besoin d'aucune interface autour de lui.
+ */
+.hall {
+  position: absolute;
+  inset: 0;
+  background: #0a0705;
+}
+
+.hall2d {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Il respire, et sa respiration est celle de la porte du dehors : c'est le
+   meme geste, une fois franchi le seuil. */
+.cube {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: cube-respire 5.2s ease-in-out infinite alternate;
+}
+
+.cube__halo {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: cube-rayonne 5.2s ease-in-out infinite alternate;
+}
+
+.hall2d .cible:hover ~ .cube,
+.hall2d .cible:focus-visible ~ .cube {
+  filter: brightness(1.15);
+}
+
+@keyframes cube-respire {
+  from {
+    transform: translateY(0.6px) scale(0.994);
+  }
+
+  to {
+    transform: translateY(-0.6px) scale(1.006);
+  }
+}
+
+@keyframes cube-rayonne {
+  from {
+    opacity: 0.72;
+    transform: scale(0.94);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1.08);
+  }
+}
+
+.hall2d .poussiere circle {
+  opacity: 0;
+  animation-name: poussiere-monte;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+}
+
+.hall__souffle {
+  position: absolute;
+  bottom: clamp(1rem, 4vh, 3rem);
+  left: 50%;
+  margin: 0;
+  color: var(--soleil);
+  font-size: clamp(0.72rem, 1.5vw, 0.84rem);
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  text-shadow: 0 2px 18px rgb(0 0 0 / 80%);
+  opacity: 0.55;
+  transform: translateX(-50%);
+  animation: souffle-tenu 5s ease-out both;
+  pointer-events: none;
+}
+
+@keyframes souffle-tenu {
+  0% {
+    opacity: 0;
+  }
+
+  22% {
+    opacity: 0.55;
+  }
+
+  100% {
+    opacity: 0.55;
+  }
+}
+
 /*
  * Le mouvement reduit, en DERNIER.
  *
@@ -1129,12 +1228,15 @@ body::after {
   .ciel__bas,
   .volee,
   .oiseau,
-  .cypres {
+  .cypres,
+  .cube,
+  .hall__souffle {
     animation: none;
   }
 
   /* Une poussiere figee en l'air serait un defaut, pas une sobriete. */
-  .galerie2d .poussiere {
+  .galerie2d .poussiere,
+  .hall2d .poussiere {
     display: none;
   }
 
@@ -1157,5 +1259,21 @@ body::after {
 
   .galerie2d .halo {
     animation: halo-luit 9.3s ease-in-out infinite alternate;
+  }
+
+  /* Le cube ne bouge plus, mais il rayonne : c'est de la lumiere, pas du
+     deplacement, et sans elle le hall n'a plus de point de mire. */
+  .cube__halo {
+    animation: cube-luit 5.2s ease-in-out infinite alternate;
+  }
+}
+
+@keyframes cube-luit {
+  from {
+    opacity: 0.72;
+  }
+
+  to {
+    opacity: 1;
   }
 }

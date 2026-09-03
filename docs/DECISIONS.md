@@ -1053,3 +1053,29 @@ Trois choses le posent, dans cet ordre d'importance :
 Au passage, la face de la terrasse a recu son propre degre : un plan vertical
 s'assombrit en descendant, et un aplat ne se lit pas comme un plan.
 Decide le 2026-09-03.
+
+
+### D80 : Le hall, un sas entre le soleil et les tenebres
+On passait du plein soleil du Seuil aux tenebres de la bibliotheque en un
+clic. Il manquait le temps de la transition, et c'est ce que le hall apporte :
+on a pousse la porte, on n'est pas encore arrive.
+
+Une nef, deux files de six piliers, des bas-cotes noirs, un plafond a caissons,
+un faisceau qui tombe de la voute, et au bout de l'axe **le cube d'or**, en
+levitation au-dessus de son socle. Le cube est la seule chose claire de la
+salle et la seule chose qui se clique : il n'a besoin d'aucune interface autour
+de lui, et la lumiere qu'il repand sur la pierre polie vient jusqu'a nous.
+
+La geometrie vit dans `hall.ts`, comme celle de la galerie, et le test qui
+compte est celui de la **symetrie pilier par pilier** : le Seuil a deja coute
+une colonnade decentree de douze pixels que rien ne signalait a l'oeil. Un hall
+a un axe, et un axe se prouve.
+
+Deux details tires du dessin :
+- une nervure longitudinale de plafond ne doit PAS aller jusqu'au point de
+  fuite. Poussee jusque-la, elle traverse toute la salle, passe devant le cube,
+  et le plafond se lit comme un fil de fer tendu au-dessus du vide. Elle
+  s'arrete a la derniere travee, et un test le tient ;
+- un arc trace au fil se lit comme un fil. L'arcade est faite de bandeaux dont
+  l'epaisseur suit la distance, comme les montants de la balustrade (D69).
+Decide le 2026-09-03.

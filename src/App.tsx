@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import type { Address } from './core/index.ts'
 import { useLibraryStore } from './store/useLibraryStore.ts'
 import { Galerie } from './vue2d/Galerie.tsx'
+import { Hall } from './vue2d/Hall.tsx'
 import { Seuil } from './vue2d/Seuil.tsx'
 import { above, below } from './vue2d/etages.ts'
 import { Intro } from './ui/Intro.tsx'
@@ -27,6 +28,7 @@ export function App(): React.ReactElement {
   const [address, goTo] = useAddress(ORIGIN)
 
   const stage = useLibraryStore((store) => store.stage)
+  const enterHall = useLibraryStore((store) => store.enterHall)
   const enterLibrary = useLibraryStore((store) => store.enterLibrary)
   const setHexagon = useLibraryStore((store) => store.setHexagon)
   const opened = useLibraryStore((store) => store.opened)
@@ -159,8 +161,24 @@ export function App(): React.ReactElement {
   if (stage === 'seuil') {
     return (
       <div className="shell shell--scene">
-        <Seuil onEntrer={enterLibrary} />
+        <Seuil onEntrer={enterHall} />
         <Intro />
+        {panneau}
+      </div>
+    )
+  }
+
+  /*
+   * Le hall : le sas.
+   *
+   * On a pousse la porte, on n'est pas encore dans la bibliotheque. C'est le
+   * seul endroit du site ou il ne se passe rien d'autre que de regarder, et
+   * c'est voulu : entre le plein soleil et les tenebres, il faut un temps.
+   */
+  if (stage === 'hall') {
+    return (
+      <div className="shell shell--scene">
+        <Hall onEntrer={enterLibrary} />
         {panneau}
       </div>
     )
