@@ -492,6 +492,19 @@ appelle. Dedans, lampe qui respire, lampes voisines hors de phase, et
 poussière qui monte dans la lumière. **190 tests**, et `prefers-reduced-motion`
 éteint tout.
 
+## Deux retours du poste de l'utilisateur (2026-09-03)
+
+**Rien n'était animé sur son PC de bureau.** Windows propose d'éteindre les
+effets d'animation, ce réglage se lit dans `prefers-reduced-motion`, et nous
+coupions absolument tout. Le mouvement réduit arrête désormais ce qui se
+**déplace** (nuages, oiseaux, arbres, poussière, halo qui s'ouvre) et garde ce
+qui **luit** (lampe, vasques, eau, porte), chaque animation ayant sa variante
+en opacité seule (D74).
+
+**L'URL affichait `#/0/0/0/0/1` dès le chargement**, soit l'adresse d'un livre
+qu'on n'avait pas ouvert. Elle ne s'écrit plus qu'au premier geste qui la
+justifie, et un test le tient (D73). **194 tests.**
+
 ## Ce qui n'est pas fait, à jour au 2026-09-03
 
 - Le **Seuil** est une invention : chez Borges, la bibliothèque *est* l'univers,

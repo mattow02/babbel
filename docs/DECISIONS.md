@@ -906,3 +906,35 @@ Et un piege de feuille de style, retrouve a la verification : le bloc
 eteindre. A specificite egale, c'est la derniere regle qui gagne : il ne les
 eteignait donc plus. Sa place est en fin de fichier, et nulle part ailleurs.
 Decide le 2026-09-03.
+
+
+### D73 : L'URL ne se remplit qu'au premier geste
+Au chargement, le site ecrivait aussitot `#/0/0/0/0/1` dans la barre d'adresse.
+C'etait un reste du temps ou le lecteur ETAIT tout le site : ecrire l'adresse
+des l'ouverture avait alors un sens, puisqu'on arrivait sur une page. Depuis
+qu'on arrive devant le monument, cela affichait l'adresse d'un livre qu'on
+n'avait pas ouvert, et le lien qu'on copiait ne designait rien de ce qu'on
+venait de voir.
+
+L'URL ne s'ecrit donc plus qu'au premier geste qui la justifie : ouvrir un
+volume, changer de galerie, changer d'etage, trouver une phrase. Un test le
+tient, parce que c'est exactement le genre de detail qu'on rajoute sans y
+penser en voulant « rendre l'adresse toujours copiable ».
+Decide le 2026-09-03.
+
+
+### D74 : Le mouvement reduit arrete ce qui se deplace, pas ce qui luit
+Le site etait entierement immobile sur l'ordinateur de bureau de l'utilisateur,
+et c'etait notre faute : Windows propose d'eteindre les effets d'animation, ce
+reglage se lit dans `prefers-reduced-motion`, et nous coupions absolument tout.
+
+Le reglage est frequent sur une machine de bureau, ou il ne signale aucun
+trouble mais un gout pour les interfaces sobres. Et ce qui gene, dans le
+mouvement, c'est le DEPLACEMENT : ce qui glisse, tourne, grandit ou defile. Une
+variation d'opacite ne deplace rien.
+
+On arrete donc les nuages, les oiseaux, les arbres, la poussiere et le halo qui
+s'ouvre devant la porte, et l'on garde la lumiere qui respire : la lampe, son
+globe, les lampes des galeries voisines, les vasques, le reflet de l'eau et la
+porte. Les animations concernees ont chacune une variante en opacite seule.
+Decide le 2026-09-03.

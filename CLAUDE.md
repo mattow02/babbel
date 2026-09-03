@@ -102,6 +102,11 @@ des chantiers restants, par ordre d'importance.
 - Le bloc `prefers-reduced-motion` va en **fin** de feuille de style : à
   spécificité égale, c'est la dernière règle écrite qui gagne, et placé avant
   les animations il ne les éteint pas.
+- Le mouvement réduit arrête ce qui se **déplace**, pas ce qui **luit** (D74) :
+  une variation d'opacité ne déplace rien. Le réglage est courant sur un PC de
+  bureau et n'y signale aucun trouble, tout couper est une réponse trop large.
+- L'URL ne s'écrit qu'au **premier geste** qui la justifie (D73) : au
+  chargement, on est devant le monument, pas dans un livre.
 - Une colonne de grille en `auto` se dimensionne sur son contenu : le
   `max-width: 100%` de l'enfant ne mord alors sur rien et déborde. C'est
   `minmax(0, 1fr)` qu'il faut. Le piège s'est présenté deux fois.

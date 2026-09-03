@@ -29,13 +29,14 @@ export function useAddress(fallback: Address): [Address, (next: Address) => void
     }
   }, [])
 
-  // Au premier rendu, l'URL peut etre vide : on l'ecrit sans creer d'entree
-  // d'historique, pour que l'adresse soit toujours copiable.
-  useEffect(() => {
-    if (window.location.hash === '') {
-      window.history.replaceState(null, '', toHash(address))
-    }
-  }, [address])
-
+  /*
+   * On n'ecrit RIEN dans l'URL tant que le visiteur n'a rien fait.
+   *
+   * Le lecteur, autrefois, etait tout le site : ecrire l'adresse des le
+   * chargement avait alors un sens. Depuis qu'on arrive devant le monument,
+   * cela affichait l'adresse d'un livre qu'on n'avait pas ouvert, et le lien
+   * qu'on copiait ne designait rien de ce qu'on avait vu. L'URL ne se remplit
+   * donc qu'au premier geste, par `goTo`.
+   */
   return [address, goTo]
 }

@@ -1064,32 +1064,98 @@ body::after {
  * Une regle placee avant les animations qu'elle doit eteindre ne les eteint
  * pas : a specificite egale, c'est la derniere ecrite qui gagne. Le bloc a
  * donc sa place ici, et nulle part ailleurs.
+ *
+ * Et il n'eteint pas tout. Ce qui gene, dans le mouvement, c'est le
+ * DEPLACEMENT : ce qui glisse, tourne, grandit ou defile. Une variation
+ * d'opacite ne deplace rien. On arrete donc les nuages, les oiseaux, les
+ * arbres, la poussiere et les halos qui s'ouvrent, et l'on garde la lumiere
+ * qui respire : la lampe, les vasques, le reflet de l'eau, la porte. Le
+ * reglage est frequent sur un ordinateur de bureau, ou il ne signale aucun
+ * trouble mais un gout pour les interfaces sobres, et rendre le site
+ * entierement immobile pour cela etait une reponse trop large.
  */
+
+/* Les variantes sans deplacement : la meme respiration, en lumiere seule. */
+@keyframes soleil-luit {
+  from {
+    opacity: 0.88;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes porte-luit {
+  from {
+    opacity: 0.14;
+  }
+
+  to {
+    opacity: 0.36;
+  }
+}
+
+@keyframes rides-luisent {
+  from {
+    opacity: 0.14;
+  }
+
+  to {
+    opacity: 0.3;
+  }
+}
+
+@keyframes halo-luit {
+  from {
+    opacity: 0.9;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
+  /* Ce qui se deplace s'arrete. */
   .intro__ligne,
   .intro__invite,
-  .porte__lueur,
   .porte__appel,
   .livre__objet,
   .feuillet,
   .feuillet__texte,
   .livre__souffle,
-  .soleil,
   .ciel__haut,
   .ciel__bas,
   .volee,
   .oiseau,
-  .cypres,
-  .flamme,
-  .rides,
-  .galerie2d .halo,
-  .galerie2d .globe,
-  .galerie2d .lointaine {
+  .cypres {
     animation: none;
   }
 
   /* Une poussiere figee en l'air serait un defaut, pas une sobriete. */
   .galerie2d .poussiere {
     display: none;
+  }
+
+  /* Ce qui luit continue de luire. */
+  .soleil {
+    animation: soleil-luit 17s ease-in-out infinite alternate;
+  }
+
+  .porte__lueur {
+    animation: porte-luit 3.4s ease-in-out infinite alternate;
+  }
+
+  .flamme {
+    animation: flamme-scintille 1.13s ease-in-out infinite alternate;
+  }
+
+  .rides {
+    animation: rides-luisent 13s ease-in-out infinite alternate;
+  }
+
+  .galerie2d .halo {
+    animation: halo-luit 9.3s ease-in-out infinite alternate;
   }
 }
